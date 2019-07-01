@@ -8,7 +8,8 @@
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
     "d3": "^5.9.7",
-    "mapbox-gl": "^1.0.0"
+    "mapbox-gl": "^1.0.0",
+    "nouislider": "^14.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0-beta.39",

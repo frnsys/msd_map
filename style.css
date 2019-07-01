@@ -1,6 +1,7 @@
 html, body {
   margin: 0;
   padding: 0;
+  font-family: monospace;
 }
 
 #main {
@@ -15,10 +16,32 @@ html, body {
   margin: 1em 0 0 0;
   line-height: 1;
 }
-.protected {
-  color: #35a42c;
+
+#controls {
+  position: fixed;
+  top: 0.5em;
+  right: 0.5em;
+  background: #fff;
+  z-index: 1;
+  padding: 1em;
+  min-width: 320px;
 }
-.concession {
-  color: #e62a20;
+#controls h5 {
+  margin-bottom: 0;
 }
 
+#controls .noUi-horizontal {
+  margin: 1em 0.5em 3em;
+}
+#controls .noUi-horizontal .noUi-handle {
+  width: 24px;
+  height: 24px;
+  top: -4px;
+}
+#controls .noUi-handle::before,
+#controls .noUi-handle::after {
+  background: none;
+}
+#controls .noUi-pips-horizontal {
+  height: 30px;
+}

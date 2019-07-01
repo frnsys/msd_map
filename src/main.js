@@ -1,22 +1,17 @@
 // <https://blog.mapbox.com/going-live-with-electoral-maps-a-guide-to-feature-state-b520e91a22d>
 // <https://docs.mapbox.com/mapbox-gl-js/example/hover-styles/>
 
+import noUiSlider from 'nouislider';
+import 'nouislider/distribute/nouislider.css';
 import * as d3 from 'd3';
 import data from '../msd_map_3_data.json';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 const MAPBOX_TOKEN = 'pk.eyJ1IjoiZnJuc3lzIiwiYSI6ImNpeGNwYjFkNDAwYXAyeWxmcm0ycmpyMXYifQ.NeU0Zkf83cbL4Tw_9Ahgww';
-const ZIPCODE_PROPERTY = 'ZCTA5CE10';
-const PROPERTY_COLOR_RANGES = {
-  'avginc': ['#adb0f7', '#0712ea'],
-  'debtburden': ['#fffef5', '#fa0255'],
-  'avbal': ['#aff7d3', '#04e876'],
-  'avgearn': ['#f9f1b3', '#f4d909'],
-  'emp': ['#fcb7ae', '#ef1e02'],
-  'neshare': ['#ddb4f7', '#8902dd']
-};
-const PROPERTY_RANGES = Object.keys(PROPERTY_COLOR_RANGES).reduce((acc, k) => {
+const COLOR_RANGE = ['#fffef5', '#fa0255'];
+const PROPERTIES = ['avginc', 'debtburden', 'avbal', 'avgearn', 'emp', 'neshare'];
+const PROPERTY_RANGES = PROPERTIES.reduce((acc, k) => {
   acc[k] = [null, null];
   Object.values(data).forEach((d) => {
     if (d[k] != null) {
@@ -30,20 +25,91 @@ const PROPERTY_RANGES = Object.keys(PROPERTY_COLOR_RANGES).reduce((acc, k) => {
   });
   return acc;
 }, {});
-const PROPERTY_COLOR_SCALES = Object.keys(PROPERTY_COLOR_RANGES).reduce((acc, k) => {
+const PROPERTY_COLOR_SCALES = PROPERTIES.reduce((acc, k) => {
   acc[k] = d3.scaleLinear()
     .domain(PROPERTY_RANGES[k])
-    .range(PROPERTY_COLOR_RANGES[k]);
-
+    .range(COLOR_RANGE);
   return acc;
 }, {});
 
-let selected_property = 'debtburden';
+// Create property selector, for color coding
+function makePropertySelector() {
+  let select_el = document.createElement('select');
+  PROPERTIES.forEach((k) => {
+    let option_el = document.createElement('option');
+    option_el.value = k;
+    option_el.innerText = k;
+    select_el.appendChild(option_el);
+  });
+  return select_el;
+}
+const colors_el = document.getElementById('color');
+const select_el = makePropertySelector();
+colors_el.appendChild(select_el);
+select_el.addEventListener('change', (ev) => {
+  selected_property = ev.target.value;
+  colorFeatures();
+});
+let selected_property = select_el.value;
 
+
+// Create filter control
 // <https://docs.mapbox.com/mapbox-gl-js/style-spec/#other-filter>
 // <https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions>
-// TODO this isn't working correctly b/c this property isn't on the feature, it's loaded separately
-let selected_filter = ['<', ['to-number', ['get', 'avginc']], 50000];
+let selected_filter = null;
+const filter_el = document.getElementById('filter');
+const filter_select_el = makePropertySelector();
+filter_select_el.addEventListener('change', (ev) => {
+  Object.values(filter_range_els).forEach((r) => {
+    r.el.style.display = 'none';
+  });
+  filter_range_els[ev.target.value].el.style.display = 'block';
+});
+filter_el.appendChild(filter_select_el);
+const filter_range_els = PROPERTIES.reduce((acc, k) => {
+  let el = document.createElement('div');
+  let [min, max] = PROPERTY_RANGES[k];
+  let slider = noUiSlider.create(el, {
+    range: {min, max},
+    start: [min, max],
+    step: 1,
+    connect: true,
+    pips: {
+        mode: 'positions',
+        values: [0, 25, 50, 75, 100],
+        density: 4
+    },
+    tooltips: true
+  });
+  filter_el.appendChild(el);
+  el.style.display = 'none';
+  acc[k] = {el, slider};
+  return acc;
+}, {});
+filter_range_els[filter_select_el.value].el.style.display = 'block';
+
+const filter_apply_el = document.createElement('button');
+filter_apply_el.innerText = 'Apply';
+filter_apply_el.addEventListener('click', () => {
+  let prop = filter_select_el.value;
+  let [min, max] = filter_range_els[prop].slider.get();
+  min = parseFloat(min);
+  max = parseFloat(max);
+  selected_filter = [
+    ['>', ['to-number', ['get', prop]], min],
+    ['<', ['to-number', ['get', prop]], max]
+  ];
+  setFilter();
+});
+filter_el.appendChild(filter_apply_el);
+const filter_clear_el = document.createElement('button');
+filter_clear_el.addEventListener('click', () => {
+  selected_filter = null;
+  setFilter();
+});
+filter_clear_el.innerText = 'Clear';
+filter_el.appendChild(filter_clear_el);
+
 
 mapboxgl.accessToken = MAPBOX_TOKEN;
 const map = new mapboxgl.Map({
@@ -90,7 +156,7 @@ map.on('load', function () {
 map.on('click', function(e) {
   let features = map.queryRenderedFeatures(e.point);
   if (features.length > 0) {
-    let zipcode = features[0].properties[ZIPCODE_PROPERTY];
+    let zipcode = features[0].properties['zipcode'];
     if (zipcode) {
       let zipcodeData = data[zipcode];
       let html = `<h5>${zipcode}</h5>`;
@@ -123,14 +189,14 @@ function setFilter() {
 }
 
 function updateFilter() {
-  highlightedFeatures = map.querySourceFeatures('zipcodes', {
-    sourceLayer: 'zipcodes',
-    filter: [
-      'all',
-      selected_filter
-    ]
-  });
+  let opts = {
+    sourceLayer: 'zipcodes'
+  };
+  if (selected_filter !== null) {
+    opts.filter = ['all', ...selected_filter];
+  }
 
+  highlightedFeatures = map.querySourceFeatures('zipcodes', opts);
   highlightedFeatures.forEach((f) => {
     map.setFeatureState({
       source: 'zipcodes',
@@ -140,18 +206,21 @@ function updateFilter() {
       highlight: true
     });
   });
+
+  colorFeatures();
 }
 
 function colorFeatures() {
   highlightedFeatures.forEach((f) => {
-    let zipcode = f.properties[ZIPCODE_PROPERTY];
+    let zipcode = f.properties['zipcode'];
     let zipcodeData = data[zipcode];
+    let val = zipcodeData[selected_property];
     map.setFeatureState({
       source: 'zipcodes',
       sourceLayer: 'zipcodes',
       id: f.id
     },{
-      color: PROPERTY_COLOR_SCALES[selected_property](zipcodeData[selected_property])
+      color: val == null ? '#000000' : PROPERTY_COLOR_SCALES[selected_property](val)
     });
   });
 }
@@ -160,6 +229,5 @@ function colorFeatures() {
 map.on('sourcedata', function(e) {
   if (e.sourceId === 'zipcodes') {
     updateFilter();
-    colorFeatures();
   }
 });
