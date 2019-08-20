@@ -75,7 +75,6 @@ function focusFeature(feat) {
     id: feat.id
   },{
     focus: true,
-    outlineColor: '#000000',
     fillColor: '#f9ca74'
   });
   focused = feat;
@@ -100,10 +99,7 @@ map.on('load', function () {
         ]
       ],
       'fill-outline-color': [
-        'case',
-        ['boolean', ['feature-state', 'focus'], false],
-        ['feature-state', 'outlineColor'],
-        'rgba(0, 0, 0, 0)' // transparent
+        'interpolate', ['linear'], ['zoom'], 5, 'rgba(0, 0, 0, 0)', 10, 'rgba(0,0,0,1)'
       ]
     }
   });
@@ -123,8 +119,8 @@ function explainFeature(feat) {
   let p = feat.properties;
   infoEl.innerHTML = `
     <h2>${p['zipcode']}</h2>
-    School Concentration Index: ${p['SCI'] || 'N/A'}</br>
-    Average Tuition: ${formatter.format(p['average_tuition']) || 'N/A'}</br>
+    School Concentration Index: ${p['SCI'] ? (p['SCI']/data.ranges['SCI'][1]).toFixed(2) : 'N/A'}</br>
+    Average Tuition: ${p['average_tuition'] ? formatter.format(p['average_tuition']) : 'N/A'}</br>
   `;
   infoEl.style.display = 'block';
 }
