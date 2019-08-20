@@ -13,6 +13,21 @@ const map = new mapboxgl.Map({
   minZoom: 2
 });
 
+const COLOR_RANGES = {
+  'SCI': ['#fffef5', '#fc9fa3'],
+  'average_tuition': ['#f2f2fc', '#9fa3fc'],
+  'n': ['#f5fff8', '#32a852'],
+  'HD01_S001': ['#fff8d6', '#ffd721'],
+  'EFTOTAL_overall': ['#ffedff', '#c65cff']
+};
+const PROP_DESCS = {
+  'SCI': 'School Concentration Index',
+  'average_tuition': 'Average Tuition',
+  'n': 'Number of School Zones',
+  'HD01_S001': 'Population Estimate',
+  'EFTOTAL_overall': 'Enrollment Seats'
+}
+
 const formatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
   currency: 'USD',
@@ -23,6 +38,18 @@ const formatter = new Intl.NumberFormat('en-US', {
 let zipcodeInput = document.querySelector('#control input[name=zipcode]');
 zipcodeInput.addEventListener('input', (ev) => {
   goToZipcode(ev.target.value);
+});
+
+// Toggle displayed property
+let propertyInput = document.querySelector('#control select[name=property]');
+Object.keys(COLOR_RANGES).forEach((property) => {
+  let opt = document.createElement('option');
+  opt.innerText = PROP_DESCS[property];
+  opt.value = property;
+  propertyInput.appendChild(opt);
+});
+propertyInput.addEventListener('change', (ev) => {
+  changePaint(ev.target.value);
 });
 
 // `querySourceFeatures` will only search
@@ -90,14 +117,7 @@ map.on('load', function () {
     },
     'source-layer': 'msd',
     'paint': {
-      'fill-color': [
-        'case',
-        ['boolean', ['feature-state', 'focus'], false],
-        ['feature-state', 'fillColor'],
-        ['interpolate', ['linear'], ['get', 'SCI'],
-          data.ranges['SCI'][0], '#fffef5', data.ranges['SCI'][1], '#fc9fa3'
-        ]
-      ],
+      'fill-color': defineFillColor('SCI'),
       'fill-outline-color': [
         'interpolate', ['linear'], ['zoom'], 5, 'rgba(0, 0, 0, 0)', 10, 'rgba(0,0,0,1)'
       ]
@@ -105,13 +125,19 @@ map.on('load', function () {
   });
 });
 
+function defineFillColor(property) {
+  return [
+    'case',
+    ['boolean', ['feature-state', 'focus'], false],
+    ['feature-state', 'fillColor'],
+    ['interpolate', ['linear'], ['get', property],
+      data.ranges[property][0], COLOR_RANGES[property][0], data.ranges[property][1], COLOR_RANGES[property][1]
+    ]
+  ]
+}
 
-// TODO
-function changePaint() {
-  map.setPaintProperty('zipcodes', 'fill-color', {
-      'property': 'average_tuition',
-      'stops': [[725, '#f2f2fc'], [51384, '#9fa3fc']]
-  });
+function changePaint(property) {
+  map.setPaintProperty('msd', 'fill-color', defineFillColor(property));
 }
 
 const infoEl = document.getElementById('info');
@@ -119,8 +145,11 @@ function explainFeature(feat) {
   let p = feat.properties;
   infoEl.innerHTML = `
     <h2>${p['zipcode']}</h2>
-    School Concentration Index: ${p['SCI'] ? (p['SCI']/data.ranges['SCI'][1]).toFixed(2) : 'N/A'}</br>
-    Average Tuition: ${p['average_tuition'] ? formatter.format(p['average_tuition']) : 'N/A'}</br>
+    School Concentration Index: ${p['SCI'] ? (p['SCI']/data.ranges['SCI'][1]).toFixed(2) : 'N/A'}<br/>
+    Average Tuition: ${p['average_tuition'] ? formatter.format(p['average_tuition']) : 'N/A'}<br/>
+    Number of School Zones: ${p['n']}<br/>
+    Population Estimate: ${p['HD01_S001']}<br/>
+    Enrollment Seats: ${p['EFTOTAL_overall']}<br/>
   `;
   infoEl.style.display = 'block';
 }
