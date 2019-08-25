@@ -6,7 +6,7 @@ import data from '../data/msd_meta.json';
 mapboxgl.accessToken = config.MAPBOX_TOKEN;
 const map = new mapboxgl.Map({
   container: 'main',
-  style: 'mapbox://styles/frnsys/cjxagyk3r00o51cqspc009zf9',
+  style: 'mapbox://styles/frnsys/cjzk1fw9w5goc1cpd8pzx6wuu',
   zoom: 2,
   center: [-73.935242, 40.730610],
   maxZoom: 12,
@@ -14,8 +14,10 @@ const map = new mapboxgl.Map({
 });
 
 const COLOR_RANGES = {
-  'SCI': ['#fffef5', '#fc9fa3'],
-  'average_tuition': ['#f2f2fc', '#9fa3fc'],
+  'SCI': [[255/255, 254/255, 245/255], [252/255, 159/255, 163/255]],
+  'average_tuition': [[242/255, 242/255, 252/255], [159/255, 163/255, 252/255]],
+  // 'SCI': ['#fffef5', '#fc9fa3'],
+  // 'average_tuition': ['#f2f2fc', '#9fa3fc'],
   'n': ['#f5fff8', '#32a852'],
   'HD01_S001': ['#fff8d6', '#ffd721'],
   'EFTOTAL_overall': ['#ffedff', '#c65cff']
@@ -108,6 +110,7 @@ function focusFeature(feat) {
 }
 
 map.on('load', function () {
+  console.log(defineBivariateColor('SCI', 'average_tuition'))
   map.addLayer({
     'id': 'msd',
     'type': 'fill',
@@ -117,23 +120,87 @@ map.on('load', function () {
     },
     'source-layer': 'msd',
     'paint': {
-      'fill-color': defineFillColor('SCI'),
+      // 'fill-color': defineFillColor('SCI'),
+      'fill-color': defineBivariateColor('SCI', 'average_tuition'),
       'fill-outline-color': [
         'interpolate', ['linear'], ['zoom'], 5, 'rgba(0, 0, 0, 0)', 10, 'rgba(0,0,0,1)'
       ]
     }
-  });
+  }, 'admin');
 });
+
+function defineBivariateColor(propertyA, propertyB) {
+  // where COLOR_RANGES[property] = [[r,g,b], [r,g,b]] and r,g,b are in [0,1]
+  let ranges = {
+    a: data.ranges[propertyA],
+    b: data.ranges[propertyB],
+  };
+  let colors = {
+    a: COLOR_RANGES[propertyA],
+    b: COLOR_RANGES[propertyB],
+  };
+  return [
+    'concat',
+    'rgb(',
+
+    // r
+    ['*',
+      ['interpolate', ['linear'], ['get', propertyA],
+        ranges.a[0], colors.a[0][0], ranges.a[1], colors.a[1][0]],
+
+      ['interpolate', ['linear'], ['get', propertyB],
+        ranges.b[0], colors.b[0][0], ranges.b[1], colors.b[1][0]],
+
+      255
+    ],
+
+    ',',
+
+    // g
+    ['*',
+      ['interpolate', ['linear'], ['get', propertyA],
+        ranges.a[0], colors.a[0][1], ranges.a[1], colors.a[1][1]],
+
+      ['interpolate', ['linear'], ['get', propertyB],
+        ranges.b[0], colors.b[0][1], ranges.b[1], colors.b[1][1]],
+
+      255
+    ],
+
+    ',',
+
+    // b
+    ['*',
+      ['interpolate', ['linear'], ['get', propertyA],
+        ranges.a[0], colors.a[0][2], ranges.a[1], colors.a[1][2]],
+
+      ['interpolate', ['linear'], ['get', propertyB],
+        ranges.b[0], colors.b[0][2], ranges.b[1], colors.b[1][2]],
+
+      255
+    ],
+
+    ')'
+  ]
+}
 
 function defineFillColor(property) {
   return [
     'case',
+
+    // If feature-state is set to focus
     ['boolean', ['feature-state', 'focus'], false],
-    ['feature-state', 'fillColor'],
+      ['feature-state', 'fillColor'],
+
+    // If the property value is 0
+    ['==', ['get', property], 0],
+      '#262626',
+
+    // Otherwise, interpolate color
     ['interpolate', ['linear'], ['get', property],
       data.ranges[property][0], COLOR_RANGES[property][0], data.ranges[property][1], COLOR_RANGES[property][1]
     ]
-  ]
+  ];
 }
 
 function changePaint(property) {
@@ -154,7 +221,7 @@ function explainFeature(feat) {
   infoEl.style.display = 'block';
 }
 
-map.on('click', function(e) {
+map.on('mousemove', function(e) {
   let features = map.queryRenderedFeatures(e.point);
   features = features.reduce((acc, f) => {
     if (['msd'].includes(f.source)) {
