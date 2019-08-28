@@ -96,3 +96,61 @@ html, body {
   z-index: 1;
   padding: 1em;
 }
+
+#legend {
+  position: fixed;
+  bottom: 2em;
+  right: 0.5em;
+  color: #fff;
+  z-index: 1;
+  text-align: right;
+  display: flex;
+}
+#legend.legend--bivariate {
+  transform: rotate(-45deg);
+  bottom: 4em;
+  right: 3.5em;
+}
+.legend--bar {
+  height: 120px;
+  width: 12px;
+}
+.legend--labels {
+  margin-right: 0.25em;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.legend--labels_x {
+  text-align: left;
+  transform: rotate(90deg);
+  height: 100%;
+  margin-bottom: -2em;
+  padding-left: 0.25em;
+  margin-right: 0;
+}
+.legend--cell {
+  width: 32px;
+  height: 32px;
+}
+.legend--grid {
+  display: flex;
+  position: relative;
+}
+
+#focus-point {
+  background: #f9ca74;
+  position: absolute;
+  display: none;
+}
+
+#focus-point.legend--bivariate-point {
+  width: 12px;
+  height: 12px;
+  border-radius: 100em;
+}
+#focus-point.legend--point {
+  height: 2px;
+  width: 24px;
+  right: 0;
+}
