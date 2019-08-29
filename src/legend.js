@@ -81,10 +81,6 @@ function bivariate(propA, propB) {
   let container = document.createElement('div');
   container.classList.add('legend--bivariate-container');
 
-  let a_label = document.createElement('div');
-  a_label.innerText = propA;
-  container.appendChild(a_label);
-
   let labels_a = document.createElement('div');
   labels_a.classList.add('legend--labels');
 
@@ -101,6 +97,8 @@ function bivariate(propA, propB) {
   let n = 3;
 
   let gridContainer = document.createElement('div');
+  gridContainer.classList.add('legend--grid-container');
+
   let grid = document.createElement('div');
   grid.classList.add('legend--grid');
   for (let i=0; i<n; i++) {
@@ -137,10 +135,23 @@ function bivariate(propA, propB) {
   gridContainer.appendChild(labels_b);
 
   container.appendChild(gridContainer);
+
+  // Focused feature indicator
   let pointEl = document.createElement('div');
   pointEl.id = 'focus-point';
   pointEl.classList.add('legend--bivariate-point');
   grid.appendChild(pointEl);
+
+  let a_label = document.createElement('div');
+  a_label.innerText = config.SHORT_NAMES[propA];
+  a_label.classList.add('legend--bivariate-label');
+  a_label.classList.add('legend--bivariate-label-a');
+  gridContainer.appendChild(a_label);
+
+  let b_label = document.createElement('div');
+  b_label.innerText = config.SHORT_NAMES[propB];
+  b_label.classList.add('legend--bivariate-label');
+  gridContainer.appendChild(b_label);
 
   legend.appendChild(container);
 }
@@ -149,11 +160,11 @@ function bivariate(propA, propB) {
 function range(prop) {
   reset();
 
-  let color = COLOR_RANGES[prop];
-  let range = data.ranges[prop];
+  let [startColor, endColor] = config.COLORS[prop];
+  let range = config.RANGES[prop];
   let rangeBar = document.createElement('div');
   rangeBar.classList.add('legend--bar');
-  rangeBar.style.background = `linear-gradient(0, ${color.colorToRGB(color[0])} 0%, ${color.colorToRGB(color[1])} 100%)`;
+  rangeBar.style.background = `linear-gradient(0, ${color.colorToRGB(startColor)} 0%, ${color.colorToRGB(endColor)} 100%)`;
 
   let pointEl = document.createElement('div');
   pointEl.id = 'focus-point';

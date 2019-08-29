@@ -28,6 +28,14 @@ const DESCS = {
   'EFTOTAL_overall': 'Enrollment Seats'
 };
 
+const SHORT_NAMES = {
+  'SCI': 'SCI',
+  'average_tuition': 'Avg Tuition',
+  'n': '# School Zones',
+  'HD01_S001': 'Pop. Est.',
+  'EFTOTAL_overall': 'Enrollment Seats'
+};
+
 const SOURCE = 'msd';
 const SOURCE_LAYER = 'msd';
 const FOCUS_COLOR = '#f9ca74';
@@ -35,6 +43,7 @@ const INITIAL_PROPS = ['SCI', 'average_tuition'];
 
 export default {
   INITIAL_PROPS,
+  SHORT_NAMES,
   COLORS, DESCS, RANGES,
   BBOXES, FOCUS_COLOR,
   SOURCE, SOURCE_LAYER,

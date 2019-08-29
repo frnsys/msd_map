@@ -1,3 +1,4 @@
+import color from './color';
 import config from './config';
 
 function bivariate(propA, propB) {

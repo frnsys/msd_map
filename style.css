@@ -110,6 +110,22 @@ html, body {
   transform: rotate(-45deg);
   bottom: 4em;
   right: 3.5em;
+  display: block;
+}
+.legend--bivariate-label {
+  position: absolute;
+  text-align: center;
+  font-size: 10px;
+  padding: 0 1.2em;
+  top: 100%;
+  right: 0;
+  left: 0;
+  color: rgba(255,255,255,0.5);
+}
+.legend--bivariate-label-a {
+  top: 0;
+  transform: rotate(90deg);
+  transform-origin: 0 0;
 }
 .legend--bivariate-container {
   display: flex;
@@ -123,6 +139,7 @@ html, body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  font-size: 0.8em;
 }
 .legend--labels_x {
   text-align: left;
@@ -138,6 +155,9 @@ html, body {
 }
 .legend--grid {
   display: flex;
+  position: relative;
+}
+.legend--grid-container {
   position: relative;
 }
 
