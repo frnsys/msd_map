@@ -62,6 +62,7 @@ class Map {
   }
 
   paint(props) {
+    props = props.filter((p) => p);
     if (props.length > 1) {
       return paint.bivariate(...props);
     } else {

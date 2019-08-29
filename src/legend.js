@@ -10,6 +10,8 @@ class Legend {
   }
 
   set(props) {
+    props = props.filter((p) => p);
+
     // Bivariate
     if (props.length > 1) {
       let [propA, propB] = props;
