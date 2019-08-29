@@ -111,6 +111,9 @@ html, body {
   bottom: 4em;
   right: 3.5em;
 }
+.legend--bivariate-container {
+  display: flex;
+}
 .legend--bar {
   height: 120px;
   width: 12px;
