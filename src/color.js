@@ -1,4 +1,4 @@
-function interpolateRange(u, l, p) {
+function interpolateRange(l, u, p) {
   return l + (u - l) * p;
 }
 

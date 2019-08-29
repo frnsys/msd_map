@@ -107,8 +107,8 @@ function bivariate(propA, propB) {
       let x = i/(n-1);
       let y = ((n-1)-j)/(n-1);
 
-      let aColor = color.interpolate(colors.a, x);
-      let bColor = color.interpolate(colors.b, y);
+      let aColor = color.interpolate(colors.a, y);
+      let bColor = color.interpolate(colors.b, x);
       let mix = color.multiply(aColor, bColor);
       let rgb = color.colorToRGB(mix);
       let cell = document.createElement('div');
