@@ -4,7 +4,8 @@ import config from './config';
 const legend = document.getElementById('legend');
 
 class Legend {
-  constructor(initProps) {
+  constructor(map, initProps) {
+    this.map = map;
     this.props = initProps;
     this.set(initProps);
   }
@@ -15,7 +16,7 @@ class Legend {
     // Bivariate
     if (props.length > 1) {
       let [propA, propB] = props;
-      bivariate(propA, propB);
+      bivariate(this.map, propA, propB);
     } else {
       let [prop] = props;
       range(prop);
@@ -66,7 +67,7 @@ function reset() {
   legend.classList = '';
 }
 
-function bivariate(propA, propB) {
+function bivariate(map, propA, propB) {
   reset();
 
   legend.classList.add('legend--bivariate');
@@ -116,6 +117,28 @@ function bivariate(propA, propB) {
       let cell = document.createElement('div');
       cell.classList.add('legend--cell')
       cell.style.background = rgb;
+      cell.addEventListener('mouseenter', () => {
+        let a_rng = ranges.a[1] - ranges.a[0];
+        let a_l = ranges.a[0] + (a_rng * (n-j-1)/n);
+        let a_u = ranges.a[0] + (a_rng * (n-j)/n);
+
+        let b_rng = ranges.b[1] - ranges.b[0];
+        let b_l = ranges.b[0] + (b_rng * i/n);
+        let b_u = ranges.b[0] + (b_rng * (i+1)/n);
+
+        // Select features _outside_ of this range,
+        // to mute them
+        let filter = ['any',
+          ['<', propA, a_l],
+          ['>', propA, a_u],
+          ['<', propB, b_l],
+          ['>', propB, b_u],
+        ];
+        map.setFilter(filter, {mute: true}, {mute: false});
+      });
+      cell.addEventListener('mouseleave', () => {
+        map.resetFilter({mute: false});
+      });
       col.appendChild(cell);
     }
     grid.appendChild(col);

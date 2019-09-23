@@ -6,7 +6,6 @@ import config from './config';
 const state = {
   props: config.INITIAL_PROPS
 };
-const legend = new Legend(state.props);
 const map = new Map(state.props, (features) => {
   // If features, render
   if (Object.keys(features).length > 0) {
@@ -23,6 +22,7 @@ const map = new Map(state.props, (features) => {
     legend.hideFeature();
   }
 });
+const legend = new Legend(map, state.props);
 
 // Jump to zipcode
 const zipcodeInput = document.querySelector('#control input[name=zipcode]');

@@ -7,6 +7,7 @@ mapboxgl.accessToken = config.MAPBOX_TOKEN;
 
 class Map {
   constructor(initProps, onMouseMove) {
+    this.filter = null;
     this.focused = null;
     this.map = new mapboxgl.Map({
       container: 'main',
@@ -33,6 +34,13 @@ class Map {
           // Fade-out ZCTA outlines at low zooms
           'fill-outline-color': [
             'interpolate', ['linear'], ['zoom'], 5, 'rgba(0, 0, 0, 0)', 10, 'rgba(0,0,0,1)'
+          ],
+
+          'fill-opacity': [
+            'case',
+              ['boolean', ['feature-state', 'mute'], false],
+                0.25,
+              1.0
           ]
         }
       }, 'admin');
@@ -51,6 +59,13 @@ class Map {
       }, {});
 
       onMouseMove(features);
+    });
+
+    // <https://docs.mapbox.com/mapbox-gl-js/api/#map.event:styledata>
+    this.map.on('sourcedata', (e) => {
+      if (e.sourceId === config.SOURCE_LAYER && this.filter) {
+        this.setFilter(this.filter, this.filterState);
+      }
     });
   }
 
@@ -89,6 +104,38 @@ class Map {
       fillColor: config.FOCUS_COLOR
     });
     this.focused = feat;
+  }
+
+  setFilter(filter, state, resetState) {
+    if (filter !== this.filter && this.filteredFeats) {
+      this.resetFilter(this.filterResetState);
+    }
+    this.filter = filter;
+    this.filterState = state;
+    this.filterResetState = resetState;
+
+    this.filteredFeats = this.map.querySourceFeatures(config.SOURCE, {
+      sourceLayer: config.SOURCE_LAYER,
+      filter: filter
+    });
+    this.filteredFeats.forEach((f) => {
+      this.map.setFeatureState({
+        source: config.SOURCE,
+        sourceLayer: config.SOURCE_LAYER,
+        id: f.id
+      }, state);
+    });
+  }
+
+  resetFilter(resetState) {
+    this.filter = null;
+    this.filteredFeats.forEach((f) => {
+      this.map.setFeatureState({
+        source: config.SOURCE,
+        sourceLayer: config.SOURCE_LAYER,
+        id: f.id
+      }, resetState);
+    });
   }
 
   goToZipcode(zipcode, cb) {
