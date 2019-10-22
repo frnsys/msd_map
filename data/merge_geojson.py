@@ -93,6 +93,7 @@ for row in tqdm(df.itertuples(), total=len(df), desc='Schools csv'):
     id = int(row_data['UNITID'])
     schools[id] = {k: row_data[k] for k in SCHOOL_FIELDS}
     schools_geojson['features'].append({
+        'id': id,
         'type': 'Feature',
         'geometry': {
             'type': 'Point',

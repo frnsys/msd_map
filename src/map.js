@@ -9,6 +9,7 @@ class Map {
   constructor(initProps, onMouseMove) {
     this.filter = null;
     this.focused = null;
+    this.focusedSchools = [];
     this.map = new mapboxgl.Map({
       container: 'main',
       style: 'mapbox://styles/frnsys/cjzk1fw9w5goc1cpd8pzx6wuu',
@@ -45,20 +46,40 @@ class Map {
         }
       }, 'admin');
 
+      this.map.addSource(config.SCHOOLS_SOURCE, {
+        'type': 'geojson',
+        'data': '/assets/schools.geojson'
+      });
       this.map.addLayer({
         'id': config.SCHOOLS_SOURCE,
         'type': 'circle',
-        'source': {
-          type: 'vector',
-          url: 'mapbox://frnsys.6ct9nbap'
-        },
-        'source-layer': config.SCHOOLS_SOURCE,
+        'source': config.SCHOOLS_SOURCE,
         'paint': {
-          'circle-radius': 1,
-          'circle-color': '#33C377',
-          'circle-stroke-color': '#1b4ff9',
-          'circle-stroke-width': 0,
-          'circle-opacity': 1.0
+          'circle-radius': [
+            'interpolate', ['linear'], ['zoom'], 5, 1, 10, 5
+          ],
+          'circle-color': [
+            'case',
+
+            ['boolean', ['feature-state', 'focus'], false],
+              ['feature-state', 'fillColor'],
+
+            '#33C377',
+          ],
+          'circle-stroke-color': [
+            'case',
+
+            ['boolean', ['feature-state', 'focus'], false],
+              ['feature-state', 'strokeColor'],
+
+            '#1b8e51',
+          ],
+          'circle-stroke-width': [
+            'interpolate', ['linear'], ['zoom'], 6, 0.0, 9, 3.0
+          ],
+          'circle-opacity': [
+            'interpolate', ['linear'], ['zoom'], 3, 0.0, 7, 1.0
+          ]
         }
       }, 'admin')
     });
@@ -69,11 +90,16 @@ class Map {
 
       // Filter to features with the correct source
       features = features.reduce((acc, f) => {
-        if (config.SOURCES.includes(f.source)) {
+        if (config.SOURCE == f.source) {
           acc[f.source] = f;
         }
+        if (config.SCHOOLS_SOURCE == f.source) {
+          acc['schools'].push(f);
+        }
         return acc;
-      }, {});
+      }, {
+        'schools': []
+      });
 
       onMouseMove(features);
     });
@@ -108,7 +134,7 @@ class Map {
         source: config.SOURCE,
         sourceLayer: config.SOURCE_LAYER,
         id: this.focused.id
-      },{
+      }, {
         focus: false,
       });
     }
@@ -116,11 +142,35 @@ class Map {
       source: config.SOURCE,
       sourceLayer: config.SOURCE_LAYER,
       id: feat.id
-    },{
+    }, {
       focus: true,
       fillColor: config.FOCUS_COLOR
     });
     this.focused = feat;
+  }
+
+  focusSchools(feats) {
+    if (this.focusedSchools) {
+      this.focusedSchools.forEach((f) => {
+        this.map.setFeatureState({
+          source: config.SCHOOLS_SOURCE,
+          id: f.id
+        }, {
+          focus: false,
+        });
+      });
+    }
+    feats.forEach((f) => {
+      this.map.setFeatureState({
+        source: config.SCHOOLS_SOURCE,
+        id: f.id
+      }, {
+        focus: true,
+        fillColor: config.SCHOOL_FOCUS_COLORS.fill,
+        strokeColor: config.SCHOOL_FOCUS_COLORS.stroke
+      });
+    });
+    this.focusedSchools = feats;
   }
 
   setFilter(filter, state, resetState) {

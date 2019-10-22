@@ -3,6 +3,7 @@ import util from './util';
 import info from './info';
 import Legend from './legend';
 import config from './config';
+import schools from '../data/schools.json';
 
 
 const state = {
@@ -16,17 +17,21 @@ const map = new Map(state.props, (features) => {
       let feat = features[config.SOURCE];
       map.focusFeature(feat);
       legend.renderFeature(feat);
+      let schoolsForZCTA = JSON.parse(feat.properties['schools']).map((id) => schools[id]);
       if (features[config.SCHOOLS_SOURCE]) {
-        console.log(feat);
-        info.explainFeature(feat, state.cat, features[config.SCHOOLS_SOURCE]);
+        let focusedSchools = features[config.SCHOOLS_SOURCE];
+        info.explainFeature(feat, state.cat, schoolsForZCTA, focusedSchools);
+        map.focusSchools(focusedSchools);
       } else {
-        info.explainFeature(feat, state.cat);
+        map.focusSchools([]);
+        info.explainFeature(feat, state.cat, schoolsForZCTA);
       }
     }
 
   // Otherwise, hide
   } else {
     info.hide();
+    map.focusSchools([]);
     legend.hideFeature();
   }
 });

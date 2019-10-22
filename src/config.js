@@ -9,7 +9,6 @@ const MAPBOX_TOKEN = config.MAPBOX_TOKEN;
 const SOURCE = 'zctas';
 const SOURCE_LAYER = 'zctas';
 const SCHOOLS_SOURCE = 'schools';
-const SOURCES = ['zctas', 'schools'];
 
 const colors = {
   'SCI': ['#fc949a', '#f7020e'],
@@ -23,6 +22,10 @@ const COLORS = Object.keys(colors).reduce((acc, prop) => {
   return acc;
 }, {});
 const FOCUS_COLOR = '#f9ca74';
+const SCHOOL_FOCUS_COLORS = {
+  'fill': '#67A2FD',
+  'stroke': '#1f70ed'
+};
 
 const CATS = {
   'allschools': 'All',
@@ -67,6 +70,7 @@ export default {
   COLORS, DESCS, RANGES,
   BBOXES, FOCUS_COLOR,
   SOURCE, SOURCE_LAYER,
-  SOURCES, SCHOOLS_SOURCE,
+  SCHOOLS_SOURCE,
+  SCHOOL_FOCUS_COLORS,
   MAPBOX_TOKEN
 };

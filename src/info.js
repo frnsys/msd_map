@@ -8,9 +8,8 @@ const formatter = new Intl.NumberFormat('en-US', {
   minimumFractionDigits: 2
 });
 
-function explainFeature(feat, cat, school) {
+function explainFeature(feat, cat, schoolsForZCTA, schools) {
   let p = feat.properties;
-  console.log(p);
   let d = ['SCI', 'avg_grosscost', 'UNDUPUG'].reduce((acc, k) => {
     acc[k] = p[util.propForCat(k, cat)];
     return acc;
@@ -23,9 +22,14 @@ function explainFeature(feat, cat, school) {
     Population Estimate: ${p['population_total']}<br/>
     Enrollment Seats: ${d['UNDUPUG']}<br/>
 
-    ${school ?
+    <h2>Schools for ZCTA</h2>
+    <ul class="zcta-schools">
+      ${schoolsForZCTA.map((s) => `<li>${s['INSTNM']}</li>`).join('\n')}
+    </ul>
+
+    ${schools.length > 0 ?
         `<h2>School</h2>
-        ${school.properties['INSTNM']}`
+        ${schools.map((s) => `${s.properties['INSTNM']}<br />`).join('\n')}`
       : ''}
   `;
   infoEl.style.display = 'block';
