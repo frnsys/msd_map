@@ -21,20 +21,20 @@ CATEGORIES = [
     'belowassociate'
 ]
 CSV_ZIPCODE_FIELD = 'zcta'
-CSV_DEFAULTS = {
-    'schools': 0,
-    'SCI': 0,
-    'avg_grosscost': None,
-    'UNDUPUG': 0,
-    'population_total': 0,
-    'schools': []
-}
 CSV_UNCATEGORIZED_FIELDS = [
     'population_total'
 ]
 CSV_CATEGORIZED_FIELDS = [
     'schools', 'SCI', 'avg_grosscost', 'UNDUPUG'
 ]
+CSV_DEFAULTS = {
+    'population_total': 0,
+    'schools': []
+}
+for k in CSV_CATEGORIZED_FIELDS:
+    for cat in CATEGORIES:
+        CSV_DEFAULTS['{}.{}'.format(k, cat)] = 0
+
 SCHOOL_FIELDS = [
     'INSTNM',
     'SECTOR',
@@ -53,11 +53,13 @@ for row in tqdm(df.itertuples(), total=len(df), desc='ZCTA csv'):
     data[zipcode] = {}
     for k in CSV_UNCATEGORIZED_FIELDS:
         data[zipcode][k] = row_data[k]
+
+    # Would rather these properly nested,
+    # but need to stay flat b/c geojson
+    # can't handle nesting
     for k in CSV_CATEGORIZED_FIELDS:
-        f = {}
         for cat in CATEGORIES:
-            f[cat] = row_data['{}_{}'.format(k, cat)]
-        data[zipcode][k] = f
+            data[zipcode]['{}.{}'.format(k, cat)] = row_data['{}_{}'.format(k, cat)]
     data[zipcode]['schools'] = []
 
 # Compute ranges
@@ -69,14 +71,13 @@ for k in CSV_UNCATEGORIZED_FIELDS:
         float(df[k].max())
     )
 for k in CSV_CATEGORIZED_FIELDS:
-    f = {}
+    vals = []
+    # Get min/max across all categories
     for cat in CATEGORIES:
         s = df['{}_{}'.format(k, cat)]
-        f[cat] = (
-            float(s.min()),
-            float(s.max())
-        )
-    meta['ranges'][k] = f
+        vals.append(float(s.min()))
+        vals.append(float(s.max()))
+    meta['ranges'][k] = (min(vals), max(vals))
 
 
 # Load school data

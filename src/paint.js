@@ -1,15 +1,18 @@
+import util from './util';
 import color from './color';
 import config from './config';
 
 function bivariate(propA, propB) {
   // where COLOR_RANGES[property] = [[r,g,b], [r,g,b]] and r,g,b are in [0,1]
+  let propA_ = util.propNoCat(propA);
+  let propB_ = util.propNoCat(propB);
   let ranges = {
-    a: config.RANGES[propA],
-    b: config.RANGES[propB],
+    a: config.RANGES[propA_],
+    b: config.RANGES[propB_],
   };
   let colors = {
-    a: config.COLORS[propA],
-    b: config.COLORS[propB],
+    a: config.COLORS[propA_],
+    b: config.COLORS[propB_],
   };
   return [
     'case',
@@ -63,7 +66,8 @@ function bivariate(propA, propB) {
   ]
 }
 
-function range(property) {
+function range(prop) {
+  let prop_ = util.propNoCat(prop);
   return [
     'case',
 
@@ -72,12 +76,12 @@ function range(property) {
       ['feature-state', 'fillColor'],
 
     // If the property value is 0
-    ['==', ['get', property], 0],
+    ['==', ['get', prop], 0],
       '#262626',
 
     // Otherwise, interpolate color
-    ['interpolate', ['linear'], ['get', property],
-      config.RANGES[property][0], color.colorToRGB(config.COLORS[property][0]), config.RANGES[property][1], color.colorToRGB(config.COLORS[property][1])
+    ['interpolate', ['linear'], ['get', prop],
+      config.RANGES[prop_][0], color.colorToRGB(config.COLORS[prop_][0]), config.RANGES[prop_][1], color.colorToRGB(config.COLORS[prop_][1])
     ]
   ];
 }

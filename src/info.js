@@ -1,3 +1,4 @@
+import util from './util';
 import config from './config';
 
 const infoEl = document.getElementById('info');
@@ -7,15 +8,25 @@ const formatter = new Intl.NumberFormat('en-US', {
   minimumFractionDigits: 2
 });
 
-function explainFeature(feat) {
+function explainFeature(feat, cat, school) {
   let p = feat.properties;
+  console.log(p);
+  let d = ['SCI', 'avg_grosscost', 'UNDUPUG'].reduce((acc, k) => {
+    acc[k] = p[util.propForCat(k, cat)];
+    return acc;
+  }, {});
   infoEl.innerHTML = `
     <h2>${p['zipcode']}</h2>
-    School Concentration Index: ${p['SCI'] ? (p['SCI']/config.RANGES['SCI'][1]).toFixed(2) : 'N/A'}<br/>
-    Average Tuition: ${p['average_tuition'] ? formatter.format(p['average_tuition']) : 'N/A'}<br/>
-    Number of School Zones: ${p['n']}<br/>
-    Population Estimate: ${p['HD01_S001']}<br/>
-    Enrollment Seats: ${p['EFTOTAL_overall']}<br/>
+    School Concentration Index: ${d['SCI'] ? d['SCI'].toFixed(2) : 'N/A'}<br/>
+    Average Tuition: ${d['avg_grosscost'] ? formatter.format(d['avg_grosscost']) : 'N/A'}<br/>
+    Number of Schools: ${JSON.parse(p['schools']).length}<br/>
+    Population Estimate: ${p['population_total']}<br/>
+    Enrollment Seats: ${d['UNDUPUG']}<br/>
+
+    ${school ?
+        `<h2>School</h2>
+        ${school.properties['INSTNM']}`
+      : ''}
   `;
   infoEl.style.display = 'block';
 }

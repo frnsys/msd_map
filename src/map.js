@@ -21,11 +21,11 @@ class Map {
     this.map.touchZoomRotate.disableRotation();
     this.map.on('load', () => {
       this.map.addLayer({
-        'id': config.SOURCE,
+        'id': config.SOURCE_LAYER,
         'type': 'fill',
         'source': {
           type: 'vector',
-          url: 'mapbox://frnsys.avg7h3hg'
+          url: 'mapbox://frnsys.6ct9nbap'
         },
         'source-layer': config.SOURCE_LAYER,
         'paint': {
@@ -44,6 +44,23 @@ class Map {
           ]
         }
       }, 'admin');
+
+      this.map.addLayer({
+        'id': 'schools',
+        'type': 'circle',
+        'source': {
+          type: 'vector',
+          url: 'mapbox://frnsys.6ct9nbap'
+        },
+        'source-layer': 'schools',
+        'paint': {
+          'circle-radius': 3,
+          'circle-color': '#223b53',
+          'circle-stroke-color': 'white',
+          'circle-stroke-width': 1,
+          'circle-opacity': 0.5
+        }
+      }, 'admin')
     });
 
     this.map.on('mousemove', (e) => {
@@ -52,7 +69,7 @@ class Map {
 
       // Filter to features with the correct source
       features = features.reduce((acc, f) => {
-        if ([config.SOURCE].includes(f.source)) {
+        if (config.SOURCES.includes(f.source)) {
           acc[f.source] = f;
         }
         return acc;
