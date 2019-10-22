@@ -16,9 +16,9 @@ const map = new Map(state.props, (features) => {
       let feat = features[config.SOURCE];
       map.focusFeature(feat);
       legend.renderFeature(feat);
-      if (features['schools']) {
+      if (features[config.SCHOOLS_SOURCE]) {
         console.log(feat);
-        info.explainFeature(feat, state.cat, features['schools']);
+        info.explainFeature(feat, state.cat, features[config.SCHOOLS_SOURCE]);
       } else {
         info.explainFeature(feat, state.cat);
       }

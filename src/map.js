@@ -46,19 +46,19 @@ class Map {
       }, 'admin');
 
       this.map.addLayer({
-        'id': 'schools',
+        'id': config.SCHOOLS_SOURCE,
         'type': 'circle',
         'source': {
           type: 'vector',
           url: 'mapbox://frnsys.6ct9nbap'
         },
-        'source-layer': 'schools',
+        'source-layer': config.SCHOOLS_SOURCE,
         'paint': {
-          'circle-radius': 3,
-          'circle-color': '#223b53',
-          'circle-stroke-color': 'white',
-          'circle-stroke-width': 1,
-          'circle-opacity': 0.5
+          'circle-radius': 1,
+          'circle-color': '#33C377',
+          'circle-stroke-color': '#1b4ff9',
+          'circle-stroke-width': 0,
+          'circle-opacity': 1.0
         }
       }, 'admin')
     });

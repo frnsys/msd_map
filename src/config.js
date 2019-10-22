@@ -8,6 +8,7 @@ const MAPBOX_TOKEN = config.MAPBOX_TOKEN;
 
 const SOURCE = 'zctas';
 const SOURCE_LAYER = 'zctas';
+const SCHOOLS_SOURCE = 'schools';
 const SOURCES = ['zctas', 'schools'];
 
 const colors = {
@@ -54,7 +55,7 @@ const SHORT_NAMES = {
 };
 
 const INITIAL_CAT = 'allschools';
-const INITIAL_PROPS = ['population_total', 'population_total'].map((p) => {
+const INITIAL_PROPS = ['SCI', 'avg_grosscost'].map((p) => {
   return HAS_CATS.includes(p) ? `${p}.${INITIAL_CAT}` : p;
 });
 
@@ -66,6 +67,6 @@ export default {
   COLORS, DESCS, RANGES,
   BBOXES, FOCUS_COLOR,
   SOURCE, SOURCE_LAYER,
-  SOURCES,
+  SOURCES, SCHOOLS_SOURCE,
   MAPBOX_TOKEN
 };
