@@ -1,10 +1,46 @@
 import Map from './map';
-import util from './util';
 import info from './info';
 import Legend from './legend';
 import config from './config';
 import schools from '../data/schools.json';
 
+function propForCat(prop, cat) {
+  let [p, ..._] = prop.split('.');
+  return config.HAS_CATS.includes(p) ? `${p}.${cat}` : p;
+}
+
+const formatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  minimumFractionDigits: 2
+});
+
+function explain(feat, cat, schoolsForZCTA, schools) {
+  let p = feat.properties;
+  let d = ['SCI', 'avg_grosscost', 'UNDUPUG'].reduce((acc, k) => {
+    acc[k] = p[propForCat(k, cat)];
+    return acc;
+  }, {});
+  let html = `
+    <h2>${p['zipcode']}</h2>
+    School Concentration Index: ${d['SCI'] ? d['SCI'].toFixed(2) : 'N/A'}<br/>
+    Average Tuition: ${d['avg_grosscost'] ? formatter.format(d['avg_grosscost']) : 'N/A'}<br/>
+    Number of Schools: ${JSON.parse(p['schools']).length}<br/>
+    Population Estimate: ${p['population_total']}<br/>
+    Enrollment Seats: ${d['UNDUPUG']}<br/>
+
+    <h2>Schools for ZCTA</h2>
+    <ul class="zcta-schools">
+      ${schoolsForZCTA.map((s) => `<li>${s['INSTNM']}</li>`).join('\n')}
+    </ul>
+
+    ${schools.length > 0 ?
+        `<h2>School</h2>
+        ${schools.map((s) => `${s.properties['INSTNM']}<br />`).join('\n')}`
+      : ''}
+  `;
+  info.explainFeature(html);
+}
 
 const state = {
   props: config.INITIAL_PROPS,
@@ -20,11 +56,11 @@ const map = new Map(state.props, (features) => {
       let schoolsForZCTA = JSON.parse(feat.properties['schools']).map((id) => schools[id]);
       if (features[config.SCHOOLS_SOURCE]) {
         let focusedSchools = features[config.SCHOOLS_SOURCE];
-        info.explainFeature(feat, state.cat, schoolsForZCTA, focusedSchools);
+        explain(feat, state.cat, schoolsForZCTA, focusedSchools);
         map.focusSchools(focusedSchools);
       } else {
         map.focusSchools([]);
-        info.explainFeature(feat, state.cat, schoolsForZCTA);
+        explain(feat, state.cat, schoolsForZCTA);
       }
     }
 
@@ -42,7 +78,7 @@ const zipcodeInput = document.querySelector('#control input[name=zipcode]');
 zipcodeInput.addEventListener('input', (ev) => {
   map.goToZipcode(ev.target.value, (feat) => {
     map.focusFeature(feat);
-    info.explainFeature(feat, state.cat);
+    explain(feat, state.cat);
     legend.renderFeature(feat);
   });
 });
@@ -83,18 +119,18 @@ opt.value = '';
 propertyBInput.appendChild(opt);
 
 propertyAInput.addEventListener('change', (ev) => {
-  state.props[0] = util.propForCat(ev.target.value, state.cat);
+  state.props[0] = propForCat(ev.target.value, state.cat);
   map.set(state.props);
   legend.set(state.props);
 });
 propertyBInput.addEventListener('change', (ev) => {
-  state.props[1] = util.propForCat(ev.target.value, state.cat);
+  state.props[1] = propForCat(ev.target.value, state.cat);
   map.set(state.props);
   legend.set(state.props);
 });
 categoryInput.addEventListener('change', (ev) => {
   state.cat = ev.target.value;
-  state.props = state.props.map((p) => util.propForCat(p, state.cat));
+  state.props = state.props.map((p) => propForCat(p, state.cat));
   map.set(state.props);
   legend.set(state.props);
 });

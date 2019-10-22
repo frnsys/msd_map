@@ -1,18 +1,15 @@
-import util from './util';
 import color from './color';
 import config from './config';
 
 function bivariate(propA, propB) {
   // where COLOR_RANGES[property] = [[r,g,b], [r,g,b]] and r,g,b are in [0,1]
-  let propA_ = util.propNoCat(propA);
-  let propB_ = util.propNoCat(propB);
   let ranges = {
-    a: config.RANGES[propA_],
-    b: config.RANGES[propB_],
+    a: config.RANGES[propA],
+    b: config.RANGES[propB],
   };
   let colors = {
-    a: config.COLORS[propA_],
-    b: config.COLORS[propB_],
+    a: config.COLORS[propA],
+    b: config.COLORS[propB],
   };
   return [
     'case',
@@ -67,7 +64,6 @@ function bivariate(propA, propB) {
 }
 
 function range(prop) {
-  let prop_ = util.propNoCat(prop);
   return [
     'case',
 
@@ -81,7 +77,7 @@ function range(prop) {
 
     // Otherwise, interpolate color
     ['interpolate', ['linear'], ['get', prop],
-      config.RANGES[prop_][0], color.colorToRGB(config.COLORS[prop_][0]), config.RANGES[prop_][1], color.colorToRGB(config.COLORS[prop_][1])
+      config.RANGES[prop][0], color.colorToRGB(config.COLORS[prop][0]), config.RANGES[prop][1], color.colorToRGB(config.COLORS[prop][1])
     ]
   ];
 }

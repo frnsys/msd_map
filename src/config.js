@@ -62,6 +62,15 @@ const INITIAL_PROPS = ['SCI', 'avg_grosscost'].map((p) => {
   return HAS_CATS.includes(p) ? `${p}.${INITIAL_CAT}` : p;
 });
 
+HAS_CATS.forEach((p) => {
+  Object.keys(CATS).forEach((cat) => {
+    RANGES[`${p}.${cat}`] = RANGES[p];
+    COLORS[`${p}.${cat}`] = COLORS[p];
+    SHORT_NAMES[`${p}.${cat}`] = SHORT_NAMES[p];
+    DESCS[`${p}.${cat}`] = DESCS[p];
+  });
+});
+
 export default {
   INITIAL_PROPS,
   INITIAL_CAT,

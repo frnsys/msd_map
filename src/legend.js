@@ -1,4 +1,3 @@
-import util from './util';
 import color from './color';
 import config from './config';
 
@@ -33,10 +32,8 @@ class Legend {
     // Bivariate
     if (this.props.length > 1) {
       let [propA, propB] = this.props;
-      let propA_ = util.propNoCat(propA);
-      let propB_ = util.propNoCat(propB);
-      let p_a = (feat.properties[propA]-config.RANGES[propA_][0])/(config.RANGES[propA_][1] - config.RANGES[propA_][0]);
-      let p_b = (feat.properties[propB]-config.RANGES[propB_][0])/(config.RANGES[propB_][1] - config.RANGES[propB_][0]);
+      let p_a = (feat.properties[propA]-config.RANGES[propA][0])/(config.RANGES[propA][1] - config.RANGES[propA][0]);
+      let p_b = (feat.properties[propB]-config.RANGES[propB][0])/(config.RANGES[propB][1] - config.RANGES[propB][0]);
       pointEl.style.left = `calc(${p_b*100}% - ${pointEl.clientWidth/2}px)`;
       pointEl.style.bottom = `calc(${p_a*100}% - ${pointEl.clientHeight/2}px)`;
       pointEl.style.display = 'block';
@@ -44,9 +41,8 @@ class Legend {
     // Univariate
     } else {
       let [prop] = this.props;
-      let prop_ = util.propNoCat(prop);
       if (feat.properties[prop]) {
-        let p = (feat.properties[prop]-config.RANGES[prop_][0])/(config.RANGES[prop_][1] - config.RANGES[prop_][0]);
+        let p = (feat.properties[prop]-config.RANGES[prop][0])/(config.RANGES[prop][1] - config.RANGES[prop][0]);
         pointEl.style.display = 'block';
         pointEl.style.bottom = `calc(${p*100}% - ${pointEl.clientHeight/2}px)`;
 
@@ -76,15 +72,13 @@ function bivariate(map, propA, propB) {
 
   legend.classList.add('legend--bivariate');
 
-  let propA_ = util.propNoCat(propA);
-  let propB_ = util.propNoCat(propB);
   let colors = {
-    a: config.COLORS[propA_],
-    b: config.COLORS[propB_],
+    a: config.COLORS[propA],
+    b: config.COLORS[propB],
   };
   let ranges = {
-    a: config.RANGES[propA_],
-    b: config.RANGES[propB_]
+    a: config.RANGES[propA],
+    b: config.RANGES[propB]
   };
 
   let container = document.createElement('div');
@@ -174,13 +168,13 @@ function bivariate(map, propA, propB) {
   grid.appendChild(pointEl);
 
   let a_label = document.createElement('div');
-  a_label.innerText = config.SHORT_NAMES[propA_];
+  a_label.innerText = config.SHORT_NAMES[propA];
   a_label.classList.add('legend--bivariate-label');
   a_label.classList.add('legend--bivariate-label-a');
   gridContainer.appendChild(a_label);
 
   let b_label = document.createElement('div');
-  b_label.innerText = config.SHORT_NAMES[propB_];
+  b_label.innerText = config.SHORT_NAMES[propB];
   b_label.classList.add('legend--bivariate-label');
   gridContainer.appendChild(b_label);
 
@@ -191,9 +185,8 @@ function bivariate(map, propA, propB) {
 function range(prop) {
   reset();
 
-  let prop_ = util.propNoCat(prop);
-  let [startColor, endColor] = config.COLORS[prop_];
-  let range = config.RANGES[prop_];
+  let [startColor, endColor] = config.COLORS[prop];
+  let range = config.RANGES[prop];
   let rangeBar = document.createElement('div');
   rangeBar.classList.add('legend--bar');
   rangeBar.style.background = `linear-gradient(0, ${color.colorToRGB(startColor)} 0%, ${color.colorToRGB(endColor)} 100%)`;
