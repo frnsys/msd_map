@@ -8,7 +8,7 @@ mapboxgl.accessToken = config.MAPBOX_TOKEN;
 class Map {
   constructor(conf, initProps, onMouseMove) {
     this.filter = null;
-    this.focused = null;
+    this.focused = [];
     this.focusedLock = false;
     this.focusedSchools = [];
     this.map = new mapboxgl.Map(conf);
@@ -124,19 +124,20 @@ class Map {
       if (!this.focusedLock) {
         // Get features under mouse
         let features = this.map.queryRenderedFeatures(e.point);
+        let acc = {};
+        acc[config.SOURCE] = [];
+        acc['schools'] = [];
 
         // Filter to features with the correct source
         features = features.reduce((acc, f) => {
           if (config.SOURCE == f.source) {
-            acc[f.source] = f;
+            acc[f.source].push(f);
           }
           if (config.SCHOOLS_SOURCE == f.source) {
             acc['schools'].push(f);
           }
           return acc;
-        }, {
-          'schools': []
-        });
+        }, acc);
 
         onMouseMove(features);
       }
@@ -145,19 +146,20 @@ class Map {
     this.map.on('click', (e) => {
       // Get features under mouse
       let features = this.map.queryRenderedFeatures(e.point);
+      let acc = {};
+      acc[config.SOURCE] = [];
+      acc['schools'] = [];
 
       // Filter to features with the correct source
       features = features.reduce((acc, f) => {
         if (config.SOURCE == f.source) {
-          acc[f.source] = f;
+          acc[f.source].push(f);
         }
         if (config.SCHOOLS_SOURCE == f.source) {
           acc['schools'].push(f);
         }
         return acc;
-      }, {
-        'schools': []
-      });
+      }, acc);
 
       if (Object.keys(features).length > 0) {
         this.focusedLock = true;
@@ -191,24 +193,30 @@ class Map {
   }
 
   focusFeature(feat) {
-    if (this.focused) {
+    this.focusFeatures([feat]);
+  }
+
+  focusFeatures(feats) {
+    this.focused.forEach((f) => {
       this.map.setFeatureState({
         source: config.SOURCE,
         sourceLayer: config.SOURCE_LAYER,
-        id: this.focused.id
+        id: f.id
       }, {
         focus: false,
       });
-    }
-    this.map.setFeatureState({
-      source: config.SOURCE,
-      sourceLayer: config.SOURCE_LAYER,
-      id: feat.id
-    }, {
-      focus: true,
-      fillColor: config.FOCUS_COLOR
     });
-    this.focused = feat;
+    feats.forEach((f) => {
+      this.map.setFeatureState({
+        source: config.SOURCE,
+        sourceLayer: config.SOURCE_LAYER,
+        id: f.id
+      }, {
+        focus: true,
+        fillColor: config.FOCUS_COLOR
+      });
+    });
+    this.focused = feats;
   }
 
   focusSchools(feats) {

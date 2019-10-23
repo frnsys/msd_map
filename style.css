@@ -175,18 +175,17 @@ html, body {
   position: relative;
 }
 
-#focus-point {
+.focus-point {
   background: #f9ca74;
   position: absolute;
-  display: none;
 }
 
-#focus-point.legend--bivariate-point {
+.focus-point.legend--bivariate-point {
   width: 12px;
   height: 12px;
   border-radius: 100em;
 }
-#focus-point.legend--point {
+.focus-point.legend--point {
   height: 2px;
   width: 24px;
   right: 0;

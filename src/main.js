@@ -53,57 +53,62 @@ const formatter = new Intl.NumberFormat('en-US', {
   minimumFractionDigits: 2
 });
 
-function explain(feat, cat, schoolsForZCTA, schools) {
-  let p = feat.properties;
-  let d = ['SCI', 'avg_grosscost', 'UNDUPUG'].reduce((acc, k) => {
-    acc[k] = p[propForCat(k, cat)];
-    return acc;
-  }, {});
+function explain(feats, cat, schools) {
+  let html = feats.map((feat) => {
+    let p = feat.properties;
+    let d = ['SCI', 'avg_grosscost', 'UNDUPUG'].reduce((acc, k) => {
+      acc[k] = p[propForCat(k, cat)];
+      return acc;
+    }, {});
 
-  let groupedSchools = {};
-  schoolsForZCTA.forEach((s) => {
-    // priv/public/nonprofit
-    let control = s['CONTROL'];
+    let schoolsForZCTA = schoolsForFeat(feat);
+    let groupedSchools = {};
+    schoolsForZCTA.forEach((s) => {
+      // priv/public/nonprofit
+      let control = s['CONTROL'];
 
-    // degree types
-    let level = s['ICLEVEL'];
+      // degree types
+      let level = s['ICLEVEL'];
 
-    if (!(control in groupedSchools)) {
-      groupedSchools[control] = {};
-    }
-    if (!(level in groupedSchools[control])) {
-      groupedSchools[control][level] = [];
-    }
-    groupedSchools[control][level].push(s);
-  });
+      if (!(control in groupedSchools)) {
+        groupedSchools[control] = {};
+      }
+      if (!(level in groupedSchools[control])) {
+        groupedSchools[control][level] = [];
+      }
+      groupedSchools[control][level].push(s);
+    });
 
-  // Leaving this out for now
-  // Average Tuition: ${d['avg_grosscost'] ? formatter.format(d['avg_grosscost']) : 'N/A'}<br/>
-  let html = `
-    <h2>${p['zipcode']}</h2>
-    School Concentration Index: ${d['SCI'] || d['SCI'] == 0 ? d['SCI'].toFixed(2) : 'N/A'}<br/>
-    Number of Schools: ${JSON.parse(p['schools']).length}<br/>
-    Population Estimate: ${p['population_total']}<br/>
-    Enrollment Seats: ${d['UNDUPUG'] || 0}<br/>
+    // Leaving this out for now
+    // Average Tuition: ${d['avg_grosscost'] ? formatter.format(d['avg_grosscost']) : 'N/A'}<br/>
+    return `
+      <h2>${p['zipcode']}</h2>
+      School Concentration Index: ${d['SCI'] || d['SCI'] == 0 ? d['SCI'].toFixed(2) : 'N/A'}<br/>
+      Number of Schools: ${JSON.parse(p['schools']).length}<br/>
+      Population Estimate: ${p['population_total']}<br/>
+      Enrollment Seats: ${d['UNDUPUG'] || 0}<br/>
 
-    <h2>Schools for ZCTA</h2>
-    ${Object.keys(groupedSchools).map((control) => {
-      return Object.keys(groupedSchools[control]).map((level) => {
-        return `
-          <h3>${CONTROL[control]}, ${LEVEL[level]}</h3>
-          <ul class="zcta-schools">
-            ${groupedSchools[control][level].sort((a, b) => a['INSTNM'] > b['INSTNM'])
-              .map((s) => `<li>${s['INSTNM']}</li>`).join('\n')}
-          </ul>
-        `;
-      }).join('\n');
-    }).join('\n')}
-
+      ${feats.length == 1 ? `
+        <h2>Schools for ZCTA</h2>
+        ${Object.keys(groupedSchools).map((control) => {
+          return Object.keys(groupedSchools[control]).map((level) => {
+            return `
+              <h3>${CONTROL[control]}, ${LEVEL[level]}</h3>
+              <ul class="zcta-schools">
+                ${groupedSchools[control][level].sort((a, b) => a['INSTNM'] > b['INSTNM'])
+                  .map((s) => `<li>${s['INSTNM']}</li>`).join('\n')}
+              </ul>
+            `;
+          }).join('\n');
+        }).join('\n')}` : ''}
+    `;
+  }).join('\n');
+  html += `
     ${schools.length > 0 ?
         `<h2>School</h2>
         ${schools.sort((a, b) => a['INSTNM'] > b['INSTNM']).map((s) => `${s.properties['INSTNM']}<br />`).join('\n')}`
-      : ''}
-  `;
+      : ''}`;
+
   info.explainFeature(html);
 }
 
@@ -122,17 +127,16 @@ const map = new Map({
   // If features, render
   if (Object.keys(features).length > 0) {
     if (features[config.SOURCE]) {
-      let feat = features[config.SOURCE];
-      map.focusFeature(feat);
-      legend.renderFeature(feat);
-      let schoolsForZCTA = schoolsForFeat(feat);
+      let feats = features[config.SOURCE];
+      map.focusFeatures(feats);
+      legend.renderFeatures(feats);
       if (features[config.SCHOOLS_SOURCE]) {
         let focusedSchools = features[config.SCHOOLS_SOURCE];
-        explain(feat, state.cat, schoolsForZCTA, focusedSchools);
+        explain(feats, state.cat, focusedSchools);
         map.focusSchools(focusedSchools);
       } else {
         map.focusSchools([]);
-        explain(feat, state.cat, schoolsForZCTA);
+        explain(feats, state.cat, []);
       }
     }
 
@@ -140,7 +144,7 @@ const map = new Map({
   } else {
     info.hide();
     map.focusSchools([]);
-    legend.hideFeature();
+    legend.hideFeatures();
   }
 });
 const legend = new Legend(map, state.props);
@@ -150,7 +154,7 @@ const zipcodeInput = document.querySelector('#control input[name=zipcode]');
 zipcodeInput.addEventListener('input', (ev) => {
   map.goToZipcode(ev.target.value, (feat) => {
     map.focusFeature(feat);
-    explain(feat, state.cat);
+    explain([feat], state.cat, []);
     legend.renderFeature(feat);
   });
 });

@@ -24,38 +24,55 @@ class Legend {
     this.props = props;
   }
 
-  // Render a point of data (i.e. a feature)
+  // Render points of data (i.e. features)
   // on the legend
-  renderFeature(feat) {
-    let pointEl = document.getElementById('focus-point');
+  renderFeatures(feats) {
+    this.hideFeatures();
 
-    // Bivariate
-    if (this.props.length > 1) {
-      let [propA, propB] = this.props;
-      let p_a = (feat.properties[propA]-config.RANGES[propA][0])/(config.RANGES[propA][1] - config.RANGES[propA][0]);
-      let p_b = (feat.properties[propB]-config.RANGES[propB][0])/(config.RANGES[propB][1] - config.RANGES[propB][0]);
-      pointEl.style.left = `calc(${p_b*100}% - ${pointEl.clientWidth/2}px)`;
-      pointEl.style.bottom = `calc(${p_a*100}% - ${pointEl.clientHeight/2}px)`;
-      pointEl.style.display = 'block';
+    let bivariate = this.props.length > 1;
+    feats.forEach((feat) => {
+      // Focused feature indicator
+      let pointEl = document.createElement('div');
+      pointEl.classList.add('focus-point');
+      document.querySelector('.legend--focus-point-host').appendChild(pointEl);
 
-    // Univariate
-    } else {
-      let [prop] = this.props;
-      if (feat.properties[prop]) {
-        let p = (feat.properties[prop]-config.RANGES[prop][0])/(config.RANGES[prop][1] - config.RANGES[prop][0]);
+      // Bivariate
+      if (bivariate) {
+        pointEl.classList.add('legend--bivariate-point');
+
+        let [propA, propB] = this.props;
+        let p_a = (feat.properties[propA]-config.RANGES[propA][0])/(config.RANGES[propA][1] - config.RANGES[propA][0]);
+        let p_b = (feat.properties[propB]-config.RANGES[propB][0])/(config.RANGES[propB][1] - config.RANGES[propB][0]);
+        pointEl.style.left = `calc(${p_b*100}% - ${pointEl.clientWidth/2}px)`;
+        pointEl.style.bottom = `calc(${p_a*100}% - ${pointEl.clientHeight/2}px)`;
         pointEl.style.display = 'block';
-        pointEl.style.bottom = `calc(${p*100}% - ${pointEl.clientHeight/2}px)`;
 
-      // Hide if no value
+      // Univariate
       } else {
-        pointEl.style.display = 'none';
+        pointEl.classList.add('legend--point');
+
+        let [prop] = this.props;
+        if (feat.properties[prop]) {
+          let p = (feat.properties[prop]-config.RANGES[prop][0])/(config.RANGES[prop][1] - config.RANGES[prop][0]);
+          pointEl.style.display = 'block';
+          pointEl.style.bottom = `calc(${p*100}% - ${pointEl.clientHeight/2}px)`;
+
+        // Hide if no value
+        } else {
+          pointEl.style.display = 'none';
+        }
       }
-    }
+    });
   }
 
-  hideFeature() {
-    let pointEl = document.getElementById('focus-point');
-    pointEl.style.display = 'none';
+  renderFeature(feat) {
+    this.renderFeatures([feat]);
+  }
+
+  hideFeatures() {
+    [...document.querySelectorAll('.focus-point')].forEach((el) => {
+      el.remove();
+    });
   }
 }
 
@@ -104,6 +121,7 @@ function bivariate(map, propA, propB) {
 
   let grid = document.createElement('div');
   grid.classList.add('legend--grid');
+  grid.classList.add('legend--focus-point-host');
   for (let i=0; i<n; i++) {
     let col = document.createElement('div');
     for (let j=0; j<n; j++) {
@@ -161,12 +179,6 @@ function bivariate(map, propA, propB) {
 
   container.appendChild(gridContainer);
 
-  // Focused feature indicator
-  let pointEl = document.createElement('div');
-  pointEl.id = 'focus-point';
-  pointEl.classList.add('legend--bivariate-point');
-  grid.appendChild(pointEl);
-
   let a_label = document.createElement('div');
   a_label.innerText = config.SHORT_NAMES[propA];
   a_label.classList.add('legend--bivariate-label');
@@ -189,12 +201,8 @@ function range(prop) {
   let range = config.RANGES[prop];
   let rangeBar = document.createElement('div');
   rangeBar.classList.add('legend--bar');
+  rangeBar.classList.add('legend--focus-point-host');
   rangeBar.style.background = `linear-gradient(0, ${color.colorToRGB(startColor)} 0%, ${color.colorToRGB(endColor)} 100%)`;
-
-  let pointEl = document.createElement('div');
-  pointEl.id = 'focus-point';
-  pointEl.classList.add('legend--point');
-  rangeBar.appendChild(pointEl);
 
   let labels = document.createElement('div');
   labels.classList.add('legend--labels');
