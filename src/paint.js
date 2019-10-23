@@ -18,6 +18,13 @@ function bivariate(propA, propB) {
       ['boolean', ['feature-state', 'focus'], false],
         ['feature-state', 'fillColor'],
 
+      // If either property is null
+      ['==', ['get', propA], null],
+        '#000000',
+
+      ['==', ['get', propB], null],
+        '#000000',
+
       ['concat',
         'rgb(',
 

@@ -1,5 +1,3 @@
-import config from './config';
-
 const infoEl = document.getElementById('info');
 
 function explainFeature(html) {

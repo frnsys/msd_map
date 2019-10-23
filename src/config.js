@@ -2,6 +2,7 @@ import color from './color';
 import config from '../config';
 import data from '../data/meta.json';
 
+
 const BBOXES = data.bboxes;
 const RANGES = data.ranges;
 const MAPBOX_TOKEN = config.MAPBOX_TOKEN;
@@ -36,6 +37,14 @@ const CATS = {
   'associate': 'Associate Degree',
   'belowassociate': 'Below Associate Degree'
 };
+const CAT_PROP_EXPRS = {
+  'public': ['CONTROL', 1],
+  'privnot4prof': ['CONTROL', 2],
+  'priv4prof': ['CONTROL', 3],
+  'bachelor': ['ICLEVEL', 1],
+  'associate': ['ICLEVEL', 2],
+  'belowassociate': ['ICLEVEL', 3]
+};
 const HAS_CATS = [
   'SCI', 'avg_grosscost',
   'schools', 'UNDUPUG'
@@ -58,7 +67,7 @@ const SHORT_NAMES = {
 };
 
 const INITIAL_CAT = 'allschools';
-const INITIAL_PROPS = ['SCI', 'avg_grosscost'].map((p) => {
+const INITIAL_PROPS = ['SCI', 'SCI'].map((p) => {
   return HAS_CATS.includes(p) ? `${p}.${INITIAL_CAT}` : p;
 });
 
@@ -74,7 +83,7 @@ HAS_CATS.forEach((p) => {
 export default {
   INITIAL_PROPS,
   INITIAL_CAT,
-  CATS, HAS_CATS,
+  CATS, HAS_CATS, CAT_PROP_EXPRS,
   SHORT_NAMES,
   COLORS, DESCS, RANGES,
   BBOXES, FOCUS_COLOR,

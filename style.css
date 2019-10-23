@@ -90,6 +90,15 @@ html, body {
 #info h2:first-child {
   margin-top: 0;
 }
+#info h3 {
+  color: #43CC70;
+  margin: 0.5em 0 0 0;
+  font-size: 0.75em;
+  text-transform: uppercase;
+}
+#info h3:first-child {
+  margin-top: 0;
+}
 
 #control {
   position: fixed;
@@ -193,4 +202,10 @@ html, body {
 .zcta-schools li {
   padding-left: 1em;
   text-indent: -1em;
+}
+
+/* Hiding for now */
+select[name="propertyA"],
+select[name="propertyB"] {
+  display: none;
 }

@@ -7,7 +7,6 @@ are replaced w/ "_"
 
 import json
 import pandas as pd
-from glob import glob
 from tqdm import tqdm
 from shapely.geometry import shape
 
@@ -124,19 +123,18 @@ geojson = {
     'features': []
 }
 
-zipcode_files = glob('src/zipcodes/*.json')
-for f in tqdm(zipcode_files, desc='Merging into geojson'):
-    gj = json.load(open(f))
-    for f in gj['features']:
-        zipcode = f['properties']['ZCTA5CE10']
-        try:
-            f['properties'] = dict(**data[zipcode])
-        except:
-            f['properties'] = dict(**CSV_DEFAULTS)
-        f['properties']['zipcode'] = zipcode
-        f['properties']['n_schools'] = len(f['properties']['schools'])
-        meta['bboxes'][zipcode] = shape(f['geometry']).bounds
-    geojson['features'] += gj['features']
+zipcode_geojson = json.load(open('src/zipcodes.geojson'))
+for f in tqdm(zipcode_geojson['features'], desc='Merging into geojson'):
+    del f['id']
+    zipcode = f['properties']['ZCTA5CE10']
+    try:
+        f['properties'] = dict(**data[zipcode])
+    except:
+        f['properties'] = dict(**CSV_DEFAULTS)
+    f['properties']['zipcode'] = zipcode
+    f['properties']['n_schools'] = len(f['properties']['schools'])
+    meta['bboxes'][zipcode] = shape(f['geometry']).bounds
+    geojson['features'].append(f)
 
 
 print('Saving files...')

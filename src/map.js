@@ -6,18 +6,11 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 mapboxgl.accessToken = config.MAPBOX_TOKEN;
 
 class Map {
-  constructor(initProps, onMouseMove) {
+  constructor(conf, initProps, onMouseMove) {
     this.filter = null;
     this.focused = null;
     this.focusedSchools = [];
-    this.map = new mapboxgl.Map({
-      container: 'main',
-      style: 'mapbox://styles/frnsys/cjzk1fw9w5goc1cpd8pzx6wuu',
-      zoom: 2,
-      center: [-73.935242, 40.730610],
-      maxZoom: 12,
-      minZoom: 2
-    });
+    this.map = new mapboxgl.Map(conf);
     this.map.dragRotate.disable();
     this.map.touchZoomRotate.disableRotation();
     this.map.on('load', () => {
@@ -48,7 +41,7 @@ class Map {
 
       this.map.addSource(config.SCHOOLS_SOURCE, {
         'type': 'geojson',
-        'data': '/assets/schools.geojson'
+        'data': 'assets/schools.geojson'
       });
       this.map.addLayer({
         'id': config.SCHOOLS_SOURCE,
@@ -64,7 +57,16 @@ class Map {
             ['boolean', ['feature-state', 'focus'], false],
               ['feature-state', 'fillColor'],
 
-            '#33C377',
+            ['==', ['get', 'CONTROL'], 1],
+              '#33C377',
+
+            ['==', ['get', 'CONTROL'], 2],
+              '#ffcc00',
+
+            ['==', ['get', 'CONTROL'], 3],
+              '#ff96af',
+
+            '#000000',
           ],
           'circle-stroke-color': [
             'case',
@@ -72,13 +74,39 @@ class Map {
             ['boolean', ['feature-state', 'focus'], false],
               ['feature-state', 'strokeColor'],
 
-            '#1b8e51',
+            ['==', ['get', 'ICLEVEL'], 1],
+              '#000000',
+
+            ['==', ['get', 'ICLEVEL'], 2],
+              '#888888',
+
+            ['==', ['get', 'ICLEVEL'], 3],
+              '#eeeeee',
+
+            '#ff0000',
           ],
           'circle-stroke-width': [
             'interpolate', ['linear'], ['zoom'], 6, 0.0, 9, 3.0
           ],
           'circle-opacity': [
-            'interpolate', ['linear'], ['zoom'], 3, 0.0, 7, 1.0
+            'interpolate', ['linear'], ['zoom'], 3, 0.0, 7, [
+              'case',
+              ['boolean', ['feature-state', 'hide'], false],
+                0.0,
+              ['boolean', ['feature-state', 'mute'], false],
+                0.25,
+              1.0
+            ]
+          ],
+          'circle-stroke-opacity': [
+            'interpolate', ['linear'], ['zoom'], 3, 0.0, 7, [
+              'case',
+              ['boolean', ['feature-state', 'hide'], false],
+                0.0,
+              ['boolean', ['feature-state', 'mute'], false],
+                0.25,
+              1.0
+            ]
           ]
         }
       }, 'admin')
