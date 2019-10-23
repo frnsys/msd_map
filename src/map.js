@@ -9,10 +9,18 @@ class Map {
   constructor(conf, initProps, onMouseMove) {
     this.filter = null;
     this.focused = null;
+    this.focusedLock = false;
     this.focusedSchools = [];
     this.map = new mapboxgl.Map(conf);
     this.map.dragRotate.disable();
     this.map.touchZoomRotate.disableRotation();
+
+    this.map.getContainer().addEventListener('keydown', (ev) => {
+      if (ev.key == 'Escape') {
+        this.focusedLock = false;
+      }
+    });
+
     this.map.on('load', () => {
       this.map.addLayer({
         'id': config.SOURCE_LAYER,
@@ -113,6 +121,28 @@ class Map {
     });
 
     this.map.on('mousemove', (e) => {
+      if (!this.focusedLock) {
+        // Get features under mouse
+        let features = this.map.queryRenderedFeatures(e.point);
+
+        // Filter to features with the correct source
+        features = features.reduce((acc, f) => {
+          if (config.SOURCE == f.source) {
+            acc[f.source] = f;
+          }
+          if (config.SCHOOLS_SOURCE == f.source) {
+            acc['schools'].push(f);
+          }
+          return acc;
+        }, {
+          'schools': []
+        });
+
+        onMouseMove(features);
+      }
+    });
+
+    this.map.on('click', (e) => {
       // Get features under mouse
       let features = this.map.queryRenderedFeatures(e.point);
 
@@ -128,6 +158,10 @@ class Map {
       }, {
         'schools': []
       });
+
+      if (Object.keys(features).length > 0) {
+        this.focusedLock = true;
+      }
 
       onMouseMove(features);
     });
