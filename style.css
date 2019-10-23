@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Noto+Serif+JP:200|Nanum+Gothic&display=swap');
+
 @font-face {
   font-family: FantasqueSansMono;
   src: url(FantasqueSansMono-Regular.woff);
@@ -60,18 +62,37 @@ html, body {
   background: #000;
 }
 
-#main {
-  height: 100vh;
-  display: flex;
+h1 {
+  font-family: 'Noto Serif JP', serif;
+  font-weight: normal;
+  font-size: 3em;
 }
 
-.mapboxgl-popup-content p {
-  margin: 0;
-  line-height: 1.2;
+p {
+  font-family: 'Nanum Gothic', sans-serif;
 }
-.mapboxgl-popup-content h5 {
-  margin: 1em 0 0 0;
-  line-height: 1;
+
+#stage {
+  height: 100vh;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid #333;
+  border-bottom: 1px solid #333;
+  margin: 2em 0;
+}
+
+section.text {
+  color: #fff;
+  padding: 1em 2em;
+  max-width: 960px;
+  margin: 0 auto;
+}
+section.text h1 {
+  margin: 0.5em 0;
+}
+section.text:last-child {
+  padding-bottom: 6em;
 }
 
 #map {
@@ -106,7 +127,7 @@ html, body {
 }
 
 #control {
-  position: fixed;
+  position: absolute;
   top: 0.5em;
   left: 0.5em;
   color: #fff;
@@ -116,7 +137,7 @@ html, body {
 }
 
 #legend {
-  position: fixed;
+  position: absolute;
   bottom: 2em;
   right: 0.5em;
   color: #fff;

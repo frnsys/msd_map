@@ -142,7 +142,7 @@ const map = new Map({
 
   // Otherwise, hide
   } else {
-    info.explainFeature(`<h1>About this project</h1><p>TK</p>`);
+    info.explainFeature(`<h2>About this project</h2><p>TK</p>`);
     map.focusSchools([]);
     legend.hideFeatures();
   }
