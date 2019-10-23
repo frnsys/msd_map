@@ -1,7 +1,6 @@
-import color from './color';
+import color from './lib/color';
 import config from '../config';
 import data from '../data/meta.json';
-
 
 const BBOXES = data.bboxes;
 const RANGES = data.ranges;

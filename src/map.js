@@ -1,4 +1,4 @@
-import paint from './paint';
+import Painter from './lib/paint';
 import config from './config';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -14,6 +14,7 @@ class Map {
     this.map = new mapboxgl.Map(conf);
     this.map.dragRotate.disable();
     this.map.touchZoomRotate.disableRotation();
+    this.painter = new Painter(config.RANGES, config.COLORS);
 
     this.map.getContainer().addEventListener('keydown', (ev) => {
       if (ev.key == 'Escape') {
@@ -186,9 +187,9 @@ class Map {
   paint(props) {
     props = props.filter((p) => p);
     if (props.length > 1) {
-      return paint.bivariate(...props);
+      return this.painter.bivariate(...props);
     } else {
-      return paint.range(...props);
+      return this.painter.range(...props);
     }
   }
 

@@ -1,6 +1,6 @@
 import Map from './map';
-import info from './info';
-import Legend from './legend';
+import info from './lib/info';
+import Legend from './lib/legend';
 import config from './config';
 import schools from '../data/schools.json';
 
@@ -147,7 +147,7 @@ const map = new Map({
     legend.hideFeatures();
   }
 });
-const legend = new Legend(map, state.props);
+const legend = new Legend(map, config.COLORS, config.RANGES, config.SHORT_NAMES, state.props);
 
 // Jump to zipcode
 const zipcodeInput = document.querySelector('#control input[name=zipcode]');
