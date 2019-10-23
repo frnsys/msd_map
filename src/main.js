@@ -117,7 +117,7 @@ const state = {
   cat: config.INITIAL_CAT
 };
 const map = new Map({
-  container: 'main',
+  container: 'map',
   style: 'mapbox://styles/frnsys/cjzk1fw9w5goc1cpd8pzx6wuu',
   zoom: 2,
   maxZoom: 12,
@@ -125,7 +125,7 @@ const map = new Map({
   center: [-73.935242, 40.730610]
 }, state.props, (features) => {
   // If features, render
-  if (Object.keys(features).length > 0) {
+  if (features[config.SOURCE].length > 0) {
     if (features[config.SOURCE]) {
       let feats = features[config.SOURCE];
       map.focusFeatures(feats);
@@ -142,7 +142,7 @@ const map = new Map({
 
   // Otherwise, hide
   } else {
-    info.hide();
+    info.explainFeature(`<h1>About this project</h1><p>TK</p>`);
     map.focusSchools([]);
     legend.hideFeatures();
   }
