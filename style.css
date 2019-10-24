@@ -95,8 +95,9 @@ section.text:last-child {
   padding-bottom: 6em;
 }
 
-#map {
+#map-wrapper {
   flex: 3;
+  position: relative;
 }
 
 #info {
@@ -229,6 +230,31 @@ section.text:last-child {
 .zcta-schools li {
   padding-left: 1em;
   text-indent: -1em;
+}
+
+#icon-legend {
+  position: absolute;
+  right: 0.5em;
+  top: 0.5em;
+  color: #fff;
+  padding: 0.5em;
+  background: #5d5db6;
+  display: flex;
+}
+#icon-legend > div {
+  flex: 1;
+  font-size: 0.75em;
+}
+#icon-legend > div:first-child {
+  margin-right: 0.75em;
+}
+.icon-key {
+  width: 11px;
+  height: 11px;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 4px;
+  border-radius: 10em;
 }
 
 /* Hiding for now */
