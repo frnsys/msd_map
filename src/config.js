@@ -6,10 +6,6 @@ const BBOXES = data.bboxes;
 const RANGES = data.ranges;
 const MAPBOX_TOKEN = config.MAPBOX_TOKEN;
 
-const SOURCE = 'zctas';
-const SOURCE_LAYER = 'zctas';
-const SCHOOLS_SOURCE = 'schools';
-
 const colors = {
   'SCI': ['#fc949a', '#f7020e'],
   'avg_grosscost': ['#a9bdfc', '#023ff7'],
@@ -21,11 +17,7 @@ const COLORS = Object.keys(colors).reduce((acc, prop) => {
   acc[prop] = colors[prop].map((h) => color.hexToRGB(h));
   return acc;
 }, {});
-const FOCUS_COLOR = '#f9ca74';
-const SCHOOL_FOCUS_COLORS = {
-  'fill': '#67A2FD',
-  'stroke': '#1f70ed'
-};
+COLORS.FOCUS = '#f9ca74';
 
 const CATS = {
   'allschools': 'All',
@@ -83,11 +75,7 @@ export default {
   INITIAL_PROPS,
   INITIAL_CAT,
   CATS, HAS_CATS, CAT_PROP_EXPRS,
-  SHORT_NAMES,
-  COLORS, DESCS, RANGES,
-  BBOXES, FOCUS_COLOR,
-  SOURCE, SOURCE_LAYER,
-  SCHOOLS_SOURCE,
-  SCHOOL_FOCUS_COLORS,
-  MAPBOX_TOKEN
+  SHORT_NAMES, DESCS,
+  COLORS, RANGES,
+  BBOXES, MAPBOX_TOKEN
 };

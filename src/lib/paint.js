@@ -21,7 +21,7 @@ class Painter {
 
         // If feature-state is set to focus
         ['boolean', ['feature-state', 'focus'], false],
-          ['feature-state', 'fillColor'],
+          this.colors['FOCUS'],
 
         // If either property is null
         ['==', ['get', propA], null],

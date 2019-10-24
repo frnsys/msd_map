@@ -3,12 +3,13 @@ import color from './color';
 const legend = document.getElementById('legend');
 
 class Legend {
-  constructor(map, colors, ranges, labels, initProps) {
+  constructor(map, colors, ranges, labels, source, initProps) {
     this.map = map;
     this.props = initProps;
     this.colors = colors;
     this.ranges = ranges;
     this.labels = labels;
+    this.source = source;
     this.set(initProps);
   }
 
@@ -153,10 +154,10 @@ class Legend {
             ['<', propB, b_l],
             ['>', propB, b_u],
           ];
-          this.map.setFilter(filter, {mute: true}, {mute: false});
+          this.map.setFilter(this.source, filter, {mute: true}, {mute: false});
         });
         cell.addEventListener('mouseleave', () => {
-          this.map.resetFilter({mute: false});
+          this.map.resetFilter(this.source, {mute: false});
         });
         col.appendChild(cell);
       }
