@@ -205,6 +205,27 @@ class Legend {
     rangeBar.classList.add('legend--focus-point-host');
     rangeBar.style.background = `linear-gradient(0, ${color.colorToRGB(startColor)} 0%, ${color.colorToRGB(endColor)} 100%)`;
 
+    let n = 4;
+    for (let i=0; i<n; i++) {
+      let bin = document.createElement('div');
+      bin.classList.add('legend--bar-bin');
+      bin.style.top = `${i*30}px`;
+      bin.addEventListener('mouseenter', () => {
+        let u = (n - i)/n * range[1];
+        let l = (n - (i+1))/n * range[1];
+        let filter = ['any',
+          ['<', prop, l],
+          ['>', prop, u],
+        ];
+        this.map.setFilter(this.source, filter, {mute: true}, {mute: false});
+      });
+      rangeBar.appendChild(bin);
+    }
+
+    let title = document.createElement('div');
+    title.classList.add('legend--title');
+    title.innerText = this.labels[prop];
+
     let labels = document.createElement('div');
     labels.classList.add('legend--labels');
 
@@ -217,8 +238,13 @@ class Legend {
     labels.appendChild(upperLabel);
     labels.appendChild(lowerLabel);
 
-    legend.appendChild(labels);
-    legend.appendChild(rangeBar);
+    legend.appendChild(title);
+
+    let wrapper = document.createElement('div');
+    wrapper.classList.add('legend--range');
+    wrapper.appendChild(rangeBar);
+    wrapper.appendChild(labels);
+    legend.appendChild(wrapper);
   }
 }
 
