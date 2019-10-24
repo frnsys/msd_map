@@ -148,7 +148,7 @@ section.text:last-child {
 #legend.legend--bivariate {
   transform: rotate(-45deg);
   bottom: 4em;
-  right: 3.5em;
+  right: calc(100% - 10em);
   display: block;
 }
 .legend--bivariate-label {
@@ -199,6 +199,8 @@ section.text:last-child {
 }
 .legend--grid-container {
   position: relative;
+  border: 2px solid #000;
+  background: #000;
 }
 
 .focus-point {
