@@ -50,6 +50,7 @@ function setupUI(map, legend, info, state) {
   // Jump to zipcode
   const zipcodeInput = document.querySelector('#control input[name=zipcode]');
   zipcodeInput.addEventListener('input', (ev) => {
+    let zipcode = ev.target.value;
     let bbox = config.BBOXES[zipcode];
     if (!bbox) return;
     map.fitBounds(bbox);
@@ -58,7 +59,7 @@ function setupUI(map, legend, info, state) {
       layer: 'zctas'
     }, 'zipcode', zipcode, (feats) => {
       let feat = feats[0];
-      map.focusFeatures('zctas', feat);
+      map.focusFeatures({id: 'zctas', layer: 'zctas'}, feat);
       info.explain([feat], state.cat, []);
       legend.renderFeatures([feat]);
     });

@@ -179,11 +179,11 @@ class Map {
       sourceLayer: source.layer,
       filter: ['all', ['==', propKey, propVal]]
     };
-    let results = map.querySourceFeatures(source.id, opts);
+    let results = this.map.querySourceFeatures(source.id, opts);
     if (results.length > 0) {
       cb(results);
     } else {
-      map.once('sourcedata', () => {
+      this.map.once('sourcedata', () => {
         this.featsByProp(source, propKey, propVal, cb);
       });
     }
