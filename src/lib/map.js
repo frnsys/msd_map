@@ -48,7 +48,7 @@ class Map {
     this.map.on('mousemove', (e) => {
       if (!this.focusedLock) {
         let features = this.featuresAtPoint(e.point);
-        onFocusFeatures(features);
+        onFocusFeatures(features, e);
       }
     });
 
@@ -57,7 +57,7 @@ class Map {
       if (Object.keys(features).length > 0) {
         this.focusedLock = true;
       }
-      onFocusFeatures(features);
+      onFocusFeatures(features, e);
     });
 
     // <https://docs.mapbox.com/mapbox-gl-js/api/#map.event:styledata>

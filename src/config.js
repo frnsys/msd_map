@@ -7,7 +7,7 @@ const RANGES = data.ranges;
 const MAPBOX_TOKEN = config.MAPBOX_TOKEN;
 
 const colors = {
-  'SCI': ['#fc949a', '#f7020e'],
+  'SCI': ['#f9c2c5', '#e5020d'],
   'avg_grosscost': ['#a9bdfc', '#023ff7'],
   'schools': ['#f5fff8', '#32a852'],
   'population_total': ['#fff8d6', '#ffd721'],
@@ -58,7 +58,7 @@ const SHORT_NAMES = {
 };
 
 const INITIAL_CAT = 'allschools';
-const INITIAL_PROPS = ['SCI', 'SCI'].map((p) => {
+const INITIAL_PROPS = ['SCI'].map((p) => {
   return HAS_CATS.includes(p) ? `${p}.${INITIAL_CAT}` : p;
 });
 

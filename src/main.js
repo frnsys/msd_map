@@ -122,7 +122,9 @@ const map = new Map({
   maxZoom: 12,
   minZoom: 2,
   center: [-73.935242, 40.730610]
-}, sources, layers, {'zctas': state.props}, painter, (features) => {
+}, sources, layers, {'zctas': state.props}, painter, (features, ev) => {
+  console.log(ev);
+
   // If features, render
   if (features['zctas'].length > 0) {
     let feats = features['zctas'];

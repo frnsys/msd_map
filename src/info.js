@@ -50,7 +50,7 @@ function explain(feats, cat, focusedSchools) {
     // Average Tuition: ${d['avg_grosscost'] ? formatter.format(d['avg_grosscost']) : 'N/A'}<br/>
     return `
       <h2>${p['zipcode']}</h2>
-      School Concentration Index: ${d['SCI'] || d['SCI'] == 0 ? d['SCI'].toFixed(2) : 'N/A'}<br/>
+      School Concentration Index: ${(d['SCI'] || 0).toFixed(2)}<br/>
       Number of Schools: ${JSON.parse(p['schools']).length}<br/>
       Population Estimate: ${p['population_total']}<br/>
       Enrollment Seats: ${d['UNDUPUG'] || 0}<br/>

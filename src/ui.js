@@ -59,7 +59,7 @@ function setupUI(map, legend, info, state) {
       layer: 'zctas'
     }, 'zipcode', zipcode, (feats) => {
       let feat = feats[0];
-      map.focusFeatures({id: 'zctas', layer: 'zctas'}, feat);
+      map.focusFeatures({id: 'zctas', layer: 'zctas'}, [feat]);
       info.explain([feat], state.cat, []);
       legend.renderFeatures([feat]);
     });

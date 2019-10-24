@@ -140,17 +140,24 @@ section.text:last-child {
 #legend {
   position: absolute;
   bottom: 2em;
-  right: 0.5em;
+  left: 1em;
   color: #fff;
   z-index: 1;
   text-align: right;
-  display: flex;
 }
 #legend.legend--bivariate {
   transform: rotate(-45deg);
   bottom: 4em;
-  right: calc(100% - 10em);
+  right: calc(100% - 14em);
   display: block;
+}
+.legend--title {
+  text-align: left;
+  padding-left: 15px;
+  font-size: 0.75em;
+}
+.legend--range {
+  display: flex;
 }
 .legend--bivariate-label {
   position: absolute;
@@ -173,13 +180,21 @@ section.text:last-child {
 .legend--bar {
   height: 120px;
   width: 12px;
+  position: relative;
+}
+.legend--bar-bin {
+  position: absolute;
+  width: 100%;
+  height: 30px; /* four bins */
+  border-bottom: 1px solid black;
 }
 .legend--labels {
-  margin-right: 0.25em;
+  margin-left: 0.25em;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   font-size: 0.8em;
+  text-align: left;
 }
 .legend--labels_x {
   text-align: left;
@@ -187,6 +202,15 @@ section.text:last-child {
   height: 100%;
   margin-bottom: -2em;
   padding-left: 0.25em;
+  margin-right: 0;
+}
+.legend--bivariate .legend--labels {
+  text-align: right;
+  margin-left: 0;
+  margin-right: 0.25em;
+}
+.legend--bivariate .legend--labels_x {
+  text-align: left;
   margin-right: 0;
 }
 .legend--cell {
