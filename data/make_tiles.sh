@@ -5,9 +5,7 @@
 rm msd.mbtiles
 
 # Generate ZCTA tiles
-# tippecanoe -o zctas.mbtiles -zg --coalesce-densest-as-needed --extend-zooms-if-still-dropping --generate-ids --detect-shared-borders --no-line-simplification zctas.geojson
-# tippecanoe -o msd.mbtiles -zg --coalesce-densest-as-needed --extend-zooms-if-still-dropping --generate-ids --detect-shared-borders --no-line-simplification zctas.geojson
-tippecanoe -o msd.mbtiles -z12 --coalesce-smallest-as-needed --hilbert --extend-zooms-if-still-dropping --generate-ids --detect-shared-borders --no-line-simplification zctas.geojson
+tippecanoe -o msd.mbtiles -z12 --coalesce-smallest-as-needed --hilbert --extend-zooms-if-still-dropping --generate-ids --detect-shared-borders --no-line-simplification --accumulate-attribute=zipcode:comma zctas.geojson
 
 # Generate school tiles
 # tippecanoe -o schools.mbtiles -r1 --generate-ids schools.geojson

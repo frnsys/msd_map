@@ -150,3 +150,6 @@ with open('meta.json', 'w') as f:
 
 with open('zctas.geojson', 'w') as f:
     json.dump(geojson, f)
+
+with open('zctas.json', 'w') as f:
+    json.dump(data, f)
