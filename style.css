@@ -95,9 +95,23 @@ section.text:last-child {
   padding-bottom: 6em;
 }
 
+#map {
+  height: 100%;
+  width: 100%;
+}
 #map-wrapper {
   flex: 3;
   position: relative;
+}
+
+#map-tooltip {
+  color: #fff;
+  position: absolute;
+  padding: 0.5em;
+  font-size: 0.8em;
+  background: #000;
+  display: block;
+  z-index: 100;
 }
 
 #info {
@@ -181,6 +195,7 @@ section.text:last-child {
   height: 120px;
   width: 12px;
   position: relative;
+  border: 1px solid black;
 }
 .legend--bar-bin {
   position: absolute;
@@ -279,6 +294,12 @@ section.text:last-child {
   vertical-align: middle;
   margin-right: 4px;
   border-radius: 10em;
+}
+
+.other-zctas {
+  font-size: 0.75em;
+  color: #888;
+  margin-top: 1em;
 }
 
 /* Hiding for now */

@@ -9,6 +9,8 @@ import schools from '../data/schools.json';
 
 mapboxgl.accessToken = config.MAPBOX_TOKEN;
 
+const tooltip = document.getElementById('map-tooltip');
+
 const state = {
   props: config.INITIAL_PROPS,
   cat: config.INITIAL_CAT
@@ -123,8 +125,6 @@ const map = new Map({
   minZoom: 2,
   center: [-73.935242, 40.730610]
 }, sources, layers, {'zctas': state.props}, painter, (features, ev) => {
-  console.log(ev);
-
   // If features, render
   if (features['zctas'].length > 0) {
     let feats = features['zctas'];
@@ -146,7 +146,12 @@ const map = new Map({
       }, filter, {mute: true}, {mute: false});
     }
 
-    if (features['schools']) {
+    if (features['schools'].length > 0) {
+      tooltip.style.left = `${ev.originalEvent.offsetX+10}px`;
+      tooltip.style.top = `${ev.originalEvent.offsetY+10}px`;
+      tooltip.style.display = 'block';
+      tooltip.innerHTML = features['schools'].map((s) => s.properties['INSTNM']).join('<br />');
+
       let focusedSchools = features['schools'];
       info.explain(feats, state.cat, focusedSchools);
       map.focusFeatures({
@@ -157,13 +162,18 @@ const map = new Map({
         id: 'schools'
       }, []);
       info.explain(feats, state.cat, []);
+      tooltip.style.display = 'none';
     }
 
   // Otherwise, hide
   } else {
     info.reset();
     legend.hideFeatures();
+    tooltip.style.display = 'none';
   }
+});
+map.map.on('dragstart', () => {
+  tooltip.style.display = 'none';
 });
 const legend = new Legend(map, config.COLORS, config.RANGES, config.SHORT_NAMES, {id: 'zctas', layer: 'zctas'}, state.props);
 

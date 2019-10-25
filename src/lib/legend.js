@@ -219,6 +219,9 @@ class Legend {
         ];
         this.map.setFilter(this.source, filter, {mute: true}, {mute: false});
       });
+      bin.addEventListener('mouseleave', () => {
+        this.map.resetFilter(this.source, {mute: false});
+      });
       rangeBar.appendChild(bin);
     }
 

@@ -48,12 +48,14 @@ function explain(feats, cat, focusedSchools) {
 
     // Leaving this out for now
     // Average Tuition: ${d['avg_grosscost'] ? formatter.format(d['avg_grosscost']) : 'N/A'}<br/>
+    let [zipcode, ...otherZips] = p['zipcode'].split(',');
     return `
-      <h2>${p['zipcode']}</h2>
+      <h2>${zipcode}</h2>
       School Concentration Index: ${(d['SCI'] || 0).toFixed(2)}<br/>
       Number of Schools: ${JSON.parse(p['schools']).length}<br/>
       Population Estimate: ${p['population_total']}<br/>
       Enrollment Seats: ${d['UNDUPUG'] || 0}<br/>
+      ${otherZips.length > 0 ? `<div class="other-zctas">Other ZCTAs here: ${otherZips.join(', ')}</div>` : ''}
 
       ${feats.length == 1 ? `
         <h2>Schools for ZCTA</h2>
