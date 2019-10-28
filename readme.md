@@ -1,4 +1,4 @@
-Download zip code GeoJSON data from: <https://github.com/OpenDataDE/State-zip-code-GeoJSON>
+Download zip code GeoJSON data from: <https://geo.nyu.edu/catalog/harvard-tg10uszcta5>
 
 ```
 python merge_geojson.py
