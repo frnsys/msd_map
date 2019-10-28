@@ -120,10 +120,10 @@ const painter = new Painter(config.RANGES, config.COLORS);
 const map = new Map({
   container: 'map',
   style: 'mapbox://styles/frnsys/cjzk1fw9w5goc1cpd8pzx6wuu',
-  zoom: 2,
+  zoom: 3,
   maxZoom: 12,
   minZoom: 2,
-  center: [-73.935242, 40.730610]
+  center: [-98.5556199, 39.8097343]
 }, sources, layers, {'zctas': state.props}, painter, (features, ev) => {
   // If features, render
   if (features['zctas'].length > 0) {

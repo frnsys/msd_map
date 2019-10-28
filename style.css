@@ -73,7 +73,7 @@ p {
 }
 
 #stage {
-  height: 100vh;
+  height: 90vh;
   display: flex;
   position: relative;
   overflow: hidden;
