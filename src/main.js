@@ -115,16 +115,7 @@ const layers = [{
   }
 }];
 
-
-const painter = new Painter(config.RANGES, config.COLORS);
-const map = new Map({
-  container: 'map',
-  style: 'mapbox://styles/frnsys/cjzk1fw9w5goc1cpd8pzx6wuu',
-  zoom: 3,
-  maxZoom: 12,
-  minZoom: 2,
-  center: [-98.5556199, 39.8097343]
-}, sources, layers, {'zctas': state.props}, painter, (features, ev) => {
+function focusFeatures(features, ev) {
   // If features, render
   if (features['zctas'].length > 0) {
     let feats = features['zctas'];
@@ -147,11 +138,6 @@ const map = new Map({
     }
 
     if (features['schools'].length > 0) {
-      tooltip.style.left = `${ev.originalEvent.offsetX+10}px`;
-      tooltip.style.top = `${ev.originalEvent.offsetY+10}px`;
-      tooltip.style.display = 'block';
-      tooltip.innerHTML = features['schools'].map((s) => s.properties['INSTNM']).join('<br />');
-
       let focusedSchools = features['schools'];
       info.explain(feats, state.cat, focusedSchools);
       map.focusFeatures({
@@ -162,14 +148,34 @@ const map = new Map({
         id: 'schools'
       }, []);
       info.explain(feats, state.cat, []);
-      tooltip.style.display = 'none';
     }
 
   // Otherwise, hide
   } else {
     info.reset();
     legend.hideFeatures();
+  }
+}
+
+const painter = new Painter(config.RANGES, config.COLORS);
+const map = new Map({
+  container: 'map',
+  style: 'mapbox://styles/frnsys/cjzk1fw9w5goc1cpd8pzx6wuu',
+  zoom: 3,
+  maxZoom: 12,
+  minZoom: 2,
+  center: [-98.5556199, 39.8097343]
+}, sources, layers, {'zctas': state.props}, painter, focusFeatures, (features, ev) => {
+  if (features['schools'].length > 0) {
+    tooltip.style.left = `${ev.originalEvent.offsetX+10}px`;
+    tooltip.style.top = `${ev.originalEvent.offsetY+10}px`;
+    tooltip.style.display = 'block';
+    tooltip.innerHTML = features['schools'].map((s) => s.properties['INSTNM']).join('<br />');
+  } else {
     tooltip.style.display = 'none';
+  }
+  if (!map.focusedLock) {
+    focusFeatures(features, ev);
   }
 });
 map.map.on('dragstart', () => {

@@ -2,7 +2,7 @@ import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 class Map {
-  constructor(conf, sources, layers, initProps, painter, onFocusFeatures) {
+  constructor(conf, sources, layers, initProps, painter, onFocusFeatures, onMouseMove) {
     this.sources = sources;
     this.filters = Object.keys(sources).reduce((acc, s) => {
       acc[s] = {
@@ -46,10 +46,8 @@ class Map {
     });
 
     this.map.on('mousemove', (e) => {
-      if (!this.focusedLock) {
-        let features = this.featuresAtPoint(e.point);
-        onFocusFeatures(features, e);
-      }
+      let features = this.featuresAtPoint(e.point);
+      onMouseMove(features, e);
     });
 
     this.map.on('click', (e) => {
