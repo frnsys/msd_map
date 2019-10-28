@@ -2,7 +2,7 @@ import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 class Map {
-  constructor(conf, sources, layers, initProps, painter, onFocusFeatures, onMouseMove) {
+  constructor(conf, sources, layers, initProps, painter, onClickFeatures, onMouseMove) {
     this.sources = sources;
     this.filters = Object.keys(sources).reduce((acc, s) => {
       acc[s] = {
@@ -55,7 +55,7 @@ class Map {
       if (Object.keys(features).length > 0) {
         this.focusedLock = true;
       }
-      onFocusFeatures(features, e);
+      onClickFeatures(features, e);
     });
 
     // <https://docs.mapbox.com/mapbox-gl-js/api/#map.event:styledata>
@@ -65,7 +65,7 @@ class Map {
         if (e.sourceId === s && fl.filter) {
           this.setFilter({
             id: s
-          }, fl.filter, fl.state);
+          }, fl.filter, fl.state, fl.resetState);
         }
       });
     });

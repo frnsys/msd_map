@@ -6,7 +6,7 @@ const allSchoolsStyle = {
     'interpolate', ['linear'], ['zoom'], 3, 0.0, 7, [
       'case',
       ['boolean', ['feature-state', 'mute'], false],
-        0.25,
+        0.2,
       1.0
     ]
   ],
@@ -14,7 +14,7 @@ const allSchoolsStyle = {
     'interpolate', ['linear'], ['zoom'], 3, 0.0, 7, [
       'case',
       ['boolean', ['feature-state', 'mute'], false],
-        0.25,
+        0.2,
       1.0
     ]
   ]
@@ -28,7 +28,7 @@ function filteredStyle(condition) {
           ['!=', ['get', condition[0]], condition[1]],
             0.0,
           ['boolean', ['feature-state', 'mute'], false],
-            0.25,
+            0.2,
           1.0
       ]
     ],
@@ -38,7 +38,7 @@ function filteredStyle(condition) {
           ['!=', ['get', condition[0]], condition[1]],
             0.0,
           ['boolean', ['feature-state', 'mute'], false],
-            0.25,
+            0.2,
           1.0
       ]
     ]

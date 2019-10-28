@@ -21,7 +21,7 @@ const allSchoolsStyle = {
     'interpolate', ['linear'], ['zoom'], 3, 0.0, 7, [
       'case',
       ['boolean', ['feature-state', 'mute'], false],
-        0.25,
+        0.2,
       1.0
     ]
   ],
@@ -29,7 +29,7 @@ const allSchoolsStyle = {
     'interpolate', ['linear'], ['zoom'], 3, 0.0, 7, [
       'case',
       ['boolean', ['feature-state', 'mute'], false],
-        0.25,
+        0.2,
       1.0
     ]
   ]
@@ -61,7 +61,7 @@ const layers = [{
     'fill-opacity': [
       'case',
         ['boolean', ['feature-state', 'mute'], false],
-          0.25,
+          0.2,
         1.0
     ]
   }
@@ -86,7 +86,7 @@ const layers = [{
         '#ffcc00',
 
       ['==', ['get', 'CONTROL'], 3],
-        '#b296ff',
+        '#05a1ff',
 
       '#000000',
     ],
@@ -135,6 +135,10 @@ function focusFeatures(features, ev) {
       map.setFilter({
         id: 'schools'
       }, filter, {mute: true}, {mute: false});
+    } else {
+      map.focusFeatures({
+        id: 'schools'
+      }, []);
     }
 
     if (features['schools'].length > 0) {
