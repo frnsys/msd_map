@@ -64,7 +64,7 @@ function explain(feats, cat, focusedSchools) {
             return `
               <h3>${CONTROL[control]}, ${LEVEL[level]}</h3>
               <ul class="zcta-schools">
-                ${groupedSchools[control][level].sort((a, b) => a['INSTNM'] > b['INSTNM'])
+                ${groupedSchools[control][level].sort((a, b) => a['INSTNM'].localeCompare(b['INSTNM']))
                   .map((s) => `<li>${s['INSTNM']}</li>`).join('\n')}
               </ul>
             `;
@@ -75,7 +75,7 @@ function explain(feats, cat, focusedSchools) {
   html += `
     ${focusedSchools.length > 0 ?
         `<h2>School</h2>
-        ${focusedSchools.sort((a, b) => a['INSTNM'] > b['INSTNM']).map((s) => `${s.properties['INSTNM']}<br />`).join('\n')}`
+        ${focusedSchools.sort((a, b) => a['INSTNM'].localeCompare(b['INSTNM'])).map((s) => `${s.properties['INSTNM']}<br />`).join('\n')}`
       : ''}`;
 
   info.explainFeature(html);
