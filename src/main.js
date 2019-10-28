@@ -86,7 +86,7 @@ const layers = [{
         '#ffcc00',
 
       ['==', ['get', 'CONTROL'], 3],
-        '#ff96af',
+        '#b296ff',
 
       '#000000',
     ],
