@@ -6,6 +6,7 @@ are replaced w/ "_"
 """
 
 import json
+import fiona
 import pandas as pd
 from tqdm import tqdm
 from shapely.geometry import shape
@@ -41,6 +42,20 @@ SCHOOL_FIELDS = [
     'CONTROL',
     'UNDUPUG',
     'ZIP'
+]
+
+# ISO A2
+COUNTRIES = [
+    'US',
+    'PR',
+    'AS',
+    'GU',
+    'MP',
+    'VI'
+]
+STATES = [
+    'Alaska',
+    'Hawaii'
 ]
 
 data = {}
@@ -140,8 +155,32 @@ for f in tqdm(zipcode_geojson['features'], desc='Merging into geojson'):
     meta['bboxes'][zipcode] = shape(f['geometry']).bounds
     geojson['features'].append(f)
 
+countries = fiona.open('src/countries/ne_10m_admin_0_countries.shp')
+region_bboxes = {}
+for country in countries:
+    props = country['properties']
+    iso = props['ISO_A2']
+    if iso not in COUNTRIES:
+        continue
+    if iso == 'US':
+        shp = max(shape(country['geometry']), key=lambda s: s.area)
+        region_bboxes['Mainland'] = shp.bounds
+    else:
+        bbox = shape(country['geometry']).bounds
+        region_bboxes[props['NAME']] = bbox
+
+for state in STATES:
+    feat = json.load(open('src/states/{}.geojson'.format(state.lower())))
+    bbox = shape(feat['geometry']).bounds
+    region_bboxes[state] = bbox
+
+# Data source is incorrect about Alaska, set it manually
+region_bboxes['Alaska'] = [-207.4133546365765, 50.796925749084465, -104.93451956255066, 71.79270027924889]
 
 print('Saving files...')
+
+with open('regions.json', 'w') as f:
+    json.dump(region_bboxes, f)
 
 with open('schools.geojson', 'w') as f:
     json.dump(schools_geojson, f)

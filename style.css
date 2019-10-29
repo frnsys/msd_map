@@ -148,7 +148,7 @@ section.text:last-child {
   color: #fff;
   background: #101010;
   z-index: 1;
-  padding: 1em;
+  padding: 0.5em;
 }
 
 #legend {
@@ -306,6 +306,20 @@ section.text:last-child {
   font-size: 0.85em;
   color: #aaa;
   margin-left: 1em;
+}
+
+#map-regions {
+  margin-top: 0.25em;
+  max-width: 340px;
+}
+#map-regions div {
+  font-size: 0.75em;
+  display: inline-block;
+  background: #333;
+  color: #fff;
+  padding: 0.25em;
+  margin: 0.1em;
+  cursor: pointer;
 }
 
 /* Hiding for now */

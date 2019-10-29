@@ -1,5 +1,6 @@
 import util from './util';
 import config from './config';
+import regions from '../data/regions.json';
 
 const allSchoolsStyle = {
   'circle-opacity': [
@@ -131,6 +132,18 @@ function setupUI(map, legend, info, state) {
       map.map.setPaintProperty('schools', 'circle-stroke-opacity', style['circle-stroke-opacity']);
     }
   });
+
+  let regionsEl = document.getElementById('map-regions');
+  Object.keys(regions).forEach((name) => {
+    let bbox = regions[name];
+    let regionEl = document.createElement('div');
+    regionEl.innerText = name;
+    regionEl.addEventListener('click', () => {
+      map.fitBounds(bbox);
+    });
+    regionsEl.appendChild(regionEl);
+  });
+
 }
 
 export default setupUI;

@@ -194,3 +194,5 @@ map.map.on('dragstart', () => {
 const legend = new Legend(map, config.COLORS, config.RANGES, config.SHORT_NAMES, {id: 'zctas', layer: 'zctas'}, state.props);
 
 setupUI(map, legend, info, state);
+
+window.map = map;
