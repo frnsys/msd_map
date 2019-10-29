@@ -174,7 +174,13 @@ const map = new Map({
     tooltip.style.left = `${ev.originalEvent.offsetX+10}px`;
     tooltip.style.top = `${ev.originalEvent.offsetY+10}px`;
     tooltip.style.display = 'block';
-    tooltip.innerHTML = features['schools'].map((s) => s.properties['INSTNM']).join('<br />');
+    tooltip.innerHTML = features['schools'].map((s) => {
+      return `<div class="school-info">
+        ${s.properties['INSTNM']}
+        <div>ZCTA: ${s.properties['ZIP']}</div>
+        <div>Enrollment Seats: ${s.properties['UNDUPUG']}</div>
+      </div>`;
+    }).join('<br />');
   } else {
     tooltip.style.display = 'none';
   }

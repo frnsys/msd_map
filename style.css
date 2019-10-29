@@ -302,6 +302,12 @@ section.text:last-child {
   margin-top: 1em;
 }
 
+.school-info > div {
+  font-size: 0.85em;
+  color: #aaa;
+  margin-left: 1em;
+}
+
 /* Hiding for now */
 select[name="propertyA"],
 select[name="propertyB"] {

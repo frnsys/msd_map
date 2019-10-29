@@ -39,6 +39,8 @@ SCHOOL_FIELDS = [
     'SECTOR',
     'ICLEVEL',
     'CONTROL',
+    'UNDUPUG',
+    'ZIP'
 ]
 
 data = {}
@@ -91,6 +93,8 @@ for row in tqdm(df.itertuples(), total=len(df), desc='Schools csv'):
     row_data = dict(row._asdict())
     id = int(row_data['UNITID'])
     schools[id] = {k: row_data[k] for k in SCHOOL_FIELDS}
+    if 'ZIP' in schools[id]:
+        schools[id]['ZIP'] = str(int(schools[id]['ZIP'])).zfill(5)
     schools_geojson['features'].append({
         'id': id,
         'type': 'Feature',

@@ -75,7 +75,7 @@ function explain(feats, cat, focusedSchools) {
   html += `
     ${focusedSchools.length > 0 ?
         `<h2>School</h2>
-        ${focusedSchools.sort((a, b) => a['INSTNM'].localeCompare(b['INSTNM'])).map((s) => `${s.properties['INSTNM']}<br />`).join('\n')}`
+        ${focusedSchools.sort((a, b) => a.properties['INSTNM'].localeCompare(b.properties['INSTNM'])).map((s) => `${s.properties['INSTNM']}<br />`).join('\n')}`
       : ''}`;
 
   info.explainFeature(html);
