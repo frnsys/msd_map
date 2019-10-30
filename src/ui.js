@@ -48,6 +48,18 @@ function filteredStyle(condition) {
 
 
 function setupUI(map, legend, info, state) {
+  // Jump to region
+  let regionsEl = document.getElementById('map-regions');
+  Object.keys(regions).sort((a, b) => a.localeCompare(b)).forEach((name) => {
+    let bbox = regions[name];
+    let regionEl = document.createElement('div');
+    regionEl.innerText = name;
+    regionEl.addEventListener('click', () => {
+      map.fitBounds(bbox);
+    });
+    regionsEl.appendChild(regionEl);
+  });
+
   // Jump to zipcode
   const zipcodeInput = document.querySelector('#control input[name=zipcode]');
   zipcodeInput.addEventListener('input', (ev) => {
@@ -132,18 +144,6 @@ function setupUI(map, legend, info, state) {
       map.map.setPaintProperty('schools', 'circle-stroke-opacity', style['circle-stroke-opacity']);
     }
   });
-
-  let regionsEl = document.getElementById('map-regions');
-  Object.keys(regions).forEach((name) => {
-    let bbox = regions[name];
-    let regionEl = document.createElement('div');
-    regionEl.innerText = name;
-    regionEl.addEventListener('click', () => {
-      map.fitBounds(bbox);
-    });
-    regionsEl.appendChild(regionEl);
-  });
-
 }
 
 export default setupUI;

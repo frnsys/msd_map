@@ -1,5 +1,11 @@
 import color from './color';
 
+// Mapbox seems to turn 'null'
+// values into 0, so we can
+// specify a different value that
+// we're using in the geojson to represent null.
+const NULL_VALUE = 0;
+
 class Painter {
   constructor(ranges, colors) {
     this.ranges = ranges;
@@ -24,11 +30,11 @@ class Painter {
           this.colors['FOCUS'],
 
         // If either property is null
-        ['==', ['get', propA], null],
-          '#000000',
+        ['==', ['get', propA], NULL_VALUE],
+          this.colors['EMPTY'],
 
-        ['==', ['get', propB], null],
-          '#000000',
+        ['==', ['get', propB], NULL_VALUE],
+          this.colors['EMPTY'],
 
         ['concat',
           'rgb(',
@@ -81,11 +87,11 @@ class Painter {
 
       // If feature-state is set to focus
       ['boolean', ['feature-state', 'focus'], false],
-          this.colors['FOCUS'],
+        this.colors['FOCUS'],
 
-      // If the property value is 0
-      ['==', ['get', prop], 0],
-        '#262626',
+      // If the property value is null
+      ['==', ['get', prop], NULL_VALUE],
+        this.colors['EMPTY'],
 
       // Otherwise, interpolate color
       ['interpolate', ['linear'], ['get', prop],

@@ -233,10 +233,10 @@ class Legend {
     labels.classList.add('legend--labels');
 
     let lowerLabel = document.createElement('div');
-    lowerLabel.innerText = range[0];
+    lowerLabel.innerText = Math.floor(range[0]);
 
     let upperLabel = document.createElement('div');
-    upperLabel.innerText = range[1];
+    upperLabel.innerText = Math.ceil(range[1]);
 
     labels.appendChild(upperLabel);
     labels.appendChild(lowerLabel);

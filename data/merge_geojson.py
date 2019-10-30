@@ -10,6 +10,7 @@ import fiona
 import pandas as pd
 from tqdm import tqdm
 from shapely.geometry import shape
+from collections import defaultdict
 
 CATEGORIES = [
     'allschools',
@@ -29,11 +30,11 @@ CSV_CATEGORIZED_FIELDS = [
 ]
 CSV_DEFAULTS = {
     'population_total': 0,
-    'schools': []
+    'SCI': 0
 }
 for k in CSV_CATEGORIZED_FIELDS:
     for cat in CATEGORIES:
-        CSV_DEFAULTS['{}.{}'.format(k, cat)] = 0
+        CSV_DEFAULTS['{}.{}'.format(k, cat)] = CSV_DEFAULTS.get(k, 0)
 
 SCHOOL_FIELDS = [
     'INSTNM',
@@ -58,6 +59,7 @@ STATES = [
     'Hawaii'
 ]
 
+
 data = {}
 df = pd.read_csv('src/ZCTAlevel.csv')
 df = df.where(pd.notnull(df), None)
@@ -75,8 +77,13 @@ for row in tqdm(df.itertuples(), total=len(df), desc='ZCTA csv'):
     # can't handle nesting
     for k in CSV_CATEGORIZED_FIELDS:
         for cat in CATEGORIES:
-            data[zipcode]['{}.{}'.format(k, cat)] = row_data['{}_{}'.format(k, cat)]
-    data[zipcode]['schools'] = []
+            ck = '{}.{}'.format(k, cat)
+            val = row_data['{}_{}'.format(k, cat)]
+            data[zipcode][ck] = val
+
+            if k == 'SCI' and val == None:
+                if val == None:
+                    data[zipcode][ck] = 0
 
 # Compute ranges
 meta = {}
@@ -93,7 +100,13 @@ for k in CSV_CATEGORIZED_FIELDS:
         s = df['{}_{}'.format(k, cat)]
         vals.append(float(s.min()))
         vals.append(float(s.max()))
-    meta['ranges'][k] = (min(vals), max(vals))
+
+    if k == 'SCI':
+        # Using 0 as a null value, so ignore
+        min_vals = [v for v in vals if v > 0]
+        meta['ranges'][k] = (min(min_vals), max(vals))
+    else:
+        meta['ranges'][k] = (min(vals), max(vals))
 
 
 # Load school data
@@ -122,6 +135,7 @@ for row in tqdm(df.itertuples(), total=len(df), desc='Schools csv'):
 
 
 # Associate schools with ZCTAs
+zip_schools = defaultdict(list)
 df = pd.read_csv('src/2016schoolzones.csv')
 df = df.where((pd.notnull(df)), None)
 for row in tqdm(df.itertuples(), total=len(df), desc='School zones csv'):
@@ -131,17 +145,13 @@ for row in tqdm(df.itertuples(), total=len(df), desc='School zones csv'):
     assert len(zipcode) == 5
 
     unit_id = int(row_data['unitid'])
-    data[zipcode]['schools'].append(unit_id)
+    zip_schools[zipcode].append(unit_id)
 
 
 # Compute bounding boxes for zipcodes
 meta['bboxes'] = {}
 
-geojson = {
-    'type': 'FeatureCollection',
-    'features': []
-}
-
+geojson = []
 zipcode_geojson = json.load(open('src/zipcodes.geojson'))
 for f in tqdm(zipcode_geojson['features'], desc='Merging into geojson'):
     del f['id']
@@ -151,9 +161,9 @@ for f in tqdm(zipcode_geojson['features'], desc='Merging into geojson'):
     except:
         f['properties'] = dict(**CSV_DEFAULTS)
     f['properties']['zipcode'] = zipcode
-    f['properties']['n_schools'] = len(f['properties']['schools'])
+    f['properties']['n_schools'] = len(zip_schools[zipcode])
     meta['bboxes'][zipcode] = shape(f['geometry']).bounds
-    geojson['features'].append(f)
+    geojson.append(f)
 
 countries = fiona.open('src/countries/ne_10m_admin_0_countries.shp')
 region_bboxes = {}
@@ -191,8 +201,12 @@ with open('schools.json', 'w') as f:
 with open('meta.json', 'w') as f:
     json.dump(meta, f)
 
+with open('zip_schools.json', 'w') as f:
+    json.dump(zip_schools, f)
+
 with open('zctas.geojson', 'w') as f:
-    json.dump(geojson, f)
+    # Write one feature per line, so tippecanoe can process in parallel
+    f.write('\n'.join(json.dumps(feat) for feat in geojson))
 
 with open('zctas.json', 'w') as f:
     json.dump(data, f)

@@ -1,6 +1,7 @@
 import util from './util';
 import info from './lib/info';
 import schools from '../data/schools.json';
+import zipSchools from '../data/zip_schools.json';
 
 const CONTROL = {
   1: 'Public',
@@ -27,7 +28,8 @@ function explain(feats, cat, focusedSchools) {
       return acc;
     }, {});
 
-    let schoolIds = JSON.parse(feat.properties['schools']);
+    let [zipcode, ...otherZips] = p['zipcode'].split(',');
+    let schoolIds = zipSchools[zipcode];
     let schoolsForZCTA = schoolIds.map((id) => schools[id]);
     let groupedSchools = {};
     schoolsForZCTA.forEach((s) => {
@@ -48,11 +50,10 @@ function explain(feats, cat, focusedSchools) {
 
     // Leaving this out for now
     // Average Tuition: ${d['avg_grosscost'] ? formatter.format(d['avg_grosscost']) : 'N/A'}<br/>
-    let [zipcode, ...otherZips] = p['zipcode'].split(',');
     return `
       <h2>${zipcode}</h2>
-      School Concentration Index: ${(d['SCI'] || 0).toFixed(2)}<br/>
-      Number of Schools: ${JSON.parse(p['schools']).length}<br/>
+      School Concentration Index: ${d['SCI'] !== -1 ? d['SCI'].toFixed(2) : 'N/A'}<br/>
+      Number of Schools: ${schoolIds.length}<br/>
       Population Estimate: ${p['population_total']}<br/>
       Enrollment Seats: ${d['UNDUPUG'] || 0}<br/>
       ${otherZips.length > 0 ? `<div class="other-zctas">Other ZCTAs here: ${otherZips.join(', ')}</div>` : ''}

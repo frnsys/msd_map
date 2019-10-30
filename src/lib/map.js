@@ -14,6 +14,7 @@ class Map {
       return acc;
     }, {});
 
+    this.featuresUnderMouse = new Set();
     this.focused = Object.keys(sources).reduce((acc, s) => {
       acc[s] = [];
       return acc;
@@ -46,8 +47,23 @@ class Map {
     });
 
     this.map.on('mousemove', (e) => {
-      let features = this.featuresAtPoint(e.point);
-      onMouseMove(features, e);
+      // Be conservative in running mousemove responses,
+      // since it can be a big performance hit
+      if (!this.map.isMoving() && !this.map.isZooming()) {
+        let features = this.featuresAtPoint(e.point);
+        let haveNew = Object.keys(features).some((k) => {
+          return features[k].filter(x => {
+            return !this.featuresUnderMouse[k] || !this.featuresUnderMouse[k].has(x.id);
+          }).length > 0;
+        });
+        if (haveNew) {
+          this.featuresUnderMouse = Object.keys(features).reduce((acc, s) => {
+            acc[s] = new Set(features[s].map((f) => f.id));
+            return acc;
+          }, {});
+          onMouseMove(features, e);
+        }
+      }
     });
 
     this.map.on('click', (e) => {
@@ -187,7 +203,7 @@ class Map {
     }
   }
 
-  fitBounds(bbox) {
+  fitBounds(bbox, cb) {
     this.map.fitBounds(bbox);
   }
 }

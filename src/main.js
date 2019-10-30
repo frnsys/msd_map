@@ -6,6 +6,7 @@ import setupUI from './ui';
 import mapboxgl from 'mapbox-gl';
 import config from './config';
 import schools from '../data/schools.json';
+import zipSchools from '../data/zip_schools.json';
 
 mapboxgl.accessToken = config.MAPBOX_TOKEN;
 
@@ -38,7 +39,7 @@ const allSchoolsStyle = {
 const sources = {
   'zctas': {
     'type': 'vector',
-    'url': 'mapbox://frnsys.6ct9nbap'
+    'url': 'mapbox://frnsys.6ijk4z2u'
   },
   'schools': {
     'type': 'geojson',
@@ -129,7 +130,8 @@ function focusFeatures(features, ev) {
     // highlight schools for that ZCTA
     if (feats.length == 1) {
       let feat = feats[0];
-      let schoolIds = JSON.parse(feat.properties['schools']);
+      let zip = feat.properties['zipcode'].split(',')[0];
+      let schoolIds = zipSchools[zip];
       let schoolsForZCTA = schoolIds.map((id) => schools[id]);
       let filter = ['!in', '$id'].concat(schoolIds);
       map.setFilter({
@@ -194,5 +196,4 @@ map.map.on('dragstart', () => {
 const legend = new Legend(map, config.COLORS, config.RANGES, config.SHORT_NAMES, {id: 'zctas', layer: 'zctas'}, state.props);
 
 setupUI(map, legend, info, state);
-
-window.map = map;
+info.reset();

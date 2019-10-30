@@ -18,9 +18,10 @@ const COLORS = Object.keys(colors).reduce((acc, prop) => {
   return acc;
 }, {});
 COLORS.FOCUS = '#f9ca74';
+COLORS.EMPTY = '#b26c10';
 
 const CATS = {
-  'allschools': 'All',
+  'allschools': 'All School Types',
   'public': 'Public',
   'privnot4prof': 'Private, not-for-profit',
   'priv4prof': 'Private, for-profit',
