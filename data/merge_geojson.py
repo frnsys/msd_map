@@ -189,12 +189,24 @@ region_bboxes['Alaska'] = [-207.4133546365765, 50.796925749084465, -104.93451956
 
 # 30/45/60 isochrone comparison data
 df = pd.read_csv('src/SCI.30.45.60_comparisons.csv')
+zip_states = pd.read_csv('src/zip_to_zcta_2018.csv')
+states = ['OH', 'GA', 'NJ', 'SD']
 dists = ['30', '45', '60']
+valid_zips = set()
+for row in zip_states.itertuples():
+    if row.STATE in states:
+        zipcode = str(int(row.ZCTA)).zfill(5)
+        valid_zips.add(zipcode)
+
+
 comparisons = {}
 for row in tqdm(df.itertuples(), total=len(df), desc='Comparison data'):
     row_data = dict(row._asdict())
 
     zipcode = str(int(row_data['zcta'])).zfill(5)
+    if zipcode not in valid_zips:
+        continue
+
     comparisons[zipcode] = {}
     for d in dists:
         comparisons[zipcode][d] = {}

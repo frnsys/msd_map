@@ -69,13 +69,13 @@ const SHORT_NAMES = {
 let MAP_ID = 'frnsys.6ijk4z2u';
 let INITIAL_CAT = 'allschools';
 if (params['30']) {
-  MAP_ID = 'frnsys.6qa1669m';
+  MAP_ID = 'frnsys.590w69s5';
   INITIAL_CAT = 'public';
 } else if (params['45']) {
-  MAP_ID = 'frnsys.69m4w0l6';
+  MAP_ID = 'frnsys.8srbv2ok';
   INITIAL_CAT = 'public';
 } else if (params['60']) {
-  MAP_ID = 'frnsys.bhadxnjq';
+  MAP_ID = 'frnsys.44fgwf33';
   INITIAL_CAT = 'public';
 }
 const INITIAL_PROPS = ['SCI'].map((p) => {
