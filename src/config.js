@@ -2,6 +2,14 @@ import color from './lib/color';
 import config from '../config';
 import data from '../data/meta.json';
 
+let params = window.location.search.substr(1).split('&').reduce((acc, param) => {
+    let val = true;
+    if (param.includes('=')) [param, val] = param.split('=');
+    acc[param] = val;
+    return acc;
+}, {});
+
+
 const BBOXES = data.bboxes;
 const RANGES = data.ranges;
 const MAPBOX_TOKEN = config.MAPBOX_TOKEN;
@@ -58,7 +66,18 @@ const SHORT_NAMES = {
   'UNDUPUG': 'Enrollment Seats'
 };
 
-const INITIAL_CAT = 'allschools';
+let MAP_ID = 'frnsys.6ijk4z2u';
+let INITIAL_CAT = 'allschools';
+if (params['30']) {
+  MAP_ID = 'frnsys.6qa1669m';
+  INITIAL_CAT = 'public';
+} else if (params['45']) {
+  MAP_ID = 'frnsys.69m4w0l6';
+  INITIAL_CAT = 'public';
+} else if (params['60']) {
+  MAP_ID = 'frnsys.bhadxnjq';
+  INITIAL_CAT = 'public';
+}
 const INITIAL_PROPS = ['SCI'].map((p) => {
   return HAS_CATS.includes(p) ? `${p}.${INITIAL_CAT}` : p;
 });
@@ -73,6 +92,7 @@ HAS_CATS.forEach((p) => {
 });
 
 export default {
+  MAP_ID,
   INITIAL_PROPS,
   INITIAL_CAT,
   CATS, HAS_CATS, CAT_PROP_EXPRS,

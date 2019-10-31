@@ -39,7 +39,7 @@ const allSchoolsStyle = {
 const sources = {
   'zctas': {
     'type': 'vector',
-    'url': 'mapbox://frnsys.6ijk4z2u'
+    'url': `mapbox://${config.MAP_ID}`
   },
   'schools': {
     'type': 'geojson',

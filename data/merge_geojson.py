@@ -187,7 +187,39 @@ for state in STATES:
 # Data source is incorrect about Alaska, set it manually
 region_bboxes['Alaska'] = [-207.4133546365765, 50.796925749084465, -104.93451956255066, 71.79270027924889]
 
+# 30/45/60 isochrone comparison data
+df = pd.read_csv('src/SCI.30.45.60_comparisons.csv')
+dists = ['30', '45', '60']
+comparisons = {}
+for row in tqdm(df.itertuples(), total=len(df), desc='Comparison data'):
+    row_data = dict(row._asdict())
+
+    zipcode = str(int(row_data['zcta'])).zfill(5)
+    comparisons[zipcode] = {}
+    for d in dists:
+        comparisons[zipcode][d] = {}
+        for k in ['schools', 'SCI_public', 'UNDUPUG_public']:
+            comparisons[zipcode][d][k.replace('_', '.')] = row_data['{}{}'.format(k, d)]
+
+import copy
+comparison_geojsons = {d: [] for d in dists}
+zipcode_geojson = json.load(open('src/zipcodes.geojson'))
+for f in tqdm(zipcode_geojson['features'], desc='Preparing comparison geojsons'):
+    del f['id']
+    zipcode = f['properties']['ZCTA5CE10']
+    if zipcode not in comparisons: continue
+    for d in dists:
+        feat = copy.deepcopy(f)
+        feat['properties'] = dict(**comparisons[zipcode][d])
+        feat['properties']['zipcode'] = zipcode
+        feat['properties']['n_schools'] = comparisons[zipcode][d]['schools']
+        comparison_geojsons[d].append(feat)
+
 print('Saving files...')
+
+for d in dists:
+    with open('comparison_{}.geojson'.format(d), 'w') as f:
+        f.write('\n'.join(json.dumps(feat) for feat in comparison_geojsons[d]))
 
 with open('regions.json', 'w') as f:
     json.dump(region_bboxes, f)
