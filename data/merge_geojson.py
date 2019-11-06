@@ -108,6 +108,14 @@ for k in CSV_CATEGORIZED_FIELDS:
     else:
         meta['ranges'][k] = (min(vals), max(vals))
 
+# Compute summary statistics
+for s in ['mean', 'median', 'min', 'max']:
+    meta[s] = {}
+    for k in CSV_UNCATEGORIZED_FIELDS:
+        meta[s][k] = float(getattr(df[k], s)())
+    for k in CSV_CATEGORIZED_FIELDS:
+        key = '{}_{}'.format(k, cat)
+        meta[s][key] = float(getattr(df[key], s)())
 
 # Load school data
 schools = {}
