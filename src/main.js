@@ -167,7 +167,7 @@ function focusFeatures(features, ev) {
   }
 }
 
-const painter = new Painter(config.RANGES, config.COLORS);
+const painter = new Painter(config.COLORS);
 const map = new Map({
   container: 'map',
   style: 'mapbox://styles/frnsys/ck2nj51351dtc1ds1bxi35he6',
@@ -200,7 +200,7 @@ const map = new Map({
 map.map.on('dragstart', () => {
   tooltip.style.display = 'none';
 });
-const legend = new Legend(map, config.COLORS, config.RANGES, config.SHORT_NAMES, {id: 'zctas', layer: 'zctas'}, state.props);
+const legend = new Legend(map, {id: 'zctas', layer: 'zctas'}, state.props);
 
 setupUI(map, legend, info, state);
 info.reset();
