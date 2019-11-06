@@ -172,6 +172,9 @@ const map = new Map({
   minZoom: 2,
   center: [-98.5556199, 39.8097343]
 }, sources, layers, {'zctas': state.props}, painter, focusFeatures, (features, ev) => {
+  // Ignore at low zoom levels, gets really choppy
+  if (map.map.getZoom() <= 6) return;
+
   if (features['schools'].length > 0) {
     tooltip.style.left = `${ev.originalEvent.offsetX+10}px`;
     tooltip.style.top = `${ev.originalEvent.offsetY+10}px`;
