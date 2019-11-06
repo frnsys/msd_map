@@ -106,7 +106,7 @@ class Map {
   featuresAtPoint(point) {
     let features = this.map.queryRenderedFeatures(point);
 
-    let sources = Object.keys(this.sources);
+    let sources = Object.keys(this.sources).concat(['composite']);
     let acc = sources.reduce((acc, s) => {
       acc[s] = [];
       return acc;

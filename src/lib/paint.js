@@ -6,6 +6,25 @@ import color from './color';
 // we're using in the geojson to represent null.
 const NULL_VALUE = 0;
 
+function stopToValue(stop, range) {
+  return range[0] + (range[1] - range[0]) * stop;
+}
+
+function gradientToStyle(gradient, range, idx) {
+  return Object.keys(gradient)
+    .map((stop) => parseFloat(stop))
+    .sort()
+    .reduce((acc, stop) => {
+      acc.push(stopToValue(stop, range));
+      if (idx) {
+        acc.push(gradient[stop][idx]);
+      } else {
+        acc.push(color.colorToRGB(gradient[stop]))
+      }
+      return acc;
+    }, []);
+}
+
 class Painter {
   constructor(ranges, colors) {
     this.ranges = ranges;
@@ -41,12 +60,8 @@ class Painter {
 
           // r
           ['*',
-            ['interpolate', ['linear'], ['get', propA],
-              ranges.a[0], colors.a[0][0], ranges.a[1], colors.a[1][0]],
-
-            ['interpolate', ['linear'], ['get', propB],
-              ranges.b[0], colors.b[0][0], ranges.b[1], colors.b[1][0]],
-
+            ['interpolate', ['linear'], ['get', propA]].concat(gradientToStyle(colors.a, ranges.a, 0)),
+            ['interpolate', ['linear'], ['get', propB]].concat(gradientToStyle(colors.b, ranges.b, 0)),
             255
           ],
 
@@ -54,12 +69,8 @@ class Painter {
 
           // g
           ['*',
-            ['interpolate', ['linear'], ['get', propA],
-              ranges.a[0], colors.a[0][1], ranges.a[1], colors.a[1][1]],
-
-            ['interpolate', ['linear'], ['get', propB],
-              ranges.b[0], colors.b[0][1], ranges.b[1], colors.b[1][1]],
-
+            ['interpolate', ['linear'], ['get', propA]].concat(gradientToStyle(colors.a, ranges.a, 1)),
+            ['interpolate', ['linear'], ['get', propB]].concat(gradientToStyle(colors.b, ranges.b, 1)),
             255
           ],
 
@@ -67,12 +78,8 @@ class Painter {
 
           // b
           ['*',
-            ['interpolate', ['linear'], ['get', propA],
-              ranges.a[0], colors.a[0][2], ranges.a[1], colors.a[1][2]],
-
-            ['interpolate', ['linear'], ['get', propB],
-              ranges.b[0], colors.b[0][2], ranges.b[1], colors.b[1][2]],
-
+            ['interpolate', ['linear'], ['get', propA]].concat(gradientToStyle(colors.a, ranges.a, 2)),
+            ['interpolate', ['linear'], ['get', propB]].concat(gradientToStyle(colors.b, ranges.b, 2)),
             255
           ],
 
@@ -94,9 +101,7 @@ class Painter {
         this.colors['EMPTY'],
 
       // Otherwise, interpolate color
-      ['interpolate', ['linear'], ['get', prop],
-        this.ranges[prop][0], color.colorToRGB(this.colors[prop][0]), this.ranges[prop][1], color.colorToRGB(this.colors[prop][1])
-      ]
+      ['interpolate', ['linear'], ['get', prop]].concat(gradientToStyle(this.colors[prop], this.ranges[prop]))
     ];
   }
 }

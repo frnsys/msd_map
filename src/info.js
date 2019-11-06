@@ -23,7 +23,7 @@ const formatter = new Intl.NumberFormat('en-US', {
 function explain(feats, cat, focusedSchools) {
   let html = feats.map((feat) => {
     let p = feat.properties;
-    let d = ['SCI', 'avg_grosscost', 'UNDUPUG'].reduce((acc, k) => {
+    let d = ['SCI', 'avg_grosscost', 'UNDUPUG', 'schools'].reduce((acc, k) => {
       acc[k] = p[util.propForCat(k, cat)];
       return acc;
     }, {});
@@ -52,8 +52,8 @@ function explain(feats, cat, focusedSchools) {
     // Average Tuition: ${d['avg_grosscost'] ? formatter.format(d['avg_grosscost']) : 'N/A'}<br/>
     return `
       <h2>${zipcode}</h2>
-      School Concentration Index: ${d['SCI'] > 0 ? d['SCI'].toFixed(2) : 'Education desert'}<br/>
-      Number of Schools: ${schoolIds.length}<br/>
+      SCI: ${d['SCI'] > 0 ? d['SCI'].toFixed(2) : 'Education Desert'}<br/>
+      Number of Schools: ${d['schools']}<br/>
       Population Estimate: ${p['population_total']}<br/>
       Enrollment Seats: ${d['UNDUPUG'] || 0}<br/>
       ${otherZips.length > 0 ? `<div class="other-zctas">Other ZCTAs here: ${otherZips.join(', ')}</div>` : ''}
@@ -82,10 +82,14 @@ function explain(feats, cat, focusedSchools) {
   info.explainFeature(html);
 }
 
+function empty() {
+  info.explainFeature(`<h2>No ZCTA here</h2>`);
+}
+
 function reset() {
   info.explainFeature(`<h2>About this project</h2><p>TK</p>`);
 }
 
 export default {
-  explain, reset
+  explain, empty, reset
 };

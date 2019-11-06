@@ -15,18 +15,37 @@ const RANGES = data.ranges;
 const MAPBOX_TOKEN = config.MAPBOX_TOKEN;
 
 const colors = {
-  'SCI': ['#f9c2c5', '#e5020d'],
-  'avg_grosscost': ['#a9bdfc', '#023ff7'],
-  'schools': ['#f5fff8', '#32a852'],
-  'population_total': ['#fff8d6', '#ffd721'],
-  'UNDUPUG': ['#ffedff', '#c65cff']
+  'SCI': {
+    0.0: '#7dd177',
+    0.3: '#f4d71a',
+    1.0: '#9b150c'
+  },
+  'avg_grosscost': {
+    0.0: '#a9bdfc',
+    1.0: '#023ff7'
+  },
+  'schools': {
+    0.0: '#f5fff8',
+    1.0: '#32a852'
+  },
+  'population_total': {
+    0.0: '#fff8d6',
+    1.0: '#ffd721'
+  },
+  'UNDUPUG': {
+    0.0: '#ffedff',
+    1.0: '#c65cff'
+  }
 };
 const COLORS = Object.keys(colors).reduce((acc, prop) => {
-  acc[prop] = colors[prop].map((h) => color.hexToRGB(h));
+  acc[prop] = Object.keys(colors[prop]).reduce((a, stop) => {
+    a[stop] = color.hexToRGB(colors[prop][stop]);
+    return a;
+  }, {});
   return acc;
 }, {});
 COLORS.FOCUS = '#f9ca74';
-COLORS.EMPTY = '#b26c10';
+COLORS.EMPTY = '#6b0106';
 
 const CATS = {
   'allschools': 'All School Types',
@@ -66,7 +85,7 @@ const SHORT_NAMES = {
   'UNDUPUG': 'Enrollment Seats'
 };
 
-let MAP_ID = 'frnsys.6ijk4z2u';
+let MAP_ID = 'frnsys.aiuzp85f';
 let INITIAL_CAT = 'allschools';
 if (params['30']) {
   MAP_ID = 'frnsys.590w69s5';

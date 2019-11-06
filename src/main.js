@@ -158,7 +158,11 @@ function focusFeatures(features, ev) {
 
   // Otherwise, hide
   } else {
-    info.reset();
+    if (features['composite']) {
+      info.empty();
+    } else {
+      info.reset();
+    }
     legend.hideFeatures();
   }
 }
@@ -166,7 +170,7 @@ function focusFeatures(features, ev) {
 const painter = new Painter(config.RANGES, config.COLORS);
 const map = new Map({
   container: 'map',
-  style: 'mapbox://styles/frnsys/cjzk1fw9w5goc1cpd8pzx6wuu',
+  style: 'mapbox://styles/frnsys/ck2nj51351dtc1ds1bxi35he6',
   zoom: 3,
   maxZoom: 12,
   minZoom: 2,

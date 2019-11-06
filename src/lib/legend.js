@@ -198,12 +198,15 @@ class Legend {
   range(prop) {
     this.reset();
 
-    let [startColor, endColor] = this.colors[prop];
+    let gradient = this.colors[prop];
     let range = this.ranges[prop];
     let rangeBar = document.createElement('div');
     rangeBar.classList.add('legend--bar');
     rangeBar.classList.add('legend--focus-point-host');
-    rangeBar.style.background = `linear-gradient(0, ${color.colorToRGB(startColor)} 0%, ${color.colorToRGB(endColor)} 100%)`;
+    let gradientCss = Object.keys(gradient).map((stop) => parseFloat(stop)).sort().map((stop) => {
+      return `${color.colorToRGB(gradient[stop])} ${stop*100}%`;
+    })
+    rangeBar.style.background = `linear-gradient(0, ${gradientCss.join(', ')})`;
 
     let n = 4;
     for (let i=0; i<n; i++) {

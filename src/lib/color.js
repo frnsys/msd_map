@@ -2,9 +2,25 @@ function interpolateRange(l, u, p) {
   return l + (u - l) * p;
 }
 
-function interpolate(range, p) {
-  let [l_r, l_g, l_b] = range[0];
-  let [u_r, u_g, u_b] = range[1];
+function interpolate(gradient, p) {
+  // Figure out sub-range for p
+  let range = Object.keys(gradient).map((stop) => parseFloat(stop)).sort()
+    .reduce((acc, stop) => {
+      if (stop <= p) {
+        acc.l.push(stop);
+      } else {
+        acc.u.push(stop);
+      }
+      return acc;
+    }, {l: [], u: []});
+  let l = Math.max(range.l);
+  let u = Math.min(range.u);
+
+  // Convert p for this range
+  p  = (p - l)/(u - l);
+
+  let [l_r, l_g, l_b] = gradient[l];
+  let [u_r, u_g, u_b] = gradient[u];
   let r = interpolateRange(l_r, u_r, p);
   let g = interpolateRange(l_g, u_g, p);
   let b = interpolateRange(l_b, u_b, p);

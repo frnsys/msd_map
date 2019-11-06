@@ -143,6 +143,10 @@ function setupUI(map, legend, info, state) {
       map.map.setPaintProperty('schools', 'circle-opacity', style['circle-opacity']);
       map.map.setPaintProperty('schools', 'circle-stroke-opacity', style['circle-stroke-opacity']);
     }
+
+    if (map.focused['zctas']) {
+      info.explain(map.focused['zctas'], state.cat, []);
+    };
   });
 }
 
