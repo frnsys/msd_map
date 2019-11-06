@@ -3,12 +3,9 @@ import color from './color';
 const legend = document.getElementById('legend');
 
 class Legend {
-  constructor(map, colors, ranges, labels, source, initProps) {
+  constructor(map, source, initProps) {
     this.map = map;
     this.props = initProps;
-    this.colors = colors;
-    this.ranges = ranges;
-    this.labels = labels;
     this.source = source;
     this.set(initProps);
   }
@@ -44,8 +41,8 @@ class Legend {
         pointEl.classList.add('legend--bivariate-point');
 
         let [propA, propB] = this.props;
-        let p_a = (feat.properties[propA]-this.ranges[propA][0])/(this.ranges[propA][1] - this.ranges[propA][0]);
-        let p_b = (feat.properties[propB]-this.ranges[propB][0])/(this.ranges[propB][1] - this.ranges[propB][0]);
+        let p_a = (feat.properties[propA.key]-propA.range[0])/(propA.range[1] - propA.range[0]);
+        let p_b = (feat.properties[propB.key]-propB.range[0])/(propB.range[1] - propB.range[0]);
         pointEl.style.left = `calc(${p_b*100}% - ${pointEl.clientWidth/2}px)`;
         pointEl.style.bottom = `calc(${p_a*100}% - ${pointEl.clientHeight/2}px)`;
         pointEl.style.display = 'block';
@@ -55,8 +52,8 @@ class Legend {
         pointEl.classList.add('legend--point');
 
         let [prop] = this.props;
-        if (feat.properties[prop]) {
-          let p = (feat.properties[prop]-this.ranges[prop][0])/(this.ranges[prop][1] - this.ranges[prop][0]);
+        if (feat.properties[prop.key]) {
+          let p = (feat.properties[prop.key]-prop.range[0])/(prop.range[1] - prop.range[0]);
           pointEl.style.display = 'block';
           pointEl.style.bottom = `calc(${p*100}% - ${pointEl.clientHeight/2}px)`;
 
@@ -92,12 +89,12 @@ class Legend {
     legend.classList.add('legend--bivariate');
 
     let colors = {
-      a: this.colors[propA],
-      b: this.colors[propB],
+      a: propA.color,
+      b: propB.color
     };
     let ranges = {
-      a: this.ranges[propA],
-      b: this.ranges[propB]
+      a: propA.range,
+      b: propB.range
     };
 
     let container = document.createElement('div');
@@ -133,7 +130,7 @@ class Legend {
         let aColor = color.interpolate(colors.a, y);
         let bColor = color.interpolate(colors.b, x);
         let mix = color.multiply(aColor, bColor);
-        let rgb = color.colorToRGB(mix);
+        let rgb = color.rgbToCSS(mix);
         let cell = document.createElement('div');
         cell.classList.add('legend--cell')
         cell.style.background = rgb;
@@ -149,10 +146,10 @@ class Legend {
           // Select features _outside_ of this range,
           // to mute them
           let filter = ['any',
-            ['<', propA, a_l],
-            ['>', propA, a_u],
-            ['<', propB, b_l],
-            ['>', propB, b_u],
+            ['<', propA.key, a_l],
+            ['>', propA.key, a_u],
+            ['<', propB.key, b_l],
+            ['>', propB.key, b_u],
           ];
           this.map.setFilter(this.source, filter, {mute: true}, {mute: false});
         });
@@ -182,13 +179,13 @@ class Legend {
     container.appendChild(gridContainer);
 
     let a_label = document.createElement('div');
-    a_label.innerText = this.labels[propA];
+    a_label.innerText = propA.nick;
     a_label.classList.add('legend--bivariate-label');
     a_label.classList.add('legend--bivariate-label-a');
     gridContainer.appendChild(a_label);
 
     let b_label = document.createElement('div');
-    b_label.innerText = this.labels[propB];
+    b_label.innerText = propB.nick;
     b_label.classList.add('legend--bivariate-label');
     gridContainer.appendChild(b_label);
 
@@ -198,13 +195,13 @@ class Legend {
   range(prop) {
     this.reset();
 
-    let gradient = this.colors[prop];
-    let range = this.ranges[prop];
+    let gradient = prop.color;
+    let range = prop.range;
     let rangeBar = document.createElement('div');
     rangeBar.classList.add('legend--bar');
     rangeBar.classList.add('legend--focus-point-host');
     let gradientCss = Object.keys(gradient).map((stop) => parseFloat(stop)).sort().map((stop) => {
-      return `${color.colorToRGB(gradient[stop])} ${stop*100}%`;
+      return `${gradient[stop]} ${stop*100}%`;
     })
     rangeBar.style.background = `linear-gradient(0, ${gradientCss.join(', ')})`;
 
@@ -217,8 +214,8 @@ class Legend {
         let u = (n - i)/n * range[1];
         let l = (n - (i+1))/n * range[1];
         let filter = ['any',
-          ['<', prop, l],
-          ['>', prop, u],
+          ['<', prop.key, l],
+          ['>', prop.key, u],
         ];
         this.map.setFilter(this.source, filter, {mute: true}, {mute: false});
       });
@@ -230,7 +227,7 @@ class Legend {
 
     let title = document.createElement('div');
     title.classList.add('legend--title');
-    title.innerText = this.labels[prop];
+    title.innerText = prop.nick;
 
     let labels = document.createElement('div');
     labels.classList.add('legend--labels');

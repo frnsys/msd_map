@@ -19,8 +19,8 @@ function interpolate(gradient, p) {
   // Convert p for this range
   p  = (p - l)/(u - l);
 
-  let [l_r, l_g, l_b] = gradient[l];
-  let [u_r, u_g, u_b] = gradient[u];
+  let [l_r, l_g, l_b] = hexToRGB(gradient[l]);
+  let [u_r, u_g, u_b] = hexToRGB(gradient[u]);
   let r = interpolateRange(l_r, u_r, p);
   let g = interpolateRange(l_g, u_g, p);
   let b = interpolateRange(l_b, u_b, p);
@@ -40,16 +40,16 @@ function hexToRGB(hex) {
   ];
 }
 
-function colorToRGB(color) {
+function colorToCSS(color) {
   return `rgb(${color[0]*255}, ${color[1]*255}, ${color[2]*255})`;
 }
 
-function colorToHex(color) {
+function RGBToHex(color) {
   let [r,g,b] = color;
   return b*255 | ((g*255) << 8) | ((r*255) << 16);
 }
 
 export default {
   interpolate, multiply,
-  hexToRGB, colorToRGB, colorToHex
+  hexToRGB, colorToCSS, RGBToHex
 }

@@ -82,14 +82,14 @@ function setupUI(map, legend, info, state) {
   const propertyAInput = document.querySelector('#control select[name=propertyA]');
   const propertyBInput = document.querySelector('#control select[name=propertyB]');
   const categoryInput = document.querySelector('#control select[name=category]');
-  Object.keys(config.COLORS).forEach((property) => {
+  Object.keys(config.PROPS).forEach((property) => {
     let opt = document.createElement('option');
 
     // Skip categorized properties
     if (property.includes('.')) return;
 
-    opt.innerText = config.DESCS[property];
-    opt.value = property;
+    opt.innerText = property.desc;
+    opt.value = property.key;
     propertyAInput.appendChild(opt);
     if (property == state.props[0]) {
       opt.selected = true;
@@ -118,18 +118,18 @@ function setupUI(map, legend, info, state) {
   propertyBInput.appendChild(opt);
 
   propertyAInput.addEventListener('change', (ev) => {
-    state.props[0] = util.propForCat(ev.target.value, state.cat);
+    state.props[0] = config.PROPS[util.propForCat(ev.target.value, state.cat)];
     map.set('zctas', state.props);
     legend.set(state.props);
   });
   propertyBInput.addEventListener('change', (ev) => {
-    state.props[1] = util.propForCat(ev.target.value, state.cat);
+    state.props[1] = config.PROPS[util.propForCat(ev.target.value, state.cat)];
     map.set('zctas', state.props);
     legend.set(state.props);
   });
   categoryInput.addEventListener('change', (ev) => {
     state.cat = ev.target.value;
-    state.props = state.props.map((p) => util.propForCat(p, state.cat));
+    state.props = state.props.map((p) => config.PROPS[util.propForCat(p.key, state.cat)]);
     map.set('zctas', state.props);
     legend.set(state.props);
 
