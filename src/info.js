@@ -54,8 +54,8 @@ function explain(feats, cat, focusedSchools) {
       <h2>${zipcode}</h2>
       SCI: ${d['SCI'] > 0 ? d['SCI'].toFixed(2) : 'Education Desert'}<br/>
       Number of Schools: ${d['schools']}<br/>
-      Population Estimate: ${p['population_total']}<br/>
       Enrollment Seats: ${d['UNDUPUG'] || 0}<br/>
+      Population Estimate: ${p['population_total']}<br/>
       ${otherZips.length > 0 ? `<div class="other-zctas">Other ZCTAs here: ${otherZips.join(', ')}</div>` : ''}
 
       ${feats.length == 1 ? `
