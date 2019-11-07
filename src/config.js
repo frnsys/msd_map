@@ -35,6 +35,9 @@ const PROPS = {
       0.0: '#7dd177',
       0.3: '#f4d71a',
       1.0: '#9b150c'
+    },
+    legend: {
+      flip: true
     }
   },
   'avg_grosscost': {

@@ -38,10 +38,15 @@ class Legend {
     if (bivariate) {
       pointEl.classList.add('legend--bivariate-point');
 
-      let [propA, propB] = this.props;
       let [valA, valB] = vals;
+      let [propA, propB] = this.props;
       let p_a = (valA-propA.range[0])/(propA.range[1] - propA.range[0]);
       let p_b = (valB-propB.range[0])/(propB.range[1] - propB.range[0]);
+
+      let [flipA, flipB] = this.props.map((p) => p.legend && p.legend.flip);
+      if (flipA) p_a = 1 - p_a;
+      if (flipB) p_b = 1 - p_b;
+
       pointEl.style.left = `calc(${p_b*100}% - ${pointEl.clientWidth/2}px)`;
       pointEl.style.bottom = `calc(${p_a*100}% - ${pointEl.clientHeight/2}px)`;
       pointEl.style.display = 'block';
@@ -54,6 +59,10 @@ class Legend {
       let [val] = vals;
       if (val) {
         let p = (val-prop.range[0])/(prop.range[1] - prop.range[0]);
+
+        let flip = prop.legend && prop.legend.flip;
+        if (flip) p = 1 - p;
+
         pointEl.style.display = 'block';
         pointEl.style.bottom = `calc(${p*100}% - ${pointEl.clientHeight/2}px)`;
 
@@ -131,6 +140,9 @@ class Legend {
     this.reset();
     legend.classList.add('legend--bivariate');
 
+    let flipA = propA.legend && propA.legend.flip;
+    let flipB = propB.legend && propB.legend.flip;
+
     let wrapper = document.createElement('div');
     wrapper.classList.add('legend--bivariate-wrapper');
 
@@ -149,12 +161,15 @@ class Legend {
     let labels_a = document.createElement('div');
     labels_a.classList.add('legend--labels');
 
+    let labelTexts_a = [Math.floor(ranges.a[0]), Math.ceil(ranges.a[1])];
+    if (flipA) labelTexts_a.reverse();
+
     let upperLabel = document.createElement('div');
-    upperLabel.innerText = Math.ceil(ranges.a[1]);
+    upperLabel.innerText = labelTexts_a[1];
     labels_a.appendChild(upperLabel);
 
     let lowerLabel = document.createElement('div');
-    lowerLabel.innerText = Math.floor(ranges.a[0]);
+    lowerLabel.innerText = labelTexts_a[0];
     labels_a.appendChild(lowerLabel);
     container.appendChild(labels_a);
 
@@ -170,8 +185,10 @@ class Legend {
     for (let i=0; i<n; i++) {
       let col = document.createElement('div');
       for (let j=0; j<n; j++) {
-        let x = i/(n-1);
-        let y = ((n-1)-j)/(n-1);
+        let I = flipA ? n - i - 1 : i;
+        let J = flipB ? n - j - 1 : j;
+        let x = I/(n-1);
+        let y = ((n-1)-J)/(n-1);
 
         let aColor = color.interpolate(colors.a, y);
         let bColor = color.interpolate(colors.b, x);
@@ -182,12 +199,12 @@ class Legend {
         cell.style.background = rgb;
         cell.addEventListener('mouseenter', () => {
           let a_rng = ranges.a[1] - ranges.a[0];
-          let a_l = ranges.a[0] + (a_rng * (n-j-1)/n);
-          let a_u = ranges.a[0] + (a_rng * (n-j)/n);
+          let a_l = ranges.a[0] + (a_rng * (n-J-1)/n);
+          let a_u = ranges.a[0] + (a_rng * (n-J)/n);
 
           let b_rng = ranges.b[1] - ranges.b[0];
-          let b_l = ranges.b[0] + (b_rng * i/n);
-          let b_u = ranges.b[0] + (b_rng * (i+1)/n);
+          let b_l = ranges.b[0] + (b_rng * I/n);
+          let b_u = ranges.b[0] + (b_rng * (I+1)/n);
 
           // Select features _outside_ of this range,
           // to mute them
@@ -212,12 +229,15 @@ class Legend {
     labels_b.classList.add('legend--labels');
     labels_b.classList.add('legend--labels_x');
 
+    let labelTexts_b = [Math.floor(ranges.b[0]), Math.ceil(ranges.b[1])];
+    if (flipB) labelTexts_b.reverse();
+
     upperLabel = document.createElement('div');
-    upperLabel.innerText = Math.ceil(ranges.b[1]);
+    upperLabel.innerText = labelTexts_b[1];
     labels_b.appendChild(upperLabel);
 
     lowerLabel = document.createElement('div');
-    lowerLabel.innerText = Math.floor(ranges.b[0]);
+    lowerLabel.innerText = labelTexts_b[0];
     labels_b.appendChild(lowerLabel);
 
     gridContainer.appendChild(labels_b);
@@ -245,13 +265,16 @@ class Legend {
   range(prop) {
     this.reset();
 
+    let flip = prop.legend && prop.legend.flip;
     let gradient = prop.color;
     let range = prop.range;
     let rangeBar = document.createElement('div');
     rangeBar.classList.add('legend--bar');
     rangeBar.classList.add('legend--focus-point-host');
-    let gradientCss = Object.keys(gradient).map((stop) => parseFloat(stop)).sort().map((stop) => {
-      return `${gradient[stop]} ${stop*100}%`;
+    let stops = Object.keys(gradient).map((stop) => parseFloat(stop)).sort();
+    if (flip) stops.reverse();
+    let gradientCss = stops.map((stop) => {
+      return `${gradient[stop]} ${(flip ? 1-stop : stop)*100}%`;
     })
     rangeBar.style.background = `linear-gradient(0, ${gradientCss.join(', ')})`;
 
@@ -259,7 +282,7 @@ class Legend {
     for (let i=0; i<n; i++) {
       let bin = document.createElement('div');
       bin.classList.add('legend--bar-bin');
-      bin.style.top = `${i*30}px`;
+      bin.style.top = `${(flip ? n - i - 1 : i)*30}px`;
       bin.addEventListener('mouseenter', () => {
         let u = (n - i)/n * range[1];
         let l = (n - (i+1))/n * range[1];
@@ -282,11 +305,14 @@ class Legend {
     let labels = document.createElement('div');
     labels.classList.add('legend--labels');
 
+    let labelTexts = [Math.floor(range[0]), Math.ceil(range[1])];
+    if (flip) labelTexts.reverse();
+
     let lowerLabel = document.createElement('div');
-    lowerLabel.innerText = Math.floor(range[0]);
+    lowerLabel.innerText = labelTexts[0];
 
     let upperLabel = document.createElement('div');
-    upperLabel.innerText = Math.ceil(range[1]);
+    upperLabel.innerText = labelTexts[1];
 
     labels.appendChild(upperLabel);
     labels.appendChild(lowerLabel);
