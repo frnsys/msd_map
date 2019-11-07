@@ -16,7 +16,7 @@ function gradientToStyle(gradient, range, idx) {
     .sort()
     .reduce((acc, stop) => {
       acc.push(stopToValue(stop, range));
-      if (idx) {
+      if (idx !== undefined) {
         acc.push(color.hexToRGB(gradient[stop])[idx]);
       } else {
         acc.push(gradient[stop]);

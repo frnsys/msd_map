@@ -4,21 +4,17 @@ function interpolateRange(l, u, p) {
 
 function interpolate(gradient, p) {
   // Figure out sub-range for p
-  let range = Object.keys(gradient).map((stop) => parseFloat(stop)).sort()
-    .reduce((acc, stop) => {
-      if (stop <= p) {
-        acc.l.push(stop);
-      } else {
-        acc.u.push(stop);
-      }
-      return acc;
-    }, {l: [], u: []});
-  let l = Math.max(range.l);
-  let u = Math.min(range.u);
+  // Feels like there's a cleaner way of doing this
+  let range = Object.keys(gradient).sort((a, b) => parseFloat(a) - parseFloat(b));
+  let u = range.filter((s) => parseFloat(s) >= p)[0];
+  let l = range[range.indexOf(u) - 1];
+  if (!l) {
+    l = u;
+    u = range[range.indexOf(l) + 1];
+  }
 
   // Convert p for this range
   p  = (p - l)/(u - l);
-
   let [l_r, l_g, l_b] = hexToRGB(gradient[l]);
   let [u_r, u_g, u_b] = hexToRGB(gradient[u]);
   let r = interpolateRange(l_r, u_r, p);
@@ -40,7 +36,7 @@ function hexToRGB(hex) {
   ];
 }
 
-function colorToCSS(color) {
+function RGBToCSS(color) {
   return `rgb(${color[0]*255}, ${color[1]*255}, ${color[2]*255})`;
 }
 
@@ -51,5 +47,5 @@ function RGBToHex(color) {
 
 export default {
   interpolate, multiply,
-  hexToRGB, colorToCSS, RGBToHex
+  hexToRGB, RGBToCSS, RGBToHex
 }

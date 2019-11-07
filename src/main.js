@@ -200,7 +200,10 @@ const map = new Map({
 map.map.on('dragstart', () => {
   tooltip.style.display = 'none';
 });
-const legend = new Legend(map, {id: 'zctas', layer: 'zctas'}, state.props);
+const legend = new Legend(map, {id: 'zctas', layer: 'zctas'}, state.props, {
+  'Education Desert': config.COLORS['null'],
+  'No ZCTA': '#520004'
+}, ['min']);
 
 setupUI(map, legend, info, state);
 info.reset();

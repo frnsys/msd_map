@@ -110,7 +110,7 @@ section.text:last-child {
   z-index: 1;
   text-align: right;
 }
-#legend.legend--bivariate {
+.legend--bivariate-wrapper {
   transform: rotate(-45deg);
   bottom: 4em;
   right: calc(100% - 14em);
@@ -187,24 +187,32 @@ section.text:last-child {
 .legend--grid {
   display: flex;
   position: relative;
+  border: 1px solid #000;
 }
 .legend--grid-container {
   position: relative;
-  border: 2px solid #000;
-  background: #000;
+}
+.legend--bivariate .legend--special {
+  margin-top: 2.5em;
 }
 
 .focus-point {
   background: #f9ca74;
   position: absolute;
 }
+.stat-point {
+  background: #5D5DB6;
+  position: absolute;
+}
 
-.focus-point.legend--bivariate-point {
+.focus-point.legend--bivariate-point,
+.stat-point.legend--bivariate-point {
   width: 12px;
   height: 12px;
   border-radius: 100em;
 }
-.focus-point.legend--point {
+.focus-point.legend--point,
+.stat-point.legend--point {
   height: 2px;
   width: 24px;
   right: 0;
@@ -271,6 +279,21 @@ section.text:last-child {
   padding: 0.25em;
   margin: 0.1em;
   cursor: pointer;
+}
+
+.legend--single {
+  margin: 0.5em 0;
+  font-size: 0.75em;
+  display: flex;
+}
+.legend--single-color {
+  width: 12px;
+  height: 12px;
+  border: 1px solid black;
+}
+.legend--single span {
+  line-height: 1;
+  margin-left: 0.3em;
 }
 
 /* Hiding for now */

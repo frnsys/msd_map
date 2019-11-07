@@ -103,6 +103,9 @@ HAS_CATS.forEach((p) => {
     PROPS[k] = JSON.parse(JSON.stringify(PROPS[p]));
     PROPS[k].key = k;
     PROPS[k].range = data.ranges[p];
+    PROPS[k].stats = {
+      min: data.min[k]
+    };
   });
 });
 

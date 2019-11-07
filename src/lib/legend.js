@@ -3,10 +3,12 @@ import color from './color';
 const legend = document.getElementById('legend');
 
 class Legend {
-  constructor(map, source, initProps) {
+  constructor(map, source, initProps, special, stats) {
     this.map = map;
     this.props = initProps;
     this.source = source;
+    this.stats = stats;
+    this.special = special;
     this.set(initProps);
   }
 
@@ -24,44 +26,52 @@ class Legend {
     this.props = props;
   }
 
+  renderPoint(cls, vals) {
+    // Focused feature indicator
+    let pointEl = document.createElement('div');
+    pointEl.classList.add(cls);
+    document.querySelector('.legend--focus-point-host').appendChild(pointEl);
+
+    let bivariate = this.props.length > 1;
+
+    // Bivariate
+    if (bivariate) {
+      pointEl.classList.add('legend--bivariate-point');
+
+      let [propA, propB] = this.props;
+      let [valA, valB] = vals;
+      let p_a = (valA-propA.range[0])/(propA.range[1] - propA.range[0]);
+      let p_b = (valB-propB.range[0])/(propB.range[1] - propB.range[0]);
+      pointEl.style.left = `calc(${p_b*100}% - ${pointEl.clientWidth/2}px)`;
+      pointEl.style.bottom = `calc(${p_a*100}% - ${pointEl.clientHeight/2}px)`;
+      pointEl.style.display = 'block';
+
+    // Univariate
+    } else {
+      pointEl.classList.add('legend--point');
+
+      let [prop] = this.props;
+      let [val] = vals;
+      if (val) {
+        let p = (val-prop.range[0])/(prop.range[1] - prop.range[0]);
+        pointEl.style.display = 'block';
+        pointEl.style.bottom = `calc(${p*100}% - ${pointEl.clientHeight/2}px)`;
+
+      // Hide if no value
+      } else {
+        pointEl.style.display = 'none';
+      }
+    }
+  }
+
   // Render points of data (i.e. features)
   // on the legend
   renderFeatures(feats) {
     this.hideFeatures();
 
-    let bivariate = this.props.length > 1;
     feats.forEach((feat) => {
-      // Focused feature indicator
-      let pointEl = document.createElement('div');
-      pointEl.classList.add('focus-point');
-      document.querySelector('.legend--focus-point-host').appendChild(pointEl);
-
-      // Bivariate
-      if (bivariate) {
-        pointEl.classList.add('legend--bivariate-point');
-
-        let [propA, propB] = this.props;
-        let p_a = (feat.properties[propA.key]-propA.range[0])/(propA.range[1] - propA.range[0]);
-        let p_b = (feat.properties[propB.key]-propB.range[0])/(propB.range[1] - propB.range[0]);
-        pointEl.style.left = `calc(${p_b*100}% - ${pointEl.clientWidth/2}px)`;
-        pointEl.style.bottom = `calc(${p_a*100}% - ${pointEl.clientHeight/2}px)`;
-        pointEl.style.display = 'block';
-
-      // Univariate
-      } else {
-        pointEl.classList.add('legend--point');
-
-        let [prop] = this.props;
-        if (feat.properties[prop.key]) {
-          let p = (feat.properties[prop.key]-prop.range[0])/(prop.range[1] - prop.range[0]);
-          pointEl.style.display = 'block';
-          pointEl.style.bottom = `calc(${p*100}% - ${pointEl.clientHeight/2}px)`;
-
-        // Hide if no value
-        } else {
-          pointEl.style.display = 'none';
-        }
-      }
+      let vals = this.props.map((p) => feat.properties[p.key]);
+      this.renderPoint('focus-point', vals);
     });
   }
 
@@ -83,10 +93,46 @@ class Legend {
     legend.classList = '';
   }
 
+  _stats() {
+    // Summary statistics, if any
+    if (this.stats) {
+      this.stats.forEach((stat) => {
+        let vals = this.props.map((p) => p.stats[stat]);
+        this.renderPoint('stat-point', vals);
+      });
+    }
+  }
+
+  _special() {
+    // Special keys, if any
+    if (this.special) {
+      let container = document.createElement('div');
+      container.classList.add('legend--special');
+      Object.keys(this.special).forEach((key) => {
+        let color = this.special[key];
+        let el = document.createElement('div');
+        el.classList.add('legend--single');
+
+        let box = document.createElement('div');
+        box.classList.add('legend--single-color');
+        box.style.background = color;
+
+        let label = document.createElement('span');
+        label.innerText = key;
+        el.appendChild(box);
+        el.appendChild(label);
+        container.appendChild(el);
+      });
+      legend.appendChild(container);
+    }
+  }
+
   bivariate(propA, propB) {
     this.reset();
-
     legend.classList.add('legend--bivariate');
+
+    let wrapper = document.createElement('div');
+    wrapper.classList.add('legend--bivariate-wrapper');
 
     let colors = {
       a: propA.color,
@@ -104,11 +150,11 @@ class Legend {
     labels_a.classList.add('legend--labels');
 
     let upperLabel = document.createElement('div');
-    upperLabel.innerText = ranges.a[1];
+    upperLabel.innerText = Math.ceil(ranges.a[1]);
     labels_a.appendChild(upperLabel);
 
     let lowerLabel = document.createElement('div');
-    lowerLabel.innerText = ranges.a[0];
+    lowerLabel.innerText = Math.floor(ranges.a[0]);
     labels_a.appendChild(lowerLabel);
     container.appendChild(labels_a);
 
@@ -130,7 +176,7 @@ class Legend {
         let aColor = color.interpolate(colors.a, y);
         let bColor = color.interpolate(colors.b, x);
         let mix = color.multiply(aColor, bColor);
-        let rgb = color.rgbToCSS(mix);
+        let rgb = color.RGBToCSS(mix);
         let cell = document.createElement('div');
         cell.classList.add('legend--cell')
         cell.style.background = rgb;
@@ -167,11 +213,11 @@ class Legend {
     labels_b.classList.add('legend--labels_x');
 
     upperLabel = document.createElement('div');
-    upperLabel.innerText = ranges.b[1];
+    upperLabel.innerText = Math.ceil(ranges.b[1]);
     labels_b.appendChild(upperLabel);
 
     lowerLabel = document.createElement('div');
-    lowerLabel.innerText = ranges.b[0];
+    lowerLabel.innerText = Math.floor(ranges.b[0]);
     labels_b.appendChild(lowerLabel);
 
     gridContainer.appendChild(labels_b);
@@ -189,7 +235,11 @@ class Legend {
     b_label.classList.add('legend--bivariate-label');
     gridContainer.appendChild(b_label);
 
-    legend.appendChild(container);
+    wrapper.appendChild(container);
+    legend.appendChild(wrapper);
+
+    this._stats();
+    this._special();
   }
 
   range(prop) {
@@ -248,6 +298,9 @@ class Legend {
     wrapper.appendChild(rangeBar);
     wrapper.appendChild(labels);
     legend.appendChild(wrapper);
+
+    this._stats();
+    this._special();
   }
 }
 

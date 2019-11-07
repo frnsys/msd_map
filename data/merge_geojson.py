@@ -114,8 +114,14 @@ for s in ['mean', 'median', 'min', 'max']:
     for k in CSV_UNCATEGORIZED_FIELDS:
         meta[s][k] = float(getattr(df[k], s)())
     for k in CSV_CATEGORIZED_FIELDS:
-        key = '{}_{}'.format(k, cat)
-        meta[s][key] = float(getattr(df[key], s)())
+        for cat in CATEGORIES:
+            key = '{}_{}'.format(k, cat)
+            if k == 'SCI':
+                # Using 0 as a null value, so ignore
+                d = df[key][df[key] > 0]
+            else:
+                d = df[key]
+            meta[s][key.replace('_', '.')] = float(getattr(d, s)())
 
 # Load school data
 schools = {}
@@ -262,3 +268,5 @@ with open('zctas.geojson', 'w') as f:
 
 with open('zctas.json', 'w') as f:
     json.dump(data, f)
+
+print('Done')
