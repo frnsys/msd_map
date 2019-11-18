@@ -148,6 +148,19 @@ function setupUI(map, legend, info, state) {
       info.explain(map.focused['zctas'], state.cat, []);
     };
   });
+
+  // Toggle ZCTA layer
+  let toggle = document.getElementById('toggleZCTAs');
+  toggle.addEventListener('click', () => {
+    let visibility = map.map.getLayoutProperty('zctas', 'visibility');
+    if (visibility == 'none') {
+      map.map.setLayoutProperty('zctas', 'visibility', 'visible');
+      toggle.innerText = 'Hide ZCTAs';
+    } else {
+      map.map.setLayoutProperty('zctas', 'visibility', 'none');
+      toggle.innerText = 'Show ZCTAs';
+    }
+  });
 }
 
 export default setupUI;
