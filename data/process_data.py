@@ -21,15 +21,17 @@ CATEGORIES = [
     'associate',
     'belowassociate'
 ]
-CSV_ZIPCODE_FIELD = 'zcta'
+CSV_ZIPCODE_FIELD = 'ZCTA'
 CSV_UNCATEGORIZED_FIELDS = [
-    'population_total'
+    'singlezctapop',
+    'medianincome'
 ]
 CSV_CATEGORIZED_FIELDS = [
-    'schools', 'SCI', 'avg_grosscost', 'UNDUPUG'
+    'n', 'SCI', 'UNDUPUG'
 ]
 CSV_DEFAULTS = {
-    'population_total': 0,
+    'medianincome': None,
+    'singlezctapop': 0,
     'SCI': 0
 }
 for k in CSV_CATEGORIZED_FIELDS:
@@ -61,7 +63,7 @@ STATES = [
 
 
 data = {}
-df = pd.read_csv('src/ZCTAlevel.csv')
+df = pd.read_csv('src/2016.ZCTAlevel.csv')
 df = df.where(pd.notnull(df), None)
 for row in tqdm(df.itertuples(), total=len(df), desc='ZCTA csv'):
     row_data = dict(row._asdict())
@@ -129,7 +131,7 @@ schools_geojson = {
     'type': 'FeatureCollection',
     'features': []
 }
-df = pd.read_csv('src/Schoollevel.csv')
+df = pd.read_csv('src/2016.School.List.csv', encoding='ISO-8859-1')
 df = df.where((pd.notnull(df)), None)
 for row in tqdm(df.itertuples(), total=len(df), desc='Schools csv'):
     row_data = dict(row._asdict())
@@ -150,7 +152,7 @@ for row in tqdm(df.itertuples(), total=len(df), desc='Schools csv'):
 
 # Associate schools with ZCTAs
 zip_schools = defaultdict(list)
-df = pd.read_csv('src/2016schoolzones.csv')
+df = pd.read_csv('src/2016.Schoolzones.SCI.csv', encoding='ISO-8859-1')
 df = df.where((pd.notnull(df)), None)
 for row in tqdm(df.itertuples(), total=len(df), desc='School zones csv'):
     row_data = dict(row._asdict())
@@ -158,7 +160,7 @@ for row in tqdm(df.itertuples(), total=len(df), desc='School zones csv'):
     zipcode = str(int(row_data[CSV_ZIPCODE_FIELD])).zfill(5)
     assert len(zipcode) == 5
 
-    unit_id = int(row_data['unitid'])
+    unit_id = int(row_data['UNITID'])
     zip_schools[zipcode].append(unit_id)
 
 

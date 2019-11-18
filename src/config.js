@@ -12,7 +12,7 @@ let params = window.location.search.substr(1).split('&').reduce((acc, param) => 
 const BBOXES = data.bboxes;
 const MAPBOX_TOKEN = config.MAPBOX_TOKEN;
 
-let MAP_ID = 'frnsys.1hm4znww';
+let MAP_ID = 'frnsys.chbuwwht';
 let INITIAL_CAT = 'allschools';
 
 // Isochrone Comparisons
@@ -40,15 +40,7 @@ const PROPS = {
       flip: true
     }
   },
-  'avg_grosscost': {
-    desc: 'Average Tuition',
-    nick: 'Avg Tuition',
-    color: {
-      0.0: '#a9bdfc',
-      1.0: '#023ff7'
-    }
-  },
-  'schools': {
+  'n': {
     desc: 'Number of Schools',
     nick: '# Schools',
     color: {
@@ -56,7 +48,7 @@ const PROPS = {
       1.0: '#32a852'
     }
   },
-  'population_total': {
+  'singlezctapop': {
     desc: 'Population Estimate',
     nick: 'Pop. Est.',
     color: {
@@ -97,8 +89,7 @@ const CAT_PROP_EXPRS = {
   'belowassociate': ['ICLEVEL', 3]
 };
 const HAS_CATS = [
-  'SCI', 'avg_grosscost',
-  'schools', 'UNDUPUG'
+  'SCI', 'n', 'UNDUPUG'
 ];
 HAS_CATS.forEach((p) => {
   Object.keys(CATS).forEach((cat) => {
