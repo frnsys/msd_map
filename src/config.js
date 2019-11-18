@@ -63,6 +63,14 @@ const PROPS = {
       0.0: '#ffedff',
       1.0: '#c65cff'
     }
+  },
+  'medianincome': {
+    desc: 'Median Household Income',
+    nick: 'Median Income',
+    color: {
+      0.0: '#9b150c',
+      1.0: '#7dd177'
+    }
   }
 }
 
@@ -107,6 +115,10 @@ const INITIAL_PROPS = ['SCI'].map((p) => {
   let k = HAS_CATS.includes(p) ? `${p}.${INITIAL_CAT}` : p;
   return PROPS[k];
 });
+
+// PROPS['medianincome'].key = 'medianincome';
+// PROPS['medianincome'].range = data.ranges['medianincome'];
+// PROPS['medianincome'].stats = {min: data.min['medianincome']};
 
 
 export default {
