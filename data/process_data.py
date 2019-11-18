@@ -61,15 +61,16 @@ STATES = [
     'Hawaii'
 ]
 
-
 data = {}
 df = pd.read_csv('src/2016.ZCTAlevel.csv')
 df = df.where(pd.notnull(df), None)
+zctas = set()
 for row in tqdm(df.itertuples(), total=len(df), desc='ZCTA csv'):
     row_data = dict(row._asdict())
     if row_data[CSV_ZIPCODE_FIELD] is None: continue
     zipcode = str(int(row_data[CSV_ZIPCODE_FIELD])).zfill(5)
     assert len(zipcode) == 5
+    zctas.add(zipcode)
     data[zipcode] = {}
     for k in CSV_UNCATEGORIZED_FIELDS:
         data[zipcode][k] = row_data[k]
@@ -180,6 +181,25 @@ for f in tqdm(zipcode_geojson['features'], desc='Merging into geojson'):
     f['properties']['n_schools'] = len(zip_schools[zipcode])
     meta['bboxes'][zipcode] = shape(f['geometry']).bounds
     geojson.append(f)
+    zctas.remove(zipcode)
+
+# If leftover zctas, get from backup shapefile
+if zctas:
+    for f in tqdm(fiona.open('src/zctas/tl_2017_us_zcta510.shp'), desc='Filling missing ZCTAs'):
+        zipcode = f['properties']['ZCTA5CE10']
+        if zipcode not in zctas: continue
+        try:
+            f['properties'] = dict(**data[zipcode])
+        except:
+            f['properties'] = dict(**CSV_DEFAULTS)
+        del f['id']
+        f['properties']['zipcode'] = zipcode
+        f['properties']['n_schools'] = len(zip_schools[zipcode])
+        meta['bboxes'][zipcode] = shape(f['geometry']).bounds
+        geojson.append(f)
+        zctas.remove(zipcode)
+
+assert len(zctas) == 0
 
 countries = fiona.open('src/countries/ne_10m_admin_0_countries.shp')
 region_bboxes = {}
