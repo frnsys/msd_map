@@ -1,4 +1,5 @@
 import util from './util';
+import config from './config';
 import info from './lib/info';
 import schools from '../data/schools.json';
 import zipSchools from '../data/zip_schools.json';
@@ -32,12 +33,17 @@ function explain(feats, cat, focusedSchools) {
     let schoolIds = zipSchools[zipcode];
     let schoolsForZCTA = schoolIds.map((id) => schools[id]);
     let groupedSchools = {};
+
+    let [filterKey, filterVal] = !(cat == 'allschools') ? config.CAT_PROP_EXPRS[cat] : [null, null];
+
     schoolsForZCTA.forEach((s) => {
       // priv/public/nonprofit
       let control = s['CONTROL'];
+      if (filterKey == 'CONTROL' && control !== filterVal) return;
 
       // degree types
       let level = s['ICLEVEL'];
+      if (filterKey == 'ICLEVEL' && level !== filterVal) return;
 
       if (!(control in groupedSchools)) {
         groupedSchools[control] = {};
