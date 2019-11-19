@@ -12,20 +12,12 @@ let params = window.location.search.substr(1).split('&').reduce((acc, param) => 
 const BBOXES = data.bboxes;
 const MAPBOX_TOKEN = config.MAPBOX_TOKEN;
 
-let MAP_ID = 'frnsys.5c6xjyuu';
-let INITIAL_CAT = 'allschools';
-
-// Isochrone Comparisons
-if (params['30']) {
-  MAP_ID = 'frnsys.590w69s5';
-  INITIAL_CAT = 'public';
-} else if (params['45']) {
-  MAP_ID = 'frnsys.8srbv2ok';
-  INITIAL_CAT = 'public';
-} else if (params['60']) {
-  MAP_ID = 'frnsys.44fgwf33';
-  INITIAL_CAT = 'public';
-}
+let MAP_ID = 'frnsys.da55wq8k';
+let INITIAL_CAT = {
+  S: 'allschools',
+  I: '45min',
+  Y: '2016'
+};
 
 const PROPS = {
   'SCI': {
