@@ -53,8 +53,8 @@ CSV_FIELDS = {
     'UNDUPUG': ['S', 'I', 'Y'],
     'singlezctapop': ['Y'],
     'medianincome': ['Y'],
-    'n_zipsinzone': ['Y'],
-    'zctazonepop': ['Y']
+    'n_zipsinzone': ['Y', 'I'],
+    'zctazonepop': ['Y', 'I']
 }
 CSV_DEFAULTS = {
     'medianincome': None,
