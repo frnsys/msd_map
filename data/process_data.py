@@ -52,7 +52,9 @@ CSV_FIELDS = {
     'SCI': ['S', 'I', 'Y'],
     'UNDUPUG': ['S', 'I', 'Y'],
     'singlezctapop': ['Y'],
-    'medianincome': ['Y']
+    'medianincome': ['Y'],
+    'n_zipsinzone': ['Y'],
+    'zctazonepop': ['Y']
 }
 CSV_DEFAULTS = {
     'medianincome': None,
