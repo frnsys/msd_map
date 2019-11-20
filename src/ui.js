@@ -1,50 +1,7 @@
 import util from './util';
+import styles from './styles';
 import config from './config';
 import regions from '../data/regions.json';
-
-const allSchoolsStyle = {
-  'circle-opacity': [
-    'interpolate', ['linear'], ['zoom'], 3, 0.0, 7, [
-      'case',
-      ['boolean', ['feature-state', 'mute'], false],
-        0.2,
-      1.0
-    ]
-  ],
-  'circle-stroke-opacity': [
-    'interpolate', ['linear'], ['zoom'], 3, 0.0, 7, [
-      'case',
-      ['boolean', ['feature-state', 'mute'], false],
-        0.2,
-      1.0
-    ]
-  ]
-};
-
-function filteredStyle(condition) {
-  return {
-    'circle-opacity': [
-      'interpolate', ['linear'], ['zoom'], 3, 0.0, 7, [
-        'case',
-          ['!=', ['get', condition[0]], condition[1]],
-            0.0,
-          ['boolean', ['feature-state', 'mute'], false],
-            0.2,
-          1.0
-      ]
-    ],
-    'circle-stroke-opacity': [
-      'interpolate', ['linear'], ['zoom'], 3, 0.0, 7, [
-        'case',
-          ['!=', ['get', condition[0]], condition[1]],
-            0.0,
-          ['boolean', ['feature-state', 'mute'], false],
-            0.2,
-          1.0
-      ]
-    ]
-  };
-}
 
 
 function setupUI(map, legend, info, state) {
@@ -101,12 +58,12 @@ function setupUI(map, legend, info, state) {
       opt.selected = true;
     }
   });
-  Object.keys(config.CATS).forEach((cat) => {
+  Object.keys(config.CATS['S']).forEach((cat) => {
     let opt = document.createElement('option');
-    opt.innerText = config.CATS[cat];
+    opt.innerText = config.CATS['S'][cat];
     opt.value = cat;
     categoryInput.appendChild(opt);
-    if (cat == state.cat) {
+    if (cat == state.cat['S']) {
       opt.selected = true;
     }
   });
@@ -128,18 +85,18 @@ function setupUI(map, legend, info, state) {
     legend.set(state.props);
   });
   categoryInput.addEventListener('change', (ev) => {
-    state.cat = ev.target.value;
+    state.cat['S'] = ev.target.value;
     state.props = state.props.map((p) => config.PROPS[util.propForCat(p.key, state.cat)]);
     map.set('zctas', state.props);
     legend.set(state.props);
 
     // Hide schools not matching the category
-    if (state.cat == 'allschools') {
-      map.map.setPaintProperty('schools', 'circle-opacity', allSchoolsStyle['circle-opacity']);
-      map.map.setPaintProperty('schools', 'circle-stroke-opacity', allSchoolsStyle['circle-stroke-opacity']);
+    if (state.cat['S'] == 'allschools') {
+      map.map.setPaintProperty('schools', 'circle-opacity', styles.allSchools['circle-opacity']);
+      map.map.setPaintProperty('schools', 'circle-stroke-opacity', styles.allSchools['circle-stroke-opacity']);
     } else {
-      let cond = config.CAT_PROP_EXPRS[state.cat];
-      let style = filteredStyle(cond);
+      let cond = config.CAT_PROP_EXPRS['S'][state.cat['S']];
+      let style = styles.filteredSchools(cond);
       map.map.setPaintProperty('schools', 'circle-opacity', style['circle-opacity']);
       map.map.setPaintProperty('schools', 'circle-stroke-opacity', style['circle-stroke-opacity']);
     }
@@ -155,11 +112,26 @@ function setupUI(map, legend, info, state) {
     let visibility = map.map.getLayoutProperty('zctas', 'visibility');
     if (visibility == 'none') {
       map.map.setLayoutProperty('zctas', 'visibility', 'visible');
+      map.map.setPaintProperty('us', 'fill-color', '#6b0106');
       toggle.innerText = 'Hide ZCTAs';
     } else {
       map.map.setLayoutProperty('zctas', 'visibility', 'none');
+      map.map.setPaintProperty('us', 'fill-color', '#a8a8a8');
       toggle.innerText = 'Show ZCTAs';
     }
+  });
+
+  // Toggle isochrone layer
+  [...document.querySelectorAll('#control-isochrone button')].forEach((b) => {
+    b.addEventListener('click', () => {
+      document.querySelector('#control-isochrone .selected').classList.remove('selected');
+      b.classList.add('selected');
+      state.cat['I'] = b.value;
+
+      state.props = state.props.map((p) => config.PROPS[util.propForCat(p.key, state.cat)]);
+      map.set('zctas', state.props);
+      legend.set(state.props);
+    });
   });
 }
 

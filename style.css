@@ -98,6 +98,10 @@ section.text:last-child {
   margin-top: 2em;
 }
 
+#control > div {
+  display: inline-block;
+}
+
 #legend {
   position: absolute;
   bottom: 2em;
@@ -295,8 +299,18 @@ section.text:last-child {
   margin-left: 0.3em;
 }
 
+button.selected {
+  background: #D0D5FF;
+}
+button {
+  border: 1px solid #888;
+  padding: 0.5em 1em;
+  border-radius: 0.2em;
+}
+
 /* Hiding for now */
 select[name="propertyA"],
 select[name="propertyB"] {
   display: none;
 }
+

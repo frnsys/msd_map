@@ -2,9 +2,11 @@ import Map from './lib/map';
 import Legend from './lib/legend';
 import Painter from './lib/paint';
 import info from './info';
+import util from './util';
 import setupUI from './ui';
 import mapboxgl from 'mapbox-gl';
 import config from './config';
+import styles from './styles';
 import schools from '../data/schools.json';
 import zipSchools from '../data/zip_schools.json';
 
@@ -15,25 +17,6 @@ const tooltip = document.getElementById('map-tooltip');
 const state = {
   props: config.INITIAL_PROPS,
   cat: config.INITIAL_CAT
-};
-
-const allSchoolsStyle = {
-  'circle-opacity': [
-    'interpolate', ['linear'], ['zoom'], 3, 0.0, 7, [
-      'case',
-      ['boolean', ['feature-state', 'mute'], false],
-        0.2,
-      1.0
-    ]
-  ],
-  'circle-stroke-opacity': [
-    'interpolate', ['linear'], ['zoom'], 3, 0.0, 7, [
-      'case',
-      ['boolean', ['feature-state', 'mute'], false],
-        0.2,
-      1.0
-    ]
-  ]
 };
 
 const sources = {
@@ -51,69 +34,12 @@ const layers = [{
   'type': 'fill',
   'source': 'zctas',
   'source-layer': 'zctas',
-  'paint': {
-    'fill-color': '#000000', // will be replaced on map initialization
-
-    // Fade-out ZCTA outlines at low zooms
-    'fill-outline-color': [
-      'interpolate', ['linear'], ['zoom'], 5, 'rgba(0, 0, 0, 0)', 10, 'rgba(0,0,0,1)'
-    ],
-
-    'fill-opacity': [
-      'case',
-        ['boolean', ['feature-state', 'mute'], false],
-          0.2,
-        1.0
-    ]
-  }
+  'paint': styles.defaultZCTAs
 }, {
   'id': 'schools',
   'type': 'circle',
   'source': 'schools',
-  'paint': {
-    'circle-radius': [
-      'interpolate', ['linear'], ['zoom'], 5, 1, 10, 5
-    ],
-    'circle-color': [
-      'case',
-
-      ['boolean', ['feature-state', 'focus'], false],
-        '#67A2FD',
-
-      ['==', ['get', 'CONTROL'], 1],
-        '#33C377',
-
-      ['==', ['get', 'CONTROL'], 2],
-        '#ffcc00',
-
-      ['==', ['get', 'CONTROL'], 3],
-        '#05a1ff',
-
-      '#000000',
-    ],
-    'circle-stroke-color': [
-      'case',
-
-      ['boolean', ['feature-state', 'focus'], false],
-        '#1f70ed',
-
-      ['==', ['get', 'ICLEVEL'], 1],
-        '#000000',
-
-      ['==', ['get', 'ICLEVEL'], 2],
-        '#888888',
-
-      ['==', ['get', 'ICLEVEL'], 3],
-        '#eeeeee',
-
-      '#ff0000',
-    ],
-    'circle-stroke-width': [
-      'interpolate', ['linear'], ['zoom'], 6, 0.0, 9, 3.0
-    ],
-    'circle-opacity': allSchoolsStyle['circle-opacity'],
-    'circle-stroke-opacity': allSchoolsStyle['circle-stroke-opacity'],
-  }
+  'paint': styles.defaultSchools
 }];
 
 function focusFeatures(features, ev) {
@@ -131,8 +57,8 @@ function focusFeatures(features, ev) {
     if (feats.length == 1) {
       let feat = feats[0];
       let zip = feat.properties['zipcode'].split(',')[0];
-      let schoolIds = zipSchools[zip];
-      let schoolsForZCTA = schoolIds.map((id) => schools[id]);
+      let key = util.keyForCat({'Y': state.cat['Y'], 'I': state.cat['I']});
+      let schoolIds = zipSchools[zip] ? zipSchools[zip][key] : [];
       let filter = ['!in', '$id'].concat(schoolIds);
       map.setFilter({
         id: 'schools'
@@ -170,7 +96,7 @@ function focusFeatures(features, ev) {
 const painter = new Painter(config.COLORS);
 const map = new Map({
   container: 'map',
-  style: 'mapbox://styles/frnsys/ck2nj51351dtc1ds1bxi35he6',
+  style: 'mapbox://styles/frnsys/ck36ls0sm0hus1cpi2zedg77t',
   zoom: 3,
   maxZoom: 12,
   minZoom: 2,

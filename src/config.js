@@ -12,7 +12,7 @@ let params = window.location.search.substr(1).split('&').reduce((acc, param) => 
 const BBOXES = data.bboxes;
 const MAPBOX_TOKEN = config.MAPBOX_TOKEN;
 
-let MAP_ID = 'frnsys.da55wq8k';
+let MAP_ID = 'frnsys.78n7yun3';
 let INITIAL_CAT = {
   S: 'allschools',
   I: '45min',
@@ -72,28 +72,47 @@ const COLORS = {
 };
 
 const CATS = {
-  'allschools': 'All School Types',
-  'public': 'Public',
-  'privnot4prof': 'Private, not-for-profit',
-  'priv4prof': 'Private, for-profit',
-  'bachelor': 'Bachelor Degree',
-  'associate': 'Associate Degree',
-  'belowassociate': 'Below Associate Degree'
+  S: {
+    'allschools': 'All School Types',
+    'public': 'Public',
+    'privnot4prof': 'Private, not-for-profit',
+    'priv4prof': 'Private, for-profit',
+    'bachelor': 'Bachelor Degree',
+    'associate': 'Associate Degree',
+    'belowassociate': 'Below Associate Degree'
+  },
+  I: {
+    '30min': '30 min.',
+    '45min': '45 min.',
+    '60min': '60 min.'
+  },
+  Y: {
+    '2016': '2016'
+  }
 };
 const CAT_PROP_EXPRS = {
-  'public': ['CONTROL', 1],
-  'privnot4prof': ['CONTROL', 2],
-  'priv4prof': ['CONTROL', 3],
-  'bachelor': ['ICLEVEL', 1],
-  'associate': ['ICLEVEL', 2],
-  'belowassociate': ['ICLEVEL', 3]
+  'S': {
+    'public': ['CONTROL', 1],
+    'privnot4prof': ['CONTROL', 2],
+    'priv4prof': ['CONTROL', 3],
+    'bachelor': ['ICLEVEL', 1],
+    'associate': ['ICLEVEL', 2],
+    'belowassociate': ['ICLEVEL', 3]
+  }
 };
 const HAS_CATS = [
   'SCI', 'n', 'UNDUPUG'
 ];
+const CAT_KEYS = Object.keys(CATS).sort((a, b) => a.localeCompare(b)).reduce((acc, k) => {
+  if (acc.length == 0) {
+    return Object.keys(CATS[k]).map((v) => `${k}:${v}`);
+  } else {
+    return [].concat(...acc.map((key) => Object.keys(CATS[k]).map((v) => `${key}.${k}:${v}`)));
+  }
+}, []);
 HAS_CATS.forEach((p) => {
-  Object.keys(CATS).forEach((cat) => {
-    let k = `${p}.${cat}`;
+  CAT_KEYS.forEach((key) => {
+    let k = `${p}.${key}`;
     PROPS[k] = JSON.parse(JSON.stringify(PROPS[p]));
     PROPS[k].key = k;
     PROPS[k].range = data.ranges[p];
@@ -103,8 +122,11 @@ HAS_CATS.forEach((p) => {
   });
 });
 
+const INITIAL_CAT_KEY = Object.keys(INITIAL_CAT)
+  .sort((a, b) => a.localeCompare(b))
+  .map((k) => `${k}:${INITIAL_CAT[k]}`).join('.');
 const INITIAL_PROPS = ['SCI'].map((p) => {
-  let k = HAS_CATS.includes(p) ? `${p}.${INITIAL_CAT}` : p;
+  let k = HAS_CATS.includes(p) ? `${p}.${INITIAL_CAT_KEY}` : p;
   return PROPS[k];
 });
 

@@ -7,36 +7,12 @@ are replaced w/ "_"
 
 import json
 import fiona
+import numpy as np
 import pandas as pd
 from tqdm import tqdm
+from itertools import product
 from shapely.geometry import shape
 from collections import defaultdict
-
-CATEGORIES = [
-    'allschools',
-    'public',
-    'privnot4prof',
-    'priv4prof',
-    'bachelor',
-    'associate',
-    'belowassociate'
-]
-CSV_ZIPCODE_FIELD = 'ZCTA'
-CSV_UNCATEGORIZED_FIELDS = [
-    'singlezctapop',
-    'medianincome'
-]
-CSV_CATEGORIZED_FIELDS = [
-    'n', 'SCI', 'UNDUPUG'
-]
-CSV_DEFAULTS = {
-    'medianincome': None,
-    'singlezctapop': 0,
-    'SCI': 0
-}
-for k in CSV_CATEGORIZED_FIELDS:
-    for cat in CATEGORIES:
-        CSV_DEFAULTS['{}.{}'.format(k, cat)] = CSV_DEFAULTS.get(k, 0)
 
 SCHOOL_FIELDS = [
     'INSTNM',
@@ -48,127 +24,164 @@ SCHOOL_FIELDS = [
 ]
 
 # ISO A2
-COUNTRIES = [
-    'US',
-    'PR',
-    'AS',
-    'GU',
-    'MP',
-    'VI'
-]
-STATES = [
-    'Alaska',
-    'Hawaii'
-]
+COUNTRIES = ['US', 'PR', 'AS', 'GU', 'MP', 'VI']
+STATES = ['Alaska', 'Hawaii']
 
-data = {}
-df = pd.read_csv('src/2016.ZCTAlevel.csv')
-df = df.where(pd.notnull(df), None)
+CATEGORIES = {
+    'S': [
+        'allschools',
+        'public',
+        'privnot4prof',
+        'priv4prof',
+        'bachelor',
+        'associate',
+        'belowassociate'
+    ],
+    'I': [
+        '30min',
+        '45min',
+        '60min'
+    ],
+    'Y': [
+        '2016'
+    ]
+}
+CSV_ZIPCODE_FIELD = 'ZCTA'
+CSV_FIELDS = {
+    'n': ['S', 'I', 'Y'],
+    'SCI': ['S', 'I', 'Y'],
+    'UNDUPUG': ['S', 'I', 'Y'],
+    'singlezctapop': ['Y'],
+    'medianincome': ['Y']
+}
+CSV_DEFAULTS = {
+    'medianincome': None,
+    'singlezctapop': 0,
+    'SCI': 0
+}
+
+def keysForCats(cats):
+    tags = sorted(cats)
+    return [
+        '.'.join('{}:{}'.format(t, c) for t, c in zip(tags, p))
+        for p in product(*[CATEGORIES[t] for t in tags])
+    ]
+
+def keyForCat(cat, k=None):
+    tags = '.'.join(['{}:{}'.format(c, cat[c]) for c in sorted(cat.keys())])
+    if k:
+        return '{}.{}'.format(k, tags)
+    else:
+        return tags
+
+for k, cats in CSV_FIELDS.items():
+    for key in keysForCats(cats):
+        CSV_DEFAULTS['{}.{}'.format(k, key)] = CSV_DEFAULTS.get(k, 0)
+
+
+
 zctas = set()
-for row in tqdm(df.itertuples(), total=len(df), desc='ZCTA csv'):
-    row_data = dict(row._asdict())
-    if row_data[CSV_ZIPCODE_FIELD] is None: continue
-    zipcode = str(int(row_data[CSV_ZIPCODE_FIELD])).zfill(5)
-    assert len(zipcode) == 5
-    zctas.add(zipcode)
-    data[zipcode] = {}
-    for k in CSV_UNCATEGORIZED_FIELDS:
-        data[zipcode][k] = row_data[k]
+data = defaultdict(dict)
+field_data = defaultdict(lambda: defaultdict(list))
+for y in CATEGORIES['Y']:
+    for i in CATEGORIES['I']:
+        cat = {'Y': y, 'I': i}
+        df = pd.read_csv('src/{Y}.{I}.ZCTAlevel.csv'.format(**cat))
+        df = df.where(pd.notnull(df), None)
+        for row in tqdm(df.itertuples(), total=len(df), desc='{Y}/{I} ZCTA'.format(**cat)):
+            row_data = dict(row._asdict())
+            if row_data[CSV_ZIPCODE_FIELD] is None: continue
+            zipcode = str(int(row_data[CSV_ZIPCODE_FIELD])).zfill(5)
+            assert len(zipcode) == 5
+            zctas.add(zipcode)
 
-    # Would rather these properly nested,
-    # but need to stay flat b/c geojson
-    # can't handle nesting
-    for k in CSV_CATEGORIZED_FIELDS:
-        for cat in CATEGORIES:
-            ck = '{}.{}'.format(k, cat)
-            val = row_data['{}_{}'.format(k, cat)]
-            data[zipcode][ck] = val
+            for k, cats in CSV_FIELDS.items():
+                if 'S' in cats:
+                    for s in CATEGORIES['S']:
+                        key = keyForCat({'Y': y, 'I': i, 'S': s}, k)
+                        val = row_data['{}_{}'.format(k, s)]
+                        data[zipcode][key] = val
 
-            if k == 'SCI' and val == None:
-                if val == None:
-                    data[zipcode][ck] = 0
+                        # Using 0 as a null value, so ignore
+                        if k == 'SCI':
+                            if val == None:
+                                data[zipcode][key] = 0
+                            elif val > 0:
+                                field_data[k][key].append(val)
+                        else:
+                            field_data[k][key].append(val)
+                else:
+                    key = keyForCat({t: cat[t] for t in cats}, k)
+                    data[zipcode][key] = row_data[k]
+                    field_data[k][key].append(val)
 
 # Compute ranges
 meta = {}
 meta['ranges'] = {}
-for k in CSV_UNCATEGORIZED_FIELDS:
-    meta['ranges'][k] = (
-        float(df[k].min()),
-        float(df[k].max())
-    )
-for k in CSV_CATEGORIZED_FIELDS:
+for k in CSV_FIELDS.keys():
     vals = []
     # Get min/max across all categories
-    for cat in CATEGORIES:
-        s = df['{}_{}'.format(k, cat)]
-        vals.append(float(s.min()))
-        vals.append(float(s.max()))
+    for vs in field_data[k].values():
+        vs = [v for v in vs if v is not None]
+        vals.append(float(min(vs)))
+        vals.append(float(max(vs)))
+    meta['ranges'][k] = (min(vals), max(vals))
 
-    if k == 'SCI':
-        # Using 0 as a null value, so ignore
-        min_vals = [v for v in vals if v > 0]
-        meta['ranges'][k] = (min(min_vals), max(vals))
-    else:
-        meta['ranges'][k] = (min(vals), max(vals))
 
-# Compute summary statistics
+# Compute summary statistics (within categories)
 for s in ['mean', 'median', 'min', 'max']:
     meta[s] = {}
-    for k in CSV_UNCATEGORIZED_FIELDS:
-        meta[s][k] = float(getattr(df[k], s)())
-    for k in CSV_CATEGORIZED_FIELDS:
-        for cat in CATEGORIES:
-            key = '{}_{}'.format(k, cat)
-            if k == 'SCI':
-                # Using 0 as a null value, so ignore
-                d = df[key][df[key] > 0]
-            else:
-                d = df[key]
-            meta[s][key.replace('_', '.')] = float(getattr(d, s)())
+    for k, cats in CSV_FIELDS.items():
+        for key in keysForCats(cats):
+            key = '{}.{}'.format(k, key)
+            vals = [v for v in field_data[k][key] if v is not None]
+            meta[s][key] = float(getattr(np, s)(vals))
 
-# Load school data
+
+# Associate schools with ZCTAs and load school data
+# TODO how to do this with minimal redundancy
 schools = {}
 schools_geojson = {
     'type': 'FeatureCollection',
     'features': []
 }
-df = pd.read_csv('src/2016.School.List.csv', encoding='ISO-8859-1')
-df = df.where((pd.notnull(df)), None)
-for row in tqdm(df.itertuples(), total=len(df), desc='Schools csv'):
-    row_data = dict(row._asdict())
-    id = int(row_data['UNITID'])
-    schools[id] = {k: row_data[k] for k in SCHOOL_FIELDS}
-    if 'ZIP' in schools[id]:
-        schools[id]['ZIP'] = str(int(schools[id]['ZIP'])).zfill(5)
-    schools_geojson['features'].append({
-        'id': id,
-        'type': 'Feature',
-        'geometry': {
-            'type': 'Point',
-            'coordinates': (row_data['LONGITUD'], row_data['LATITUDE']),
-        },
-        'properties': schools[id]
-    })
+zip_schools = defaultdict(lambda: defaultdict(list))
+for y in CATEGORIES['Y']:
+    # TODO these are overwriting each year atm
+    df = pd.read_csv('src/{}.School.List.csv'.format(y), encoding='ISO-8859-1')
+    df = df.where((pd.notnull(df)), None)
+    for row in tqdm(df.itertuples(), total=len(df), desc='{} School List'.format(y)):
+        row_data = dict(row._asdict())
+        id = int(row_data['UNITID'])
+        schools[id] = {k: row_data[k] for k in SCHOOL_FIELDS}
+        if 'ZIP' in schools[id]:
+            schools[id]['ZIP'] = str(int(schools[id]['ZIP'])).zfill(5)
+        schools_geojson['features'].append({
+            'id': id,
+            'type': 'Feature',
+            'geometry': {
+                'type': 'Point',
+                'coordinates': (row_data['LONGITUD'], row_data['LATITUDE']),
+            },
+            'properties': schools[id]
+        })
+
+    for i in CATEGORIES['I']:
+        cat = {'Y': y, 'I': i}
+        df = pd.read_csv('src/{Y}.{I}.Schoolzones.SCI.csv'.format(**cat), encoding='ISO-8859-1')
+        df = df.where((pd.notnull(df)), None)
+        for row in tqdm(df.itertuples(), total=len(df), desc='{Y}/{I} School Zones'.format(**cat)):
+            row_data = dict(row._asdict())
+            if row_data[CSV_ZIPCODE_FIELD] is None: continue
+            zipcode = str(int(row_data[CSV_ZIPCODE_FIELD])).zfill(5)
+            unit_id = int(row_data['UNITID'])
+            key = keyForCat(cat)
+            zip_schools[zipcode][key].append(unit_id)
 
 
-# Associate schools with ZCTAs
-zip_schools = defaultdict(list)
-df = pd.read_csv('src/2016.Schoolzones.SCI.csv', encoding='ISO-8859-1')
-df = df.where((pd.notnull(df)), None)
-for row in tqdm(df.itertuples(), total=len(df), desc='School zones csv'):
-    row_data = dict(row._asdict())
-    if row_data[CSV_ZIPCODE_FIELD] is None: continue
-    zipcode = str(int(row_data[CSV_ZIPCODE_FIELD])).zfill(5)
-    assert len(zipcode) == 5
-
-    unit_id = int(row_data['UNITID'])
-    zip_schools[zipcode].append(unit_id)
-
-
-# Compute bounding boxes for zipcodes
-meta['bboxes'] = {}
-
+# Build geojson
 geojson = []
+meta['bboxes'] = {}
 zipcode_geojson = json.load(open('src/zipcodes.geojson'))
 for f in tqdm(zipcode_geojson['features'], desc='Merging into geojson'):
     del f['id']
@@ -178,7 +191,6 @@ for f in tqdm(zipcode_geojson['features'], desc='Merging into geojson'):
     except:
         f['properties'] = dict(**CSV_DEFAULTS)
     f['properties']['zipcode'] = zipcode
-    f['properties']['n_schools'] = len(zip_schools[zipcode])
     meta['bboxes'][zipcode] = shape(f['geometry']).bounds
     geojson.append(f)
     zctas.remove(zipcode)
@@ -194,13 +206,13 @@ if zctas:
             f['properties'] = dict(**CSV_DEFAULTS)
         del f['id']
         f['properties']['zipcode'] = zipcode
-        f['properties']['n_schools'] = len(zip_schools[zipcode])
         meta['bboxes'][zipcode] = shape(f['geometry']).bounds
         geojson.append(f)
         zctas.remove(zipcode)
 
 assert len(zctas) == 0
 
+# Region bounding boxes
 countries = fiona.open('src/countries/ne_10m_admin_0_countries.shp')
 region_bboxes = {}
 for country in countries:

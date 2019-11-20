@@ -30,11 +30,12 @@ function explain(feats, cat, focusedSchools) {
     }, {});
 
     let [zipcode, ...otherZips] = p['zipcode'].split(',');
-    let schoolIds = zipSchools[zipcode];
+    let key = util.keyForCat({'Y': cat['Y'], 'I': cat['I']});
+    let schoolIds = zipSchools[zipcode] ? zipSchools[zipcode][key] : [];
     let schoolsForZCTA = schoolIds.map((id) => schools[id]);
     let groupedSchools = {};
 
-    let [filterKey, filterVal] = !(cat == 'allschools') ? config.CAT_PROP_EXPRS[cat] : [null, null];
+    let [filterKey, filterVal] = !(cat['S'] == 'allschools') ? config.CAT_PROP_EXPRS['S'][cat['S']] : [null, null];
 
     schoolsForZCTA.forEach((s) => {
       // priv/public/nonprofit
