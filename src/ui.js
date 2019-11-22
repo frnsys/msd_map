@@ -133,6 +133,14 @@ function setupUI(map, legend, info, state) {
       legend.set(state.props);
     });
   });
+
+  const legendKey = document.getElementById('icon-legend');
+  document.getElementById('icon-legend-show').addEventListener('click', () => {
+    legendKey.style.display = 'block';
+  });
+  document.getElementById('icon-legend-close').addEventListener('click', () => {
+    legendKey.style.display = '';
+  });
 }
 
 export default setupUI;

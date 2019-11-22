@@ -60,8 +60,8 @@ function explain(feats, cat, focusedSchools) {
       SCI: ${d['SCI'] > 0 ? d['SCI'].toFixed(2) : 'Education Desert'}<br/>
       Number of Schools: ${d['n'] || 'N/A'}<br/>
       Enrollment Seats: ${d['UNDUPUG'] || 0}<br/>
-      Population Estimate: ${p['singlezctapop'] || 'N/A'}<br/>
-      Median Income: ${p['medianincome'] ? formatter.format(p['medianincome']) : 'N/A'}<br/>
+      Population Estimate: ${p[`singlezctapop.${key}`] || 'N/A'}<br/>
+      Median Income: ${p[`medianincome.${key}`] ? formatter.format(p[`medianincome.${key}`]) : 'N/A'}<br/>
       ${otherZips.length > 0 ? `<div class="other-zctas">Other ZCTAs here: ${otherZips.join(', ')}</div>` : ''}
 
       ${feats.length == 1 ? `

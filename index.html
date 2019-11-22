@@ -17,23 +17,30 @@
         <div id="control">
             <div class="control-group">
                 <input name="zipcode" type="text" placeholder="Zipcode">
-                <select name="category"></select>
-                <select name="propertyA"></select>
-                <select name="propertyB"></select>
-                <button id="toggleZCTAs">Hide ZCTAs</button>
+                <div>
+                    <select name="category"></select>
+                    <select name="propertyA"></select>
+                    <select name="propertyB"></select>
+                    <button id="toggleZCTAs">Hide ZCTAs</button>
+                </div>
             </div>
 
             <div id="control-isochrone">
                 <label class="control-label">Driving Distance</label>
-                <button value="30min">30 min</button>
-                <button value="45min" class="selected">45 min</button>
-                <button value="60min">60 min</button>
+                <div>
+                    <button value="30min">30 min</button>
+                    <button value="45min" class="selected">45 min</button>
+                    <button value="60min">60 min</button>
+                </div>
             </div>
         </div>
         <section id="stage">
+            <div id="map-regions"></div>
             <div id="map-wrapper">
                 <div id="map"></div>
                 <div id="map-tooltip"></div>
+                <div id="legend"></div>
+                <div id="icon-legend-show">?</div>
                 <div id="icon-legend">
                     <div>
                         <div><span class="icon-key" style="background:#33C377;"></span><span>Public</span></div>
@@ -45,12 +52,10 @@
                         <div><span class="icon-key" style="border:2px solid #888888;"></span><span>Associate Degree</span></div>
                         <div><span class="icon-key" style="border:2px solid #ffffff;"></span><span>Below Associate Degree</span></div>
                     </div>
+                    <div id="icon-legend-close">✖</div>
                 </div>
             </div>
             <div id="info"></div>
-
-            <div id="legend"></div>
-            <div id="map-regions"></div>
         </section>
         <section class="text">
             <h1>Methodology</h1>
