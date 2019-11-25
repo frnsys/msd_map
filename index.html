@@ -15,14 +15,19 @@
         </section>
 
         <div id="control">
-            <div class="control-group">
+            <div>
+                <label class="control-label">Jump to Zipcode</label>
                 <input name="zipcode" type="text" placeholder="Zipcode">
-                <div>
-                    <select name="category"></select>
-                    <select name="propertyA"></select>
-                    <select name="propertyB"></select>
-                    <button id="toggleZCTAs">Hide ZCTAs</button>
-                </div>
+            </div>
+            <div>
+                <label class="control-label">School Types</label>
+                <select name="category"></select>
+            </div>
+            <select name="propertyA"></select>
+            <select name="propertyB"></select>
+            <div>
+                <label class="control-label">Display</label>
+                <button id="toggleZCTAs">Show Schools Only</button>
             </div>
 
             <div id="control-isochrone">

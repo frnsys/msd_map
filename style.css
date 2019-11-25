@@ -1,4 +1,18 @@
-@import url('https://fonts.googleapis.com/css?family=Noto+Serif+JP:200|Nanum+Gothic:400,700&display=swap');
+@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Mono:400');
+
+@font-face{
+    font-family:'EB Garamond';
+    src:url(/assets/fonts/EBGaramond-Regular.ttf);
+    font-style:normal;
+    font-weight:400
+}
+@font-face{
+    font-family:'Founders Grotesk';
+    src:url(/assets/fonts/FoundersGrotesk-Light.eot);
+    src:url(/assets/fonts/FoundersGrotesk-Light.eot?#iefix) format('embedded-opentype'),url(/assets/fonts/FoundersGrotesk-Light.woff) format('woff'),url(/assets/fonts/FoundersGrotesk-Light.ttf) format('truetype'),url(/assets/fonts/FoundersGrotesk-Light.svg#dc544f9d1e4c18e86a46bd108e04a26d) format('svg');
+    font-style:normal;
+    font-weight:200
+}
 
 * {
   box-sizing: border-box;
@@ -7,20 +21,20 @@
 html, body {
   margin: 0;
   padding: 0;
-  font-family: 'Nanum Gothic', sans-serif;
+  font-family: 'EB Garamond', serif;
   font-smooth: never;
   -webkit-font-smoothing : none;
   background: #fff;
 }
 
-h1 {
-  font-family: 'Noto Serif JP', serif;
-  font-weight: normal;
-  font-size: 3em;
+p {
+  font-size: 1.4em;
 }
 
-p {
-  font-family: 'Nanum Gothic', sans-serif;
+h1 {
+  font-weight: normal;
+  font-size: 3em;
+  font-family: 'Founders Grotesk', sans-serif;
 }
 
 #stage {
@@ -28,7 +42,6 @@ p {
   display: flex;
   position: relative;
   overflow: hidden;
-  border-top: 1px solid #333;
   border-bottom: 1px solid #333;
   margin: 0 0 2em 0;
 }
@@ -96,7 +109,22 @@ section.text:last-child {
   padding: 0.5em;
   margin-top: 2em;
   display: flex;
-  justify-content: space-between;
+  background: #d5d5d5;
+  border-top: 1px solid #000;
+  justify-content: right;
+  padding-right: 27.5%;
+}
+#control > div {
+  margin-right: 1em;
+}
+#control > div:first-child {
+  flex: 1;
+}
+#control > div:first-child input {
+  width: 100%;
+}
+#control > div:last-child {
+  margin-right: 0;
 }
 .control-group {
   display: flex;
@@ -106,6 +134,10 @@ section.text:last-child {
   margin-right: 0.25em;
 }
 
+#toggleZCTAs {
+  width: 11em;
+}
+
 #legend {
   position: absolute;
   bottom: 2em;
@@ -113,6 +145,7 @@ section.text:last-child {
   color: #fff;
   z-index: 1;
   text-align: right;
+  font-family: 'Founders Grotesk', sans-serif;
 }
 .legend--bivariate-wrapper {
   transform: rotate(-45deg);
@@ -243,6 +276,7 @@ section.text:last-child {
   top: 0.4em;
   right: 0.5em;
   z-index: 1;
+  font-family: 'Founders Grotesk', sans-serif;
 }
 #icon-legend > div {
   flex: 1;
@@ -300,16 +334,18 @@ section.text:last-child {
   top: 0.25em;
   left: 0.25em;
   margin-bottom: 0.25em;
-  max-width: 480px;
+  max-width: 540px;
   z-index: 1;
+  font-family: 'Founders Grotesk', sans-serif;
 }
 #map-regions div {
-  font-size: 0.65em;
+  font-size: 0.85em;
   display: inline-block;
   background: #333;
   color: #fff;
-  padding: 0.25em;
+  padding: 0.25em 0.25em 0 0.25em;
   margin: 0.1em;
+  line-height: 1.5;
   cursor: pointer;
 }
 
@@ -335,17 +371,21 @@ button, input, select {
   border: 1px solid #888;
   padding: 0.25em;
   border-radius: 0.2em;
+  font-family: 'Founders Grotesk', sans-serif;
+}
+input {
+  padding: 0.25em 0.25em 0 0.25em;
 }
 select {
-  padding: 0.16em;
+  padding: 0.16em 0.16em 0 0.16em;
 }
 button {
-  padding: 0.25em 1em;
+  padding: 0.25em 1em 0 1em;
 }
 .control-label {
   display: block;
-  font-size: 0.8em;
-  margin: 0 0 0.25em 0;
+  font-size: 0.9em;
+  font-family: 'Founders Grotesk', sans-serif;
 }
 
 /* Hiding for now */
@@ -375,31 +415,22 @@ select[name="propertyB"] {
     right: 3.25em;
     max-width: none;
   }
+  #control {
+    padding-right: 0;
+  }
+  #control > div:last-child {
+    margin-right: 0.5em;
+  }
 }
 
 @media only screen and (max-width: 680px) {
   #control {
-    display: block;
-  }
-  .control-group {
-    display: block;
-  }
-  .control-group > div {
-    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
     justify-content: space-between;
-    margin-right: 0;
   }
-  input[name="zipcode"] {
-    width: 100%;
-    margin: 0.75em 0;
-  }
-  #control-isochrone {
-    display: flex;
-    justify-content: space-between;
-    margin: 0.5em 0;
-  }
-  .control-label {
-    display: inline-block;
-    align-self: flex-end;
+  #control > div {
+    flex-basis: auto !important;
+    margin-bottom: 0.5em;
   }
 }

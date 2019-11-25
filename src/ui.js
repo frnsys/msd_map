@@ -113,11 +113,11 @@ function setupUI(map, legend, info, state) {
     if (visibility == 'none') {
       map.map.setLayoutProperty('zctas', 'visibility', 'visible');
       map.map.setPaintProperty('us', 'fill-color', '#6b0106');
-      toggle.innerText = 'Hide ZCTAs';
+      toggle.innerText = 'Show Schools Only';
     } else {
       map.map.setLayoutProperty('zctas', 'visibility', 'none');
       map.map.setPaintProperty('us', 'fill-color', '#a8a8a8');
-      toggle.innerText = 'Show ZCTAs';
+      toggle.innerText = 'Show Schools and SCI';
     }
   });
 
