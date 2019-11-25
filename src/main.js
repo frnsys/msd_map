@@ -133,3 +133,6 @@ const legend = new Legend(map, {id: 'zctas', layer: 'zctas'}, state.props, {
 
 setupUI(map, legend, info, state);
 info.reset();
+
+// For getting bounds
+// window.getbbox = () => map.map.getBounds();

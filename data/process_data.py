@@ -234,8 +234,9 @@ for state in STATES:
     bbox = shape(feat['geometry']).bounds
     region_bboxes[state] = bbox
 
-# Data source is incorrect about Alaska, set it manually
+# Data source is incorrect about Alaska and American Samoa, set it manually
 region_bboxes['Alaska'] = [-207.4133546365765, 50.796925749084465, -104.93451956255066, 71.79270027924889]
+region_bboxes['American Samoa'] = [-171.84922996050645, -14.93534547358692, -168.25721358668446, -13.663497668009555]
 
 
 print('Saving files...')
