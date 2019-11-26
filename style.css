@@ -2,14 +2,14 @@
 
 @font-face{
     font-family:'EB Garamond';
-    src:url(/assets/fonts/EBGaramond-Regular.ttf);
+    src:url(assets/fonts/EBGaramond-Regular.ttf);
     font-style:normal;
     font-weight:400
 }
 @font-face{
     font-family:'Founders Grotesk';
-    src:url(/assets/fonts/FoundersGrotesk-Light.eot);
-    src:url(/assets/fonts/FoundersGrotesk-Light.eot?#iefix) format('embedded-opentype'),url(/assets/fonts/FoundersGrotesk-Light.woff) format('woff'),url(/assets/fonts/FoundersGrotesk-Light.ttf) format('truetype'),url(/assets/fonts/FoundersGrotesk-Light.svg#dc544f9d1e4c18e86a46bd108e04a26d) format('svg');
+    src:url(assets/fonts/FoundersGrotesk-Light.eot);
+    src:url(assets/fonts/FoundersGrotesk-Light.eot?#iefix) format('embedded-opentype'),url(assets/fonts/FoundersGrotesk-Light.woff) format('woff'),url(assets/fonts/FoundersGrotesk-Light.ttf) format('truetype'),url(assets/fonts/FoundersGrotesk-Light.svg#dc544f9d1e4c18e86a46bd108e04a26d) format('svg');
     font-style:normal;
     font-weight:200
 }
@@ -22,8 +22,8 @@ html, body {
   margin: 0;
   padding: 0;
   font-family: 'EB Garamond', serif;
-  font-smooth: never;
-  -webkit-font-smoothing : none;
+  /* font-smooth: never; */
+  /* -webkit-font-smoothing : none; */
   background: #fff;
 }
 
@@ -321,6 +321,10 @@ section.text:last-child {
   font-size: 0.75em;
   color: #888;
   margin-top: 1em;
+}
+
+.no-zcta {
+  margin: 0;
 }
 
 .school-info > div {

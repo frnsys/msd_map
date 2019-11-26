@@ -40,7 +40,7 @@ const PROPS = {
       1.0: '#32a852'
     }
   },
-  'singlezctapop': {
+  'zctazonepop': {
     desc: 'Population Estimate',
     nick: 'Pop. Est.',
     color: {

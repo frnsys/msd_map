@@ -61,7 +61,7 @@ function explain(feats, cat, focusedSchools) {
       SCI: ${d['SCI'] > 0 ? d['SCI'].toFixed(2) : 'Education Desert'}<br/>
       Number of Schools: ${d['n'] || 'N/A'}<br/>
       Enrollment Seats: ${d['UNDUPUG'] || 0}<br/>
-      Population Estimate: ${p[`singlezctapop.${yearKey}`] || 'N/A'}<br/>
+      25mi Zone Population Estimate: ${p[`zctazonepop.${yearKey}`] || 'N/A'}<br/>
       Median Income: ${p[`medianincome.${yearKey}`] ? formatter.format(p[`medianincome.${yearKey}`]) : 'N/A'}<br/>
       ${otherZips.length > 0 ? `<div class="other-zctas">Other ZCTAs here: ${otherZips.join(', ')}</div>` : ''}
 
@@ -90,13 +90,31 @@ function explain(feats, cat, focusedSchools) {
 }
 
 function empty() {
-  info.explainFeature(`<h2>No ZCTA here</h2>`);
+  info.explainFeature(`<p class="no-zcta">This geographic area does not have a resident population and therefore does not have a ZCTA. Typical examples of this region include national or state parks and large bodies of water.</p>`);
 }
 
 function reset() {
   info.explainFeature(`<h2>About this project</h2><p>TK</p>`);
 }
 
+function schoolsOnly() {
+  info.explainFeature(`
+    <h2>Total Higher Education Institutions: 6,295</h2>
+    <h3>By Control:</h3>
+    <ul>
+      <li>Public: 1,954</li>
+      <li>Private not-for-profit: 1,599</li>
+      <li>Private for-profit: 2,742</li>
+    </ul>
+    <h3>By Level:</h3>
+    <ul>
+      <li>Bachelor: 2,532</li>
+      <li>Associate: 1,961</li>
+      <li>Below Associate: 1,802</li>
+    </ul>
+    <em>*For information on our exclusion criteria, see the Methodology section at the bottom of this page.</em>`);
+}
+
 export default {
-  explain, empty, reset
+  explain, empty, reset, schoolsOnly
 };

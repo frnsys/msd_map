@@ -118,6 +118,11 @@ function setupUI(map, legend, info, state) {
       map.map.setLayoutProperty('zctas', 'visibility', 'none');
       map.map.setPaintProperty('us', 'fill-color', '#a8a8a8');
       toggle.innerText = 'Show Schools and SCI';
+      info.schoolsOnly();
+      map.resetFilter({
+        id: 'schools'
+      }, {mute: false});
+      map.focusedLock = false;
     }
   });
 
