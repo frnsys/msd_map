@@ -53,8 +53,8 @@ CSV_FIELDS = {
     'UNDUPUG': ['S', 'I', 'Y'],
     'singlezctapop': ['Y'],
     'medianincome': ['Y'],
-    'n_zipsinzone': ['Y', 'I'],
-    'zctazonepop': ['Y', 'I']
+    'n_zipsinzone': ['Y'],
+    'zctazonepop': ['Y']
 }
 CSV_DEFAULTS = {
     'medianincome': None,
@@ -81,11 +81,26 @@ for k, cats in CSV_FIELDS.items():
         CSV_DEFAULTS['{}.{}'.format(k, key)] = CSV_DEFAULTS.get(k, 0)
 
 
-
 zctas = set()
 data = defaultdict(dict)
 field_data = defaultdict(lambda: defaultdict(list))
 for y in CATEGORIES['Y']:
+    df = pd.read_csv('src/{Y}.ZCTA.Stats.csv'.format(Y=y))
+    df = df.where(pd.notnull(df), None)
+    for row in tqdm(df.itertuples(), total=len(df), desc='{Y} ZCTA'.format(Y=y)):
+        row_data = dict(row._asdict())
+        if row_data[CSV_ZIPCODE_FIELD] is None: continue
+        zipcode = str(int(row_data[CSV_ZIPCODE_FIELD])).zfill(5)
+        assert len(zipcode) == 5
+        zctas.add(zipcode)
+
+        for k, cats in CSV_FIELDS.items():
+            if cats != ['Y']: continue
+            key = keyForCat({'Y': y}, k)
+            val = row_data[k]
+            data[zipcode][key] = val
+            field_data[k][key].append(val)
+
     for i in CATEGORIES['I']:
         cat = {'Y': y, 'I': i}
         df = pd.read_csv('src/{Y}.{I}.ZCTAlevel.csv'.format(**cat))
@@ -98,7 +113,8 @@ for y in CATEGORIES['Y']:
             zctas.add(zipcode)
 
             for k, cats in CSV_FIELDS.items():
-                if 'S' in cats:
+                if 'I' not in cats: continue
+                elif 'S' in cats:
                     for s in CATEGORIES['S']:
                         key = keyForCat({'Y': y, 'I': i, 'S': s}, k)
                         val = row_data['{}_{}'.format(k, s)]
