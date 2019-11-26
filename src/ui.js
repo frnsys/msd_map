@@ -141,6 +141,9 @@ function setupUI(map, legend, info, state) {
       state.props = state.props.map((p) => config.PROPS[util.propForCat(p.key, state.cat)]);
       map.set('zctas', state.props);
       legend.set(state.props);
+      if (map.focused['zctas']) {
+        info.explain(map.focused['zctas'], state.cat, []);
+      };
     });
   });
 
