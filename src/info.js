@@ -112,7 +112,7 @@ function schoolsOnly() {
       <li>Associate: 1,961</li>
       <li>Below Associate: 1,802</li>
     </ul>
-    <em>*For information on our exclusion criteria, see the Methodology section at the bottom of this page.</em>`);
+    <em>For information on our exclusion criteria, see the Methodology section at the bottom of this page.</em>`);
 }
 
 export default {

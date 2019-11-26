@@ -103,6 +103,9 @@ section.text:last-child {
 #info h3:first-child {
   margin-top: 0;
 }
+#info em {
+  color: #888;
+}
 
 #control {
   z-index: 1;

@@ -107,23 +107,28 @@ function setupUI(map, legend, info, state) {
   });
 
   // Toggle ZCTA layer
-  let toggle = document.getElementById('toggleZCTAs');
-  toggle.addEventListener('click', () => {
-    let visibility = map.map.getLayoutProperty('zctas', 'visibility');
-    if (visibility == 'none') {
-      map.map.setLayoutProperty('zctas', 'visibility', 'visible');
-      map.map.setPaintProperty('us', 'fill-color', '#6b0106');
-      toggle.innerText = 'Show Schools Only';
-    } else {
-      map.map.setLayoutProperty('zctas', 'visibility', 'none');
-      map.map.setPaintProperty('us', 'fill-color', '#a8a8a8');
-      toggle.innerText = 'Show Schools and SCI';
-      info.schoolsOnly();
-      map.resetFilter({
-        id: 'schools'
-      }, {mute: false});
-      map.focusedLock = false;
-    }
+  let showSchools = document.getElementById('showSchools');
+  let showSCI = document.getElementById('showSCI');
+  showSchools.addEventListener('click', () => {
+    state.schoolsOnly = true;
+    map.map.setLayoutProperty('zctas', 'visibility', 'none');
+    map.map.setPaintProperty('us', 'fill-color', '#a8a8a8');
+
+    info.schoolsOnly();
+    map.resetFilter({
+      id: 'schools'
+    }, {mute: false});
+    map.focusedLock = false;
+
+    showSCI.classList.remove('selected');
+    showSchools.classList.add('selected');
+  });
+  showSCI.addEventListener('click', () => {
+    state.schoolsOnly = false;
+    map.map.setLayoutProperty('zctas', 'visibility', 'visible');
+    map.map.setPaintProperty('us', 'fill-color', '#6b0106');
+    showSchools.classList.remove('selected');
+    showSCI.classList.add('selected');
   });
 
   // Toggle isochrone layer

@@ -85,7 +85,11 @@ function focusFeatures(features, ev) {
   // Otherwise, hide
   } else {
     if (features['composite']) {
-      info.empty();
+      if (state.schoolsOnly) {
+        info.schoolsOnly();
+      } else {
+        info.empty();
+      }
     } else {
       info.reset();
     }
