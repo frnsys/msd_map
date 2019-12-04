@@ -12,7 +12,7 @@ let params = window.location.search.substr(1).split('&').reduce((acc, param) => 
 const BBOXES = data.bboxes;
 const MAPBOX_TOKEN = config.MAPBOX_TOKEN;
 
-let MAP_ID = 'frnsys.9e8w43l8';
+let MAP_ID = 'frnsys.35b50xso';
 let INITIAL_CAT = {
   S: 'allschools',
   I: '45min',

@@ -32,7 +32,7 @@ function explain(feats, cat, focusedSchools) {
     let [zipcode, ...otherZips] = p['zipcode'].split(',');
     let key = util.keyForCat({'Y': cat['Y'], 'I': cat['I']});
     let yearKey = util.keyForCat({'Y': cat['Y']});
-    let schoolIds = zipSchools[zipcode] ? zipSchools[zipcode][key] : [];
+    let schoolIds = zipSchools[zipcode] ? (zipSchools[zipcode][key] || []) : [];
     let schoolsForZCTA = schoolIds.map((id) => schools[id]);
     let groupedSchools = {};
 
@@ -60,7 +60,7 @@ function explain(feats, cat, focusedSchools) {
       <h2>${zipcode}</h2>
       SCI: ${d['SCI'] > 0 ? d['SCI'].toFixed(2) : 'Education Desert'}<br/>
       Number of Schools: ${d['n'] || 'N/A'}<br/>
-      Enrollment Seats: ${d['UNDUPUG'] || 0}<br/>
+      Enrollment: ${d['UNDUPUG'] || 0}<br/>
       25mi Zone Population Estimate: ${p[`zctazonepop.${yearKey}`] || 'N/A'}<br/>
       Median Income: ${p[`medianincome.${yearKey}`] ? formatter.format(p[`medianincome.${yearKey}`]) : 'N/A'}<br/>
       ${otherZips.length > 0 ? `<div class="other-zctas">Other ZCTAs here: ${otherZips.join(', ')}</div>` : ''}

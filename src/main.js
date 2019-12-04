@@ -58,7 +58,7 @@ function focusFeatures(features, ev) {
       let feat = feats[0];
       let zip = feat.properties['zipcode'].split(',')[0];
       let key = util.keyForCat({'Y': state.cat['Y'], 'I': state.cat['I']});
-      let schoolIds = zipSchools[zip] ? zipSchools[zip][key] : [];
+      let schoolIds = zipSchools[zip] ? (zipSchools[zip][key] || []) : [];
       let filter = ['!in', '$id'].concat(schoolIds);
       map.setFilter({
         id: 'schools'
