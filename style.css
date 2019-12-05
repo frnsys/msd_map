@@ -31,10 +31,13 @@ p {
   font-size: 1.4em;
 }
 
-h1 {
+h1, h2 {
   font-weight: normal;
   font-size: 3em;
   font-family: 'Founders Grotesk', sans-serif;
+}
+h2 {
+  font-size: 1.8em;
 }
 
 #stage {
@@ -57,6 +60,44 @@ section.text h1 {
 }
 section.text:last-child {
   padding-bottom: 6em;
+}
+section.text p {
+  text-align: justify;
+}
+section.text > ul {
+  font-size: 1.1em;
+  text-align: justify;
+}
+.smallcaps {
+  font-variant: small-caps;
+  text-transform: lowercase;
+}
+.summary {
+  display: none;
+}
+.summary-charts {
+  display: flex;
+  justify-content: space-between;
+}
+.summary .summary-charts img {
+  max-width: 49%;
+  flex: 1;
+}
+.summary table {
+  width: 100%;
+  margin-bottom: 2em;
+  border-collapse: collapse;
+}
+table, th, td {
+  border: 1px solid black;
+}
+th, td {
+  padding: 0.25em;
+}
+th {
+  font-weight: normal;
+  font-family: 'Founders Grotesk', sans-serif;
+  padding-top: 0.75em;
 }
 
 #map {
@@ -105,6 +146,9 @@ section.text:last-child {
 }
 #info em {
   color: #888;
+}
+#info p {
+  font-size: 1.1em;
 }
 
 #control {
@@ -328,6 +372,7 @@ section.text:last-child {
 
 .no-zcta {
   margin: 0;
+  font-size: 1.1em;
 }
 
 .school-info > div {
@@ -395,12 +440,19 @@ button {
   font-family: 'Founders Grotesk', sans-serif;
 }
 
+.number-line {
+  margin: 1em 0;
+}
+.number-line--focused {
+  background: #FFCC00 !important;
+  z-index: 9;
+}
+
 /* Hiding for now */
 select[name="propertyA"],
 select[name="propertyB"] {
   display: none;
 }
-
 
 @media only screen and (max-width: 1080px) {
   #icon-legend {

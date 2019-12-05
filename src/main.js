@@ -10,6 +10,36 @@ import styles from './styles';
 import schools from '../data/schools.json';
 import zipSchools from '../data/zip_schools.json';
 
+import createNumberLine from './numberLine';
+import states from '../data/states.json';
+
+createNumberLine('#sci-number-line', 'SCI', states['sci'], [0, 10000], ['Pure Competition', 'Pure Monopoly']);
+createNumberLine('#enrollment-number-line', 'Enrollment', states['enrollment'], [0, Math.max(...Object.values(states['enrollment']))], ['', '']);
+
+// State selector for the number line
+let sciStateSelect = document.getElementById('sci-number-line-select');
+let allStates = document.createElement('option');
+allStates.innerText = 'All States';
+allStates.value = 'all';
+sciStateSelect.append(allStates);
+Object.keys(states['sci']).sort((a, b) => a.localeCompare(b)).forEach((key) => {
+  let opt = document.createElement('option');
+  opt.innerText = key;
+  opt.value = key;
+  sciStateSelect.append(opt);
+});
+sciStateSelect.addEventListener('change', (ev) => {
+  let val = ev.target.value;
+  [...document.querySelectorAll('.number-line--focused')].forEach((el) => {
+    el.classList.remove('number-line--focused');
+  });
+  if (val !== 'all') {
+    document.getElementById(`number-line--sci-${val}`).classList.add('number-line--focused');
+    document.getElementById(`number-line--enrollment-${val}`).classList.add('number-line--focused');
+  }
+});
+
+
 mapboxgl.accessToken = config.MAPBOX_TOKEN;
 
 const tooltip = document.getElementById('map-tooltip');
@@ -116,7 +146,7 @@ const map = new Map({
     tooltip.innerHTML = features['schools'].map((s) => {
       return `<div class="school-info">
         ${s.properties['INSTNM']}
-        <div>ZCTA: ${s.properties['ZIP']}</div>
+        <div>Zip: ${s.properties['ZIP']}</div>
         <div>Enrollment Seats: ${s.properties['UNDUPUG']}</div>
       </div>`;
     }).join('<br />');
@@ -132,7 +162,7 @@ map.map.on('dragstart', () => {
 });
 const legend = new Legend(map, {id: 'zctas', layer: 'zctas'}, state.props, {
   'Education Desert': config.COLORS['null'],
-  'No ZCTA': '#520004'
+  'No Zip': '#520004'
 }, ['min']);
 
 setupUI(map, legend, info, state);

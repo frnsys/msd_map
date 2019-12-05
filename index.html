@@ -10,14 +10,16 @@
 <body>
     <main>
         <section class="text">
-            <h1>School Concentrations</h1>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <h1>Unequal and Uneven: The Geography of Higher Education Access</h1>
+            <p>The school concentration index (<span class="smallcaps">SCI</span>) is a new tool that measures local concentration in higher education markets. Using driving distances and school enrollment data across all higher education institutional types except advanced degrees, this interactive map visualizes this concentration by zip code tabulation area. (<a href="https://www.census.gov/programs-surveys/geography/guidance/geo-areas/zctas.html">Zip code tabulation areas</a> are areal representations of the more familiar <span class="smallcaps">USPS ZIP</span> code service areas; we use the short form “zip” here for ease of reading.)** The <span class="smallcaps">SCI</span> ranges from 0, indicating perfect competition, to 10,000 which indicates one school accounts for all the enrollmentfor that zip; on the map, this range is visualized as green (perfect competition) to dark red (single monopolist). Zips that are maroon in color indicate an education desert—no higher ed nearby. Dark maroon areas are those with no associated zip - areas with no residents, like national parks or bodies of water.</p>
+            <p>Please note: The <span class="smallcaps">DOJ</span> and <span class="smallcaps">FTC</span> use similar indices to measure market concentration in all types of markets. According to their benchmarks, a highly concentrated market scores above 2500 on the scale.</p>
+            <p>This map is the first in a series of publications examining market power in the <span class="smallcaps">US</span> higher education system, and its effects on cost, access, indebtedness, and earning power. To read an explanatory blog post introducing and contextualizing the map and the methodology, click here.</p>
         </section>
 
         <div id="control">
             <div>
-                <label class="control-label">Jump to Zipcode</label>
-                <input name="zipcode" type="text" placeholder="Zipcode">
+                <label class="control-label">Jump to Zip</label>
+                <input name="zipcode" type="text" placeholder="Zip">
             </div>
             <div>
                 <label class="control-label">School Types</label>
@@ -66,10 +68,422 @@
             <div id="info"></div>
         </section>
         <section class="text">
+            <h1>Summary Statistics - <span id="distance">45min</span> Driving Distance</h1>
+            <div class="summary" id="30min-summary">
+                <h2>Summary Statistics Table by Driving Distance</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>mean</th>
+                            <th>sd</th>
+                            <th>min</th>
+                            <th>p25</th>
+                            <th>p50</th>
+                            <th>p75</th>
+                            <th>max</th>
+                            <th>kurtosis</th>
+                            <th>skewness</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>All Schools</td>
+                            <td>5539.447</td>
+                            <td>3281.773</td>
+                            <td>245.8661</td>
+                            <td>2741.094</td>
+                            <td>5015.344</td>
+                            <td>9496.006</td>
+                            <td>10000</td>
+                            <td>1.593175</td>
+                            <td>0.138967</td>
+                        </tr>
+                        <tr>
+                            <td>Public</td>
+                            <td>6796.831</td>
+                            <td>3108.433</td>
+                            <td>456.3623</td>
+                            <td>4476.529</td>
+                            <td>6666.103</td>
+                            <td>10000</td>
+                            <td>10000</td>
+                            <td>1.732492</td>
+                            <td>-0.3539089</td>
+                        </tr>
+                        <tr>
+                            <td>Private (non-profit)</td>
+                            <td>5964.596</td>
+                            <td>3365.09</td>
+                            <td>465.203</td>
+                            <td>2919.876</td>
+                            <td>5251.379</td>
+                            <td>10000</td>
+                            <td>10000</td>
+                            <td>1.426825</td>
+                            <td>0.0341698</td>
+                        </tr>
+                        <tr>
+                            <td>Private (for-profit)</td>
+                            <td>4905.507</td>
+                            <td>3499.663</td>
+                            <td>234.5844</td>
+                            <td>1713.816</td>
+                            <td>3972.233</td>
+                            <td>9553.371</td>
+                            <td>10000</td>
+                            <td>1.631507</td>
+                            <td>0.3837681</td>
+                        </tr>
+                        <tr>
+                            <td>Bachelor's </td>
+                            <td>6164.352</td>
+                            <td>3283.224</td>
+                            <td>312.8086</td>
+                            <td>3160.057</td>
+                            <td>5877.005</td>
+                            <td>10000</td>
+                            <td>10000</td>
+                            <td>1.520441</td>
+                            <td>-0.0975502</td>
+                        </tr>
+                        <tr>
+                            <td>Associate's</td>
+                            <td>7265.785</td>
+                            <td>3024.815</td>
+                            <td>600.8989</td>
+                            <td>4939.334</td>
+                            <td>8673.187</td>
+                            <td>10000</td>
+                            <td>10000</td>
+                            <td>2.019186</td>
+                            <td>-0.6808475</td>
+                        </tr>
+                        <tr>
+                            <td>Less Than Two Years</td>
+                            <td>5179.488</td>
+                            <td>3584.086</td>
+                            <td>261.982</td>
+                            <td>1922.497</td>
+                            <td>4262.119</td>
+                            <td>10000</td>
+                            <td>10000</td>
+                            <td>1.500385</td>
+                            <td>0.2792287</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h2>Visual Distributions of SCI by Institution Type</h2>
+                <div class="summary-charts">
+                    <img src="assets/plots/sci_distribution_30min_degreelevel.png" title="Distribution of SCI Index by Degree Level" alt="Extremely right-skewed SCI density curves across all institution levels.">
+                    <img src="assets/plots/sci_distribution_30min_schooltype.png" title="Distribution of SCI Index by School Type" alt="Extremely right-skewed SCI density curves across all institution types.">
+                </div>
+            </div>
+            <div class="summary" id="45min-summary" style="display:block;">
+                <h2>Summary Statistics Table by Driving Distance</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>mean</th>
+                            <th>sd</th>
+                            <th>min</th>
+                            <th>p25</th>
+                            <th>p50</th>
+                            <th>p75</th>
+                            <th>max</th>
+                            <th>kurtosis</th>
+                            <th>skewness</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>All Schools</td>
+                            <td>4503.8</td>
+                            <td>3159.665</td>
+                            <td>195.9734</td>
+                            <td>1915.751</td>
+                            <td>3661.483</td>
+                            <td>6652.006</td>
+                            <td>10000</td>
+                            <td>2.035819</td>
+                            <td>0.5750114</td>
+                        </tr>
+                        <tr>
+                            <td>Public</td>
+                            <td>5759.223</td>
+                            <td>3186.462</td>
+                            <td>311.3652</td>
+                            <td>3207.186</td>
+                            <td>5167.029</td>
+                            <td>10000</td>
+                            <td>10000</td>
+                            <td>1.667613</td>
+                            <td>0.1142618</td>
+                        </tr>
+                        <tr>
+                            <td>Private (non-profit)</td>
+                            <td>5171.03</td>
+                            <td>3385.569</td>
+                            <td>397.6435</td>
+                            <td>2175.294</td>
+                            <td>4195.979</td>
+                            <td>9873.499</td>
+                            <td>10000</td>
+                            <td>1.601716</td>
+                            <td>0.3514304</td>
+                        </tr>
+                        <tr>
+                            <td>Private (for-profit)</td>
+                            <td>4432.704</td>
+                            <td>3449.03</td>
+                            <td>190.5145</td>
+                            <td>1425.498</td>
+                            <td>3351.583</td>
+                            <td>7183.686</td>
+                            <td>10000</td>
+                            <td>1.864131</td>
+                            <td>0.577559</td>
+                        </tr>
+                        <tr>
+                            <td>Bachelor's </td>
+                            <td>5307.615</td>
+                            <td>3282.233</td>
+                            <td>257.5398</td>
+                            <td>2495.532</td>
+                            <td>4641.262</td>
+                            <td>8922.851</td>
+                            <td>10000</td>
+                            <td>1.637169</td>
+                            <td>0.2540416</td>
+                        </tr>
+                        <tr>
+                            <td>Associate's</td>
+                            <td>6430.2</td>
+                            <td>3177.219</td>
+                            <td>434.2038</td>
+                            <td>3750.125</td>
+                            <td>6264.648</td>
+                            <td>10000</td>
+                            <td>10000</td>
+                            <td>1.651823</td>
+                            <td>-0.2626105</td>
+                        </tr>
+                        <tr>
+                            <td>Less Than Two Years</td>
+                            <td>4499.299</td>
+                            <td>3492.346</td>
+                            <td>210.0311</td>
+                            <td>1488.412</td>
+                            <td>3428.656</td>
+                            <td>7473.131</td>
+                            <td>10000</td>
+                            <td>1.813107</td>
+                            <td>0.5435708</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h2>Visual Distributions of SCI by Institution Type</h2>
+                <div class="summary-charts">
+                    <img src="assets/plots/sci_distribution_45min_degreelevel.png" title="Distribution of SCI Index by Degree Level" alt="Extremely right-skewed SCI density curves across all institution levels.">
+                    <img src="assets/plots/sci_distribution_45min_schooltype.png" title="Distribution of SCI Index by School Type" alt="Extremely right-skewed SCI density curves across all institution types.">
+                </div>
+            </div>
+            <div class="summary"id="60min-summary">
+                <h2>Summary Statistics Table by Driving Distance</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>mean</th>
+                            <th>sd</th>
+                            <th>min</th>
+                            <th>p25</th>
+                            <th>p50</th>
+                            <th>p75</th>
+                            <th>max</th>
+                            <th>kurtosis</th>
+                            <th>skewness</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>All Schools</td>
+                            <td>3585.764</td>
+                            <td>2868.06</td>
+                            <td>180.4202</td>
+                            <td>1431.688</td>
+                            <td>2677.434</td>
+                            <td>4985.756</td>
+                            <td>10000</td>
+                            <td>3.027472</td>
+                            <td>1.029975</td>
+                        </tr>
+                        <tr>
+                            <td>Public</td>
+                            <td>4788.07</td>
+                            <td>3061.135</td>
+                            <td>247.3942</td>
+                            <td>2432.937</td>
+                            <td>4060.835</td>
+                            <td>6546.857</td>
+                            <td>10000</td>
+                            <td>2.091632</td>
+                            <td>0.5535847</td>
+                        </tr>
+                        <tr>
+                            <td>Private (non-profit)</td>
+                            <td>4465.914</td>
+                            <td>3282.417</td>
+                            <td>352.4365</td>
+                            <td>1714.323</td>
+                            <td>3328.453</td>
+                            <td>6948.132</td>
+                            <td>10000</td>
+                            <td>1.979261</td>
+                            <td>0.6465857</td>
+                        </tr>
+                        <tr>
+                            <td>Private (for-profit)</td>
+                            <td>3908.767</td>
+                            <td>3278.526</td>
+                            <td>195.0784</td>
+                            <td>1187.927</td>
+                            <td>2773.087</td>
+                            <td>5661.157</td>
+                            <td>10000</td>
+                            <td>2.312426</td>
+                            <td>0.8188756</td>
+                        </tr>
+                        <tr>
+                            <td>Bachelor's </td>
+                            <td>4547.306</td>
+                            <td>3147.415</td>
+                            <td>235.9162</td>
+                            <td>1987.76</td>
+                            <td>3673.203</td>
+                            <td>6825.798</td>
+                            <td>10000</td>
+                            <td>2.020789</td>
+                            <td>0.573882</td>
+                        </tr>
+                        <tr>
+                            <td>Associate's</td>
+                            <td>5565.787</td>
+                            <td>3138.848</td>
+                            <td>345.152</td>
+                            <td>3016.019</td>
+                            <td>5047.601</td>
+                            <td>8984.204</td>
+                            <td>10000</td>
+                            <td>1.689953</td>
+                            <td>0.1422243</td>
+                        </tr>
+                        <tr>
+                            <td>Less Than Two Years</td>
+                            <td>3885.783</td>
+                            <td>3315.952</td>
+                            <td>186.623</td>
+                            <td>1176.937</td>
+                            <td>2737.083</td>
+                            <td>5535.537</td>
+                            <td>10000</td>
+                            <td>2.319588</td>
+                            <td>0.8267024</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h2>Visual Distributions of SCI by Institution Type</h2>
+                <div class="summary-charts">
+                    <img src="assets/plots/sci_distribution_60min_degreelevel.png" title="Distribution of SCI Index by Degree Level" alt="Extremely right-skewed SCI density curves across all institution levels.">
+                    <img src="assets/plots/sci_distribution_60min_schooltype.png" title="Distribution of SCI Index by School Type" alt="Extremely right-skewed SCI density curves across all institution types.">
+                </div>
+            </div>
+        </section>
+        <section class="text">
             <h1>Methodology</h1>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>The academic year represented here is 2016 - 2017. For more information on the implications of the map and our preliminary  findings, read our blog post here. Below, find explanations of all variables. Email us with questions about methods and findings <a href="mailto:jfi@jainfamilyinstitute.org">here</a>.</p>
+            <p>Variables derived for each <span class="smallcaps">ZCTA</span>:</p>
+            <ul>
+                <li>
+                    <b>School Concentration Index</b> - We modeled the calculation of the <span class="smallcaps">SCI</span> based on the <a href="https://www.justice.gov/atr/herfindahl-hirschman-index">Herfindahl-Hirschman Index (<span class="smallcaps">HHI</span>)</a>. The <span class="smallcaps">HHI</span> calculates market share for a particular company within a particular market; we calculate enrollment share for a particular school in a particular zip code tabulation area <span class="smallcaps">SCI</span> ranges from 0 (perfect competition) to 10,000 (complete monopoly). A <span class="smallcaps">SCI</span> of 10,000 indicates one school accounts for all the enrollment for that <span class="smallcaps">ZCTA</span>.
+                    <p>$$ \text{SCI}_{\text{ZCTA}} = s_1^2 + s_2^2 + \dots + s_n^2 $$</p>
+                    <div>Every <span class="smallcaps">ZCTA</span> has a unique School Concentration Index where n number of schools in each <span class="smallcaps">SCI</span> equals the amount of schools where it is possible to drive to the associated <span class="smallcaps">ZCTA</span> within 30, 45, or 60 minutes, depending on the selected map view. Each $s_n$ is the undergraduate enrollment share of a school within the geographic area, expressed as a whole number rather than a fraction.</div>
+                </li>
+                <li><b>Number of Schools</b> - The number of schools displayed for each <span class="smallcaps">ZCTA</span> is a tally of the schools considered within a 30, 45, or 60 minute drive from at least a subsection of the <span class="smallcaps">ZCTA</span>. <em>Number of schools</em> variable takes a whole number.</li>
+                <li>
+                    <b>Enrollment</b> - The enrollment displayed for each <span class="smallcaps">ZCTA</span> is the summation of the enrollment for every school considered within a 30, 45, or 60 minute drive from at least a subsection of the <span class="smallcaps">ZCTA</span>. <em>Enrollment</em> variable takes a whole number and is sourced from <span class="smallcaps">IPEDS</span> 12-Month Enrollment Table. This number indicates how many unduplicated undergraduate individuals enrolled for credit the institution served over a 12 month period, regardless of when the individual enrolled.
+                    <p>$$ \text{SeatsEnrollment}_{\text{ZCTA}} = \text{seatsenrollment}_1 + \text{seatsenrollment}_2 + \dots + \text{seatsenrollment}_n $$</p>
+                </li>
+                <li>
+                    <b>25 Mile Zone Population Estimate</b> - In place of population estimates for individual <span class="smallcaps">ZCTA</span>, we list the summation of all the population estimates for the <span class="smallcaps">ZCTA</span>s within 25 miles of the selected area; the purpose being to complement the zone-type scale used for the <span class="smallcaps">SCI</span>. The 25 mile population zone originates from the mathematical centroid of each <span class="smallcaps">ZCTA</span>.
+                    <p>$$ \text{Pop}_{\text{ZCTA-ZONE}} = \text{pop}_1 + \text{pop}_2 + \dots + \text{pop}_n $$</p>
+                    <div>Every <span class="smallcaps">ZCTA</span> has a unique Population Estimate per <span class="smallcaps">ZCTA</span> Zone where n number of <span class="smallcaps">ZCTA</span>s in each <span class="smallcaps">ZCTA</span> zone equals the <span class="smallcaps">ZCTA</span>s accessible to the root <span class="smallcaps">ZCTA</span> within a 25 mile drive. Each $\text{pop}_n$ is the 5-year population estimate for that specific <span class="smallcaps">ZCTA</span>. Both $\text{pop}_n$ and $\text{Pop}_{\text{ZCTA-ZONE}}$ take a whole number.</div>
+                </li>
+            </ul>
+            <p>Clear-cut variables per <span class="smallcaps">ZCTA</span>:</p>
+            <ul>
+                <li><b>Zip Code Tabulation Area</b> - (Via the <span class="smallcaps">US</span> Census Bureau) <span class="smallcaps">ZCTA</span>s are generalized areal representations of United States Postal Service <span class="smallcaps">ZIP</span> Code service areas.**</li>
+                <li><b>Institution Name</b> - These names are sourced from the <span class="smallcaps">IPEDS</span> Institutional Characteristics table. It represents the Institution or Entity Name.</li>
+                <li><b>Level of Institution</b>Level of Institutions are sourced from the <span class="smallcaps">IPEDS</span> Institutional Characteristics table. A classification of whether an institution’s programs are 4-year or higher (4 year aka <em>Bachelors</em>), 2-but-less-than 4-year (2 year aka <em>Associates</em>), or less than 2-years (aka <em>Below Associate</em>).</li>
+                <li><b>Control of Institution</b> - Control of Institutions are sourced from the <span class="smallcaps">IPEDS</span> Institutional Characteristics table. A classification of whether an institution is operated by publicly elected or appointed officials or by privately elected or appointed officials and derives its major source of funds from private sources.
+                    <ul>
+                        <li><em>Public institution</em> - An educational institution whose programs and activities are operated by publicly elected or appointed school officials and which is supported primarily by public funds.</li>
+                        <li><em>Private not-for-profit institution</em> - A private institution in which the individual(s) or agency in control receives no compensation, other than wages, rent, or other expenses for the assumption of risk. These include both independent not-for-profit schools and those affiliated with a religious organization.</li>
+                        <li><em>Private for-profit institution</em> - A private institution in which the individual(s) or agency in control receives compensation other than wages, rent, or other expenses for the assumption of risk.</li>
+                    </ul>
+                </li>
+                <li><b>Population Estimate</b> - Estimate; American Community Survey 5-year Estimates for the Total Population of the <span class="smallcaps">ZCTA</span>. Data are based on a sample and are subject to sampling variability. Population Estimates for <span class="smallcaps">US</span> Territories besides Puerto Rico are only available with the Census Bureau’s 2010 Census Data and only at the State Level. <em>Used to create the 25 Mile Zone Population Estimate.</em></li>
+                <li><b>Median Income Estimate</b> - Estimate; Median household income in the past 12 months (in 2016 inflation-adjusted dollars) from American Community Survey 2012 - 2016 5-year estimates. If a <span class="smallcaps">ZCTA</span> does not have a Median Income listed, this indicates that either no sample observations or too few sample observations were available to compute an estimate. For example, most <span class="smallcaps">US</span> Territories do not have median income information.</li>
+            </ul>
+            <p>Exclusion Criteria:</p>
+            <ul>
+                <li>We excluded schools that offered exclusively advanced degrees, exclusively distance learning degrees, and schools where level and control of institution were unknown. Also excluded were administrative offices of institutions when the institution itself was counted separately. For public schools, driving distances were restricted to the state where the school was located. If a school offered a bachelors or higher degree but no degree below bachelors and the undergraduate enrollment was below 100, the school was excluded.</li>
+            </ul>
+        </section>
+        <section class="text">
+            <select id="sci-number-line-select"></select>
+            <div id="sci-number-line"></div>
+            <div id="enrollment-number-line"></div>
+        </section>
+        <section class="text">
+            <h1>About Our Researchers</h1>
+            <p>The Higher Education Finance Team at Jain Family Institute were the principal researchers on this project and include: Laura Beamer, Francis Tseng, Ben Weintraut, Jack Gross, Maya Adereth, and Marshall Steinbaum.</p>
+        </section>
+        <section class="text">
+            <h1>About Our Sources</h1>
+            <p>This analysis uses school-reported data from the final data release of 2016-17 Integrated Postsecondary Education Data System (<span class="smallcaps">IPEDS</span>), 12-month enrollment data from the Provisional 2017 <span class="smallcaps">IPEDS</span> database which lists enrollment for the previous academic year, 2016 5-year population and median income estimates from the American Community Survey, school isochrone creation from OpenStreetMap, and mapping abilities from MapBox and the <span class="smallcaps">US</span> Census Bureau’s 2018 <span class="smallcaps">TIGER</span>/Line Shapefiles.</p>
+        </section>
+        <section class="text">
+            <h1>Citations</h1>
+            <ul>
+                <li>U.S. Department of Education, National Center for Education Statistics, Integrated Postsecondary Education Data System (IPEDS), 2016-17, Institutional Characteristics. Retrieved from <a href="https://nces.ed.gov/ipeds/use-the-data/download-access-database">https://nces.ed.gov/ipeds/use-the-data/download-access-database</a> on 15 October 2019.</li>
+                <li>U.S. Department of Education, National Center for Education Statistics, Integrated Postsecondary Education Data System (IPEDS), 2017, 12-Month Enrollment. Retrieved from <a href="https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx">https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx</a> on 15 November 2019.</li>
+                <li>U.S. Census Bureau; American Community Survey, 2012-2016 American Community Survey 5-Year Estimates, Table S0101; generated by Laura Beamer; using American FactFinder; <a href="http://factfinder2.census.gov">http://factfinder2.census.gov</a>; (1 November 2019).</li>
+                <li>U.S. Census Bureau; American Community Survey, 2012-2016 American Community Survey 5-Year Estimates, B19013 Median Household Income in the past 12 Months (in 2016 Inflation-Adjusted Dollars); generated by Laura Beamer; using American FactFinder; <a href="http://factfinder2.census.gov">http://factfinder2.census.gov</a>; (15 November 2019).</li>
+                <li>U.S. Census Bureau; Geography Division, Spatial Data Collection and Products Branch, TIGER/Lines ShapeFile 2018. <a href="https://www.census.gov/geographies/mapping-files/time-series/geo/tiger-line-file.2018.html">https://www.census.gov/geographies/mapping-files/time-series/geo/tiger-line-file.2018.html</a>.</li>
+                <li>NYU Spatial Data Repository. 5-Digit ZIP Code Tabulation Areas (ZCTA5) United States 2010. <a href="https://geo.nyu.edu/catalog/harvard-tg10uszcta5">https://geo.nyu.edu/catalog/harvard-tg10uszcta5</a>.</li>
+                <li>US Census Bureau. TIGER/Line Shapefile, 2017, 2010 nation, U.S., 2010 Census 5-Digit ZIP Code Tabulation Area (ZCTA5) National. <a href="https://www.data.gov">www.data.gov</a>. Metadata Updated: 8 August 2019.</li>
+                <li><a href="https://catalog.data.gov/dataset/tiger-line-shapefile-2017-2010-nation-u-s-2010-census-5-digit-zip-code-tabulation-area-zcta5-na">https://catalog.data.gov/dataset/tiger-line-shapefile-2017-2010-nation-u-s-2010-census-5-digit-zip-code-tabulation-area-zcta5-na</a>.</li>
+                <li>OpenStreetMap. Isochrones for the schools were created using OpenStreetMap, made by OpenStreetMap contributors, ODbL 1.0 - http://www.openstreetmap.org/copyright. © OpenStreetMap contributors.</li>
+            </ul>
+        </section>
+        <section class="text">
+            **For more information on the difference between a zip code and <span class="smallcaps">ZCTA</span>: <a href="https://census.gov/programs-surveys/geography/guidance/geo-areas/zctas.html">https://census.gov/programs-surveys/geography/guidance/geo-areas/zctas.html</a>
         </section>
     </main>
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="dist/main.js"></script>
 </body>
 </html>

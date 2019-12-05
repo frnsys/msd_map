@@ -63,10 +63,10 @@ function explain(feats, cat, focusedSchools) {
       Enrollment: ${d['UNDUPUG'] || 0}<br/>
       25mi Zone Population Estimate: ${p[`zctazonepop.${yearKey}`] || 'N/A'}<br/>
       Median Income: ${p[`medianincome.${yearKey}`] ? formatter.format(p[`medianincome.${yearKey}`]) : 'N/A'}<br/>
-      ${otherZips.length > 0 ? `<div class="other-zctas">Other ZCTAs here: ${otherZips.join(', ')}</div>` : ''}
+      ${otherZips.length > 0 ? `<div class="other-zctas">Other Zips here: ${otherZips.join(', ')}</div>` : ''}
 
-      ${feats.length == 1 ? `
-        <h2>Schools for ZCTA</h2>
+      ${feats.length == 1 && d['n'] ? `
+        <h2>Schools for Zips</h2>
         ${Object.keys(groupedSchools).map((control) => {
           return Object.keys(groupedSchools[control]).map((level) => {
             return `
@@ -90,11 +90,13 @@ function explain(feats, cat, focusedSchools) {
 }
 
 function empty() {
-  info.explainFeature(`<p class="no-zcta">This geographic area does not have a resident population and therefore does not have a ZCTA. Typical examples of this region include national or state parks and large bodies of water.</p>`);
+  info.explainFeature(`<p class="no-zcta">This geographic area does not have a resident population and therefore does not have a zip. Typical examples of this region include national or state parks and large bodies of water.</p>`);
 }
 
 function reset() {
-  info.explainFeature(`<h2>About this project</h2><p>TK</p>`);
+  info.explainFeature(`<h2>Map Guide</h2>
+    <p>The map displays school concentration, sortable by level and type of higher education institutions across the US and US Territories. Use the quick zoom buttons in the top left or type in your desired zip (try your home zip code!) to locate a particular area. Toggle different maps with the school-type drop down menu, and see the corresponding summary statistics on the SCI gradient legend. Hover over the concentration legend in the bottom left corner to highlight areas on the map that correspond to a particular SCI. As you mouse over certain geographic areas, the schools within commuting distance of that zip will illuminate.</p>
+    <p>Click on an area to freeze the informational panel and explore the statistics and institutions for that zip. Happy mapping!</p>`);
 }
 
 function schoolsOnly() {
