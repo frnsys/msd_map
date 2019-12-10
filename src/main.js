@@ -8,7 +8,6 @@ import mapboxgl from 'mapbox-gl';
 import config from './config';
 import styles from './styles';
 import schools from '../data/schools.json';
-import zipSchools from '../data/zip_schools.json';
 
 import createNumberLine from './numberLine';
 import states from '../data/states.json';
@@ -88,11 +87,13 @@ function focusFeatures(features, ev) {
       let feat = feats[0];
       let zip = feat.properties['zipcode'].split(',')[0];
       let key = util.keyForCat({'Y': state.cat['Y'], 'I': state.cat['I']});
-      let schoolIds = zipSchools[zip] ? (zipSchools[zip][key] || []) : [];
-      let filter = ['!in', '$id'].concat(schoolIds);
-      map.setFilter({
-        id: 'schools'
-      }, filter, {mute: true}, {mute: false});
+      util.schoolsForZip(zip).then((schoolIds) => {
+        schoolIds = schoolIds[key] || [];
+        let filter = ['!in', '$id'].concat(schoolIds);
+        map.setFilter({
+          id: 'schools'
+        }, filter, {mute: true}, {mute: false});
+      });
     } else {
       map.focusFeatures({
         id: 'schools'

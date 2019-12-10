@@ -269,8 +269,9 @@ with open('schools.json', 'w') as f:
 with open('meta.json', 'w') as f:
     json.dump(meta, f)
 
-with open('zip_schools.json', 'w') as f:
-    json.dump(zip_schools, f)
+for zip, schools in zip_schools.items():
+    with open('zip_schools/{}.json'.format(zip), 'w') as f:
+            json.dump(schools, f)
 
 with open('zctas.geojson', 'w') as f:
     # Write one feature per line, so tippecanoe can process in parallel

@@ -2,7 +2,6 @@ import util from './util';
 import config from './config';
 import info from './lib/info';
 import schools from '../data/schools.json';
-import zipSchools from '../data/zip_schools.json';
 
 const CONTROL = {
   1: 'Public',
@@ -22,71 +21,81 @@ const formatter = new Intl.NumberFormat('en-US', {
 });
 
 function explain(feats, cat, focusedSchools) {
-  let html = feats.map((feat) => {
+  let zipSchools = {};
+  let promises = feats.map((feat) => {
     let p = feat.properties;
-    let d = ['SCI', 'UNDUPUG', 'n'].reduce((acc, k) => {
-      acc[k] = p[util.propForCat(k, cat)];
-      return acc;
-    }, {});
-
     let [zipcode, ...otherZips] = p['zipcode'].split(',');
-    let key = util.keyForCat({'Y': cat['Y'], 'I': cat['I']});
-    let yearKey = util.keyForCat({'Y': cat['Y']});
-    let schoolIds = zipSchools[zipcode] ? (zipSchools[zipcode][key] || []) : [];
-    let schoolsForZCTA = schoolIds.map((id) => schools[id]);
-    let groupedSchools = {};
-
-    let [filterKey, filterVal] = !(cat['S'] == 'allschools') ? config.CAT_PROP_EXPRS['S'][cat['S']] : [null, null];
-
-    schoolsForZCTA.forEach((s) => {
-      // priv/public/nonprofit
-      let control = s['CONTROL'];
-      if (filterKey == 'CONTROL' && control !== filterVal) return;
-
-      // degree types
-      let level = s['ICLEVEL'];
-      if (filterKey == 'ICLEVEL' && level !== filterVal) return;
-
-      if (!(control in groupedSchools)) {
-        groupedSchools[control] = {};
-      }
-      if (!(level in groupedSchools[control])) {
-        groupedSchools[control][level] = [];
-      }
-      groupedSchools[control][level].push(s);
+    return util.schoolsForZip(zipcode).then((schoolIds) => {
+      zipSchools[zipcode] = schoolIds;
     });
+  });
+  Promise.all(promises).then(() => {
+    let html = feats.map((feat) => {
+      let p = feat.properties;
+      let d = ['SCI', 'UNDUPUG', 'n'].reduce((acc, k) => {
+        acc[k] = p[util.propForCat(k, cat)];
+        return acc;
+      }, {});
 
-    return `
-      <h2>${zipcode}</h2>
-      SCI: ${d['SCI'] > 0 ? d['SCI'].toFixed(2) : 'Education Desert'}<br/>
-      Number of Schools: ${d['n'] || 'N/A'}<br/>
-      Enrollment: ${d['UNDUPUG'] || 0}<br/>
-      25mi Zone Population Estimate: ${p[`zctazonepop.${yearKey}`] || 'N/A'}<br/>
-      Median Income: ${p[`medianincome.${yearKey}`] ? formatter.format(p[`medianincome.${yearKey}`]) : 'N/A'}<br/>
-      ${otherZips.length > 0 ? `<div class="other-zctas">Other Zips here: ${otherZips.join(', ')}</div>` : ''}
+      let [zipcode, ...otherZips] = p['zipcode'].split(',');
+      let key = util.keyForCat({'Y': cat['Y'], 'I': cat['I']});
+      let yearKey = util.keyForCat({'Y': cat['Y']});
+      let schoolIds = zipSchools[zipcode][key] || [];
+      let schoolsForZCTA = schoolIds.map((id) => schools[id]);
+      let groupedSchools = {};
 
-      ${feats.length == 1 && d['n'] ? `
-        <h2>Schools for Zips</h2>
-        ${Object.keys(groupedSchools).map((control) => {
-          return Object.keys(groupedSchools[control]).map((level) => {
-            return `
-              <h3>${CONTROL[control]}, ${LEVEL[level]}</h3>
-              <ul class="zcta-schools">
-                ${groupedSchools[control][level].sort((a, b) => a['INSTNM'].localeCompare(b['INSTNM']))
-                  .map((s) => `<li>${s['INSTNM']}</li>`).join('\n')}
-              </ul>
-            `;
-          }).join('\n');
-        }).join('\n')}` : ''}
-    `;
-  }).join('\n');
-  html += `
-    ${focusedSchools.length > 0 ?
-        `<h2>School</h2>
-        ${focusedSchools.sort((a, b) => a.properties['INSTNM'].localeCompare(b.properties['INSTNM'])).map((s) => `${s.properties['INSTNM']}<br />`).join('\n')}`
-      : ''}`;
+      let [filterKey, filterVal] = !(cat['S'] == 'allschools') ? config.CAT_PROP_EXPRS['S'][cat['S']] : [null, null];
 
-  info.explainFeature(html);
+      schoolsForZCTA.forEach((s) => {
+        // priv/public/nonprofit
+        let control = s['CONTROL'];
+        if (filterKey == 'CONTROL' && control !== filterVal) return;
+
+        // degree types
+        let level = s['ICLEVEL'];
+        if (filterKey == 'ICLEVEL' && level !== filterVal) return;
+
+        if (!(control in groupedSchools)) {
+          groupedSchools[control] = {};
+        }
+        if (!(level in groupedSchools[control])) {
+          groupedSchools[control][level] = [];
+        }
+        groupedSchools[control][level].push(s);
+      });
+
+      return `
+        <h2>${zipcode}</h2>
+        SCI: ${d['SCI'] > 0 ? d['SCI'].toFixed(2) : 'Education Desert'}<br/>
+        Number of Schools: ${d['n'] || 'N/A'}<br/>
+        Enrollment: ${d['UNDUPUG'] || 0}<br/>
+        25mi Zone Population Estimate: ${p[`zctazonepop.${yearKey}`] || 'N/A'}<br/>
+        Median Income: ${p[`medianincome.${yearKey}`] ? formatter.format(p[`medianincome.${yearKey}`]) : 'N/A'}<br/>
+        ${otherZips.length > 0 ? `<div class="other-zctas">Other Zips here: ${otherZips.join(', ')}</div>` : ''}
+
+        ${feats.length == 1 && d['n'] ? `
+          <h2>Schools for Zips</h2>
+          ${Object.keys(groupedSchools).map((control) => {
+            return Object.keys(groupedSchools[control]).map((level) => {
+              return `
+                <h3>${CONTROL[control]}, ${LEVEL[level]}</h3>
+                <ul class="zcta-schools">
+                  ${groupedSchools[control][level].sort((a, b) => a['INSTNM'].localeCompare(b['INSTNM']))
+                    .map((s) => `<li>${s['INSTNM']}</li>`).join('\n')}
+                </ul>
+              `;
+            }).join('\n');
+          }).join('\n')}` : ''}
+      `;
+    }).join('\n');
+    html += `
+      ${focusedSchools.length > 0 ?
+          `<h2>School</h2>
+          ${focusedSchools.sort((a, b) => a.properties['INSTNM'].localeCompare(b.properties['INSTNM'])).map((s) => `${s.properties['INSTNM']}<br />`).join('\n')}`
+        : ''}`;
+
+    info.explainFeature(html);
+  });
 }
 
 function empty() {

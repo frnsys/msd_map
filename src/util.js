@@ -13,4 +13,18 @@ function keyForCat(cat) {
     .join('.');
 }
 
-export default {propForCat, keyForCat};
+function schoolsForZip(zip) {
+  let url = `assets/zip_schools/${zip}.json`;
+  console.log(url);
+  return fetch(url, {
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .catch(err => { console.log(err) });
+}
+
+export default {propForCat, keyForCat, schoolsForZip};
