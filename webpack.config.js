@@ -1,4 +1,5 @@
 var path = require('path');
+const dev = process.env.NODE_ENV !== 'production';
 
 module.exports = {
   entry: {
@@ -8,7 +9,7 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].js'
   },
-  devtool: 'inline-source-map',
+  devtool: dev ? 'inline-source-map' : 'source-map',
   module: {
     rules: [{
       test: /\.js$/,
