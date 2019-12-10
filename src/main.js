@@ -12,8 +12,8 @@ import schools from '../data/schools.json';
 import createNumberLine from './numberLine';
 import states from '../data/states.json';
 
-createNumberLine('#sci-number-line', 'SCI', states['sci'], [0, 10000], ['Pure Competition', 'Pure Monopoly']);
-createNumberLine('#enrollment-number-line', 'Enrollment', states['enrollment'], [0, Math.max(...Object.values(states['enrollment']))], ['', '']);
+createNumberLine('#sci-number-line', 'Median School Concentration', states['sci'], [0, 10000], ['Pure Competition', 'Pure Monopoly']);
+createNumberLine('#enrollment-number-line', 'Total Enrollment', states['enrollment'], [0, Math.max(...Object.values(states['enrollment']))], ['', '']);
 
 // State selector for the number line
 let sciStateSelect = document.getElementById('sci-number-line-select');

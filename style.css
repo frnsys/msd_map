@@ -440,6 +440,9 @@ button {
   font-family: 'Founders Grotesk', sans-serif;
 }
 
+#number-lines {
+  display: none;
+}
 .number-line {
   margin: 1em 0;
 }

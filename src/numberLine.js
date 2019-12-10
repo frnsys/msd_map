@@ -10,6 +10,7 @@ function createNumberLine(selector, name, data, range, labels) {
   title.innerText = name;
   title.style.textAlign = 'center';
   title.style.margin = '1em 0';
+  title.style.fontSize = '1.2em';
   container.appendChild(title);
 
   let thickness = 2;
