@@ -148,7 +148,9 @@ for k in CSV_FIELDS.keys():
 
 
 # Compute summary statistics (within categories)
-for s in ['mean', 'median', 'min', 'max']:
+# To keep file size smaller, just using min
+# for s in ['mean', 'median', 'min', 'max']:
+for s in ['min']:
     meta[s] = {}
     for k, cats in CSV_FIELDS.items():
         for key in keysForCats(cats):
@@ -200,7 +202,7 @@ for y in CATEGORIES['Y']:
 
 # Build geojson
 geojson = []
-meta['bboxes'] = {}
+bboxes = {}
 zipcode_geojson = json.load(open('src/zipcodes.geojson'))
 for f in tqdm(zipcode_geojson['features'], desc='Merging into geojson'):
     del f['id']
@@ -210,7 +212,7 @@ for f in tqdm(zipcode_geojson['features'], desc='Merging into geojson'):
     except:
         f['properties'] = dict(**CSV_DEFAULTS)
     f['properties']['zipcode'] = zipcode
-    meta['bboxes'][zipcode] = shape(f['geometry']).bounds
+    bboxes[zipcode] = shape(f['geometry']).bounds
     geojson.append(f)
     zctas.remove(zipcode)
 
@@ -225,7 +227,7 @@ if zctas:
             f['properties'] = dict(**CSV_DEFAULTS)
         del f['id']
         f['properties']['zipcode'] = zipcode
-        meta['bboxes'][zipcode] = shape(f['geometry']).bounds
+        bboxes[zipcode] = shape(f['geometry']).bounds
         geojson.append(f)
         zctas.remove(zipcode)
 
@@ -268,6 +270,10 @@ with open('schools.json', 'w') as f:
 
 with open('meta.json', 'w') as f:
     json.dump(meta, f)
+
+for zip, bbox in bboxes.items():
+    with open('bboxes/{}.json'.format(zip), 'w') as f:
+        json.dump(bbox, f)
 
 for zip, schools in zip_schools.items():
     with open('zip_schools/{}.json'.format(zip), 'w') as f:

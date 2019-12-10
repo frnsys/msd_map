@@ -21,18 +21,21 @@ function setupUI(map, legend, info, state) {
   const zipcodeInput = document.querySelector('#control input[name=zipcode]');
   zipcodeInput.addEventListener('input', (ev) => {
     let zipcode = ev.target.value;
-    let bbox = config.BBOXES[zipcode];
-    if (!bbox) return;
-    map.fitBounds(bbox);
-    map.featsByProp({
-      id: 'zctas',
-      layer: 'zctas'
-    }, 'zipcode', zipcode, (feats) => {
-      let feat = feats[0];
-      map.focusFeatures({id: 'zctas', layer: 'zctas'}, [feat]);
-      info.explain([feat], state.cat, []);
-      legend.renderFeatures([feat]);
-    });
+    if (zipcode.length == 5) {
+      util.bboxForZip(zipcode).then((bbox) => {
+        if (!bbox) return;
+        map.fitBounds(bbox);
+        map.featsByProp({
+          id: 'zctas',
+          layer: 'zctas'
+        }, 'zipcode', zipcode, (feats) => {
+          let feat = feats[0];
+          map.focusFeatures({id: 'zctas', layer: 'zctas'}, [feat]);
+          info.explain([feat], state.cat, []);
+          legend.renderFeatures([feat]);
+        });
+      });
+    }
   });
 
   // Toggle displayed property

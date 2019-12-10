@@ -15,7 +15,6 @@ function keyForCat(cat) {
 
 function schoolsForZip(zip) {
   let url = `assets/zip_schools/${zip}.json`;
-  console.log(url);
   return fetch(url, {
     headers: {
       'Accept': 'application/json',
@@ -27,4 +26,17 @@ function schoolsForZip(zip) {
     .catch(err => { console.log(err) });
 }
 
-export default {propForCat, keyForCat, schoolsForZip};
+function bboxForZip(zip) {
+  let url = `assets/bboxes/${zip}.json`;
+  return fetch(url, {
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .catch(err => { console.log(err) });
+}
+
+export default {propForCat, keyForCat, schoolsForZip, bboxForZip};
