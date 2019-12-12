@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Map</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <main class="map-only">
+       <div id="control">
+            <div>
+                <label class="control-label">Jump to Zip</label>
+                <input name="zipcode" type="text" placeholder="Zip">
+            </div>
+            <div>
+                <label class="control-label">School Types</label>
+                <select name="category"></select>
+            </div>
+            <select name="propertyA"></select>
+            <select name="propertyB"></select>
+            <div>
+                <label class="control-label">Display</label>
+                <div>
+                    <button id="showSCI" class="selected">Schools and SCI</button>
+                    <button id="showSchools">Schools Only</button>
+                </div>
+            </div>
+
+            <div id="control-isochrone">
+                <label class="control-label">Driving Distance</label>
+                <div>
+                    <button value="30min">30 min</button>
+                    <button value="45min" class="selected">45 min</button>
+                    <button value="60min">60 min</button>
+                </div>
+            </div>
+        </div>
+        <section id="stage">
+            <div id="map-regions"></div>
+            <div id="map-wrapper">
+                <div id="map"></div>
+                <div id="map-tooltip"></div>
+                <div id="legend"></div>
+                <div id="icon-legend-show">?</div>
+                <div id="icon-legend">
+                    <div>
+                        <div><span class="icon-key" style="background:#33C377;"></span><span>Public</span></div>
+                        <div><span class="icon-key" style="background:#ffcc00;"></span><span>Private not-for-profit</span></div>
+                        <div><span class="icon-key" style="background:#05a1ff;"></span><span>Private for-profit</span></div>
+                    </div>
+                    <div>
+                        <div><span class="icon-key" style="border:2px solid #000;"></span><span>Bachelor Degree</span></div>
+                        <div><span class="icon-key" style="border:2px solid #888888;"></span><span>Associate Degree</span></div>
+                        <div><span class="icon-key" style="border:2px solid #ffffff;"></span><span>Below Associate Degree</span></div>
+                    </div>
+                    <div id="icon-legend-close">✖</div>
+                </div>
+            </div>
+            <div id="info"></div>
+        </section>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script src="dist/main.js"></script>
+</body>
+</html>

@@ -2,7 +2,7 @@ function createNumberLine(selector, name, data, range, labels) {
   let parent = document.querySelector(selector);
   let container = document.createElement('div');
   container.style.width = '100%';
-  container.style.height = '64px';
+  container.style.height = '120px';
   container.classList.add('number-line');
   parent.appendChild(container);
 
@@ -58,7 +58,7 @@ function createNumberLine(selector, name, data, range, labels) {
     point.style.left = `${p*100}%`;
     point.style.top = `-${top}px`;
     point.classList.add('number-line--point');
-    point.id = `number-line--${name.toLowerCase()}-${key}`;
+    point.id = `number-line--${name.toLowerCase().replace(/ /g, '-')}-${key}`;
 
     point.addEventListener('mouseenter', () => {
       point.style.background = '#33C377';
