@@ -471,6 +471,22 @@ select[name="propertyB"] {
   margin-bottom: 0;
   height: auto;
 }
+.map-only #info {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+
+.map-only #info::-webkit-scrollbar-track {
+  -webkit-box-shadow: none !important;
+  background-color: transparent;
+}
+.map-only #info::-webkit-scrollbar {
+  width: 3px !important;
+  background-color: transparent;
+}
+.map-only #info::-webkit-scrollbar-thumb {
+  background-color: transparent;
+}
 
 @media only screen and (max-width: 1080px) {
   #icon-legend {
