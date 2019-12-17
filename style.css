@@ -39,6 +39,11 @@ header img {
   opacity: 0.3;
 }
 
+footer {
+  text-align: center;
+  padding: 1em 0 3em 0;
+}
+
 p {
   font-size: 1.4em;
 }
@@ -99,6 +104,10 @@ section.text > ul {
   width: 100%;
   margin-bottom: 2em;
   border-collapse: collapse;
+}
+.table-wrapper {
+  max-width: 100%;
+  overflow-x: auto;
 }
 table, th, td {
   border: 1px solid black;
@@ -500,6 +509,10 @@ select[name="propertyB"] {
   background-color: transparent;
 }
 
+.MathJax {
+  overflow-x: auto;
+}
+
 @media only screen and (max-width: 1080px) {
   #icon-legend {
     display: none;
@@ -512,6 +525,9 @@ select[name="propertyB"] {
 @media only screen and (max-width: 960px) {
   #stage {
     display: block;
+  }
+  #info {
+    height: 25vh;
   }
   #map-wrapper {
     height: 320px;
