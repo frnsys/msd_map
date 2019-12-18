@@ -25,6 +25,7 @@ html, body {
   /* font-smooth: never; */
   /* -webkit-font-smoothing : none; */
   background: #fff;
+  word-break: break-word;
 }
 
 header {
@@ -85,6 +86,9 @@ section.text > ul {
   font-size: 1.2em;
   text-align: justify;
 }
+section.endnotes > ul {
+  text-align: left;
+}
 .smallcaps {
   font-variant: small-caps;
   text-transform: lowercase;
@@ -96,18 +100,24 @@ section.text > ul {
   display: flex;
   justify-content: space-between;
 }
-.summary .summary-charts img {
+.summary .summary-charts a {
   max-width: 49%;
   flex: 1;
+  display: block;
 }
+.summary .summary-charts img {
+  height: auto;
+  max-width: 100%;
+}
+
 .summary table {
-  width: 100%;
-  margin-bottom: 2em;
+  min-width: 100%;
   border-collapse: collapse;
 }
 .table-wrapper {
   max-width: 100%;
   overflow-x: auto;
+  margin-bottom: 2em;
 }
 table, th, td {
   border: 1px solid black;
@@ -119,6 +129,7 @@ th {
   font-weight: normal;
   font-family: 'Founders Grotesk', sans-serif;
   padding-top: 0.75em;
+  min-width: 7em;
 }
 
 #map {
@@ -511,6 +522,7 @@ select[name="propertyB"] {
 
 .MathJax {
   overflow-x: auto;
+  overflow-y: hidden;
 }
 
 @media only screen and (max-width: 1080px) {
@@ -553,5 +565,11 @@ select[name="propertyB"] {
   #control > div {
     flex-basis: auto !important;
     margin-bottom: 0.5em;
+  }
+  .summary-charts {
+    display: block;
+  }
+  .summary .summary-charts a {
+    max-width: 100%;
   }
 }
