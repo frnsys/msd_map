@@ -210,7 +210,7 @@
                         </tbody>
                     </table>
                 </div>
-                <h2>Visual Distributions of SCI by Institution Type</h2>
+                <h2>Visual Distributions of <span class="smallcaps">SCI</span> by Institution Type</h2>
                 <div class="summary-charts">
                     <a href="assets/plots/sci_distribution_30min_degreelevel.png"><img src="assets/plots/sci_distribution_30min_degreelevel.png" title="Distribution of SCI Index by Degree Level" alt="Extremely right-skewed SCI density curves across all institution levels."></a>
                     <a href="assets/plots/sci_distribution_30min_schooltype.png"><img src="assets/plots/sci_distribution_30min_schooltype.png" title="Distribution of SCI Index by School Type" alt="Extremely right-skewed SCI density curves across all institution types."></a>
@@ -322,7 +322,7 @@
                         </tbody>
                     </table>
                 </div>
-                <h2>Visual Distributions of SCI by Institution Type</h2>
+                <h2>Visual Distributions of <span class="smallcaps">SCI</span> by Institution Type</h2>
                 <div class="summary-charts">
                     <a href="assets/plots/sci_distribution_45min_degreelevel.png"><img src="assets/plots/sci_distribution_45min_degreelevel.png" title="Distribution of SCI Index by Degree Level" alt="Extremely right-skewed SCI density curves across all institution levels."></a>
                     <a href="assets/plots/sci_distribution_45min_schooltype.png"><img src="assets/plots/sci_distribution_45min_schooltype.png" title="Distribution of SCI Index by School Type" alt="Extremely right-skewed SCI density curves across all institution types."></a>
@@ -434,7 +434,7 @@
                         </tbody>
                     </table>
                 </div>
-                <h2>Visual Distributions of SCI by Institution Type</h2>
+                <h2>Visual Distributions of <span class="smallcaps">SCI</span> by Institution Type</h2>
                 <div class="summary-charts">
                     <a href="assets/plots/sci_distribution_60min_degreelevel.png"><img src="assets/plots/sci_distribution_60min_degreelevel.png" title="Distribution of SCI Index by Degree Level" alt="Extremely right-skewed SCI density curves across all institution levels."></a>
                     <a href="assets/plots/sci_distribution_60min_schooltype.png"><img src="assets/plots/sci_distribution_60min_schooltype.png" title="Distribution of SCI Index by School Type" alt="Extremely right-skewed SCI density curves across all institution types."></a>
@@ -447,7 +447,7 @@
             <p>Variables derived for each <span class="smallcaps">ZCTA</span>:</p>
             <ul>
                 <li>
-                    <b>School Concentration Index (SCI)</b> - We modeled the calculation of the <span class="smallcaps">SCI</span> based on the <a href="https://www.justice.gov/atr/herfindahl-hirschman-index">Herfindahl-Hirschman Index (<span class="smallcaps">HHI</span>)</a>. The <span class="smallcaps">HHI</span> calculates market share for a particular company within a particular market; we calculate enrollment share for a particular school in a particular zip code tabulation area <span class="smallcaps">SCI</span> ranges from 0 (perfect competition) to 10,000 (complete monopoly). A <span class="smallcaps">SCI</span> of 10,000 indicates one school accounts for all the enrollment for that <span class="smallcaps">ZCTA</span>.
+                    <b>School Concentration Index (<span class="smallcaps">SCI</span>)</b> - We modeled the calculation of the <span class="smallcaps">SCI</span> based on the <a href="https://www.justice.gov/atr/herfindahl-hirschman-index">Herfindahl-Hirschman Index (<span class="smallcaps">HHI</span>)</a>. The <span class="smallcaps">HHI</span> calculates market share for a particular company within a particular market; we calculate enrollment share for a particular school in a particular zip code tabulation area <span class="smallcaps">SCI</span> ranges from 0 (perfect competition) to 10,000 (complete monopoly). A <span class="smallcaps">SCI</span> of 10,000 indicates one school accounts for all the enrollment for that <span class="smallcaps">ZCTA</span>.
                     <p>$$ \text{SCI}_{\text{ZCTA}} = s_1^2 + s_2^2 + \dots + s_n^2 $$</p>
                     <div>Every <span class="smallcaps">ZCTA</span> has a unique School Concentration Index where $n$ number of schools in each <span class="smallcaps">SCI</span> equals the amount of schools where it is possible to drive to the associated <span class="smallcaps">ZCTA</span> within 30, 45, or 60 minutes, depending on the selected map view. Each $s_n$ is the undergraduate enrollment share of a school within the geographic area, expressed as a whole number rather than a fraction.</div>
                 </li>
@@ -480,6 +480,17 @@
             <p>Exclusion Criteria:</p>
             <ul>
                 <li>We excluded schools that offered exclusively advanced degrees, exclusively distance learning degrees, and schools where level and control of institution were unknown. Also excluded were administrative offices of institutions when the institution itself was counted separately. For public schools, driving distances were restricted to the state where the school was located. If a school offered a bachelors or higher degree but no degree below bachelors and the undergraduate enrollment was below 100, the school was excluded.</li>
+                <li>
+                    According to the <a href="https://nces.ed.gov/statprog/handbook/pdf/ipeds.pdf">IPEDS handbook</a>,
+                    <blockquote>All institutions in the U.S. and other U.S. jurisdictions that have a Program Participation Agreement (PPA) with the U.S. Department of Education to participate in Title IV federal student financial aid programs are required to report data to IPEDS, and are listed as separate entities in IPEDS. These entities are considered the "main campus."</blockquote>
+                    Additionally,
+                    <ul>
+                        <li>The IPEDS definition of a branch campus is "a campus or site of an educational institution that is not temporary, is located in a community beyond a reasonable commuting distance from its parent institution, and offers full programs of study, not just courses."</li>
+                        <li>The main campus and each additional location on the PPA are listed separately in IPEDS, and report their own data.</li>
+                        <li>The main campus reports combined data for itself and any additional locations that are not listed separately in IPEDS.</li>
+                        <li>Additional locations that are not listed separately have the option of being made "campuses" in IPEDS; a small number of data items are reported for each of these locations, and they are searchable in College Navigator.</li>
+                    </ul>
+                </li>
             </ul>
         </section>
         <section class="text" id="number-lines">
@@ -500,11 +511,11 @@
             <h1>Citations</h1>
             <ul>
                 <li>OpenStreetMap contributors. 2019. ODbL 1.0 - http://www.openstreetmap.org/copyright. © OpenStreetMap contributors. Accessed October 1, 2019.</li>
-                <li>NYU Spatial Data Repository. 2010. “5-Digit ZIP Code Tabulation Areas (ZCTA5) United States 2010.” Accessed October 1, 2019. <a href="https://geo.nyu.edu/catalog/harvard-tg10uszcta5">https://geo.nyu.edu/catalog/harvard-tg10uszcta5</a>.</li>
+                <li>NYU Spatial Data Repository. 2010. “5-Digit ZIP Code Tabulation Areas (<span class="smallcaps">ZCTA5</span>) United States 2010.” Accessed October 1, 2019. <a href="https://geo.nyu.edu/catalog/harvard-tg10uszcta5">https://geo.nyu.edu/catalog/harvard-tg10uszcta5</a>.</li>
                 <li>U.S. Census Bureau. 2012 - 2016. American Community Survey. 2012-2016 American Community Survey 5-Year Estimates, Table B19013: Median Household Income in the past 12 Months (in 2016 Inflation-Adjusted Dollars). Accessed November 15, 2019. <a href="http://factfinder2.census.gov">http://factfinder2.census.gov</a>.</li>
                 <li>U.S. Census Bureau. 2012 - 2016. American Community Survey. 2012-2016 American Community Survey 5-Year Estimates, Table S0101. Accessed November 1, 2019.  <a href="http://factfinder2.census.gov">http://factfinder2.census.gov</a>.</li>
                 <li>U.S. Census Bureau. 2018. Geography Division. Spatial Data Collection and Products Branch. TIGER/Lines ShapeFile 2018. Accessed October 1, 2019. <a href="https://www.census.gov/geographies/mapping-files/time-series/geo/tiger-line-file.2018.html">https://www.census.gov/geographies/mapping-files/time-series/geo/tiger-line-file.2018.html</a>.</li>
-                <li>US Census Bureau. 2017. “TIGER/Line Shapefile, 2017, 2010 nation, U.S., 2010 Census 5-Digit ZIP Code Tabulation Area (ZCTA5) National.” Metadata Updated: 8 August 2019.  Accessed October 1, 2019. <a href="https://catalog.data.gov/dataset/tiger-line-shapefile-2017-2010-nation-u-s-2010-census-5-digit-zip-code-tabulation-area-zcta5-na">https://catalog.data.gov/dataset/tiger-line-shapefile-2017-2010-nation-u-s-2010-census-5-digit-zip-code-tabulation-area-zcta5-na</a>.</li>
+                <li>US Census Bureau. 2017. “TIGER/Line Shapefile, 2017, 2010 nation, U.S., 2010 Census 5-Digit ZIP Code Tabulation Area (<span class="smallcaps">ZCTA5</span>) National.” Metadata Updated: 8 August 2019.  Accessed October 1, 2019. <a href="https://catalog.data.gov/dataset/tiger-line-shapefile-2017-2010-nation-u-s-2010-census-5-digit-zip-code-tabulation-area-zcta5-na">https://catalog.data.gov/dataset/tiger-line-shapefile-2017-2010-nation-u-s-2010-census-5-digit-zip-code-tabulation-area-zcta5-na</a>.</li>
                 <li>U.S. Department of Education. 2019. National Center for Education Statistics. Integrated Postsecondary Education Data System (IPEDS). 2016-17 Institutional Characteristics. Accessed October 15, 2019. <a href="https://nces.ed.gov/ipeds/use-the-data/download-access-database">https://nces.ed.gov/ipeds/use-the-data/download-access-database</a>.</li>
                 <li>U.S. Department of Education. 2019. National Center for Education Statistics. Integrated Postsecondary Education Data System (IPEDS). 2017 12-Month Enrollment. Accessed November 15, 2019. <a href="https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx">https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx</a>.</li>
             </ul>
@@ -526,6 +537,16 @@
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="dist/main.js"></script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-151742079-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-151742079-2');
+    </script>
 </body>
 </html>
 
