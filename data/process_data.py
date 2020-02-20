@@ -5,6 +5,7 @@ Note: occurences of "." in a column name
 are replaced w/ "_"
 """
 
+import os
 import json
 import fiona
 import numpy as np
@@ -20,7 +21,19 @@ SCHOOL_FIELDS = [
     'ICLEVEL',
     'CONTROL',
     'UNDUPUG',
-    'ZIP'
+    'ZIP',
+
+    'CINSON',
+    'CINSOFF',
+    'CINSFAM',
+
+    'PSET4FLG',
+
+    'NPIS412',
+    'NPIS422',
+    'NPIS432',
+    'NPIS442',
+    'NPIS452'
 ]
 
 # ISO A2
@@ -43,7 +56,16 @@ CATEGORIES = {
         '60min'
     ],
     'Y': [
-        '2016'
+        '2008',
+        '2009',
+        '2010',
+        '2011',
+        '2012',
+        '2013',
+        '2014',
+        '2015',
+        '2016',
+        '2017',
     ]
 }
 CSV_ZIPCODE_FIELD = 'ZCTA'
@@ -62,6 +84,15 @@ CSV_DEFAULTS = {
     'zctazonepop': 0,
     'SCI': 0
 }
+
+# Keep only non-varying properties
+# for school geojson
+SCHOOL_GEOJSON_PROPS = [
+    'INSTNM', 'ZIP',
+
+    # Needed for proper coloring of school points
+    'ICLEVEL', 'CONTROL',
+]
 
 def keysForCats(cats):
     tags = sorted(cats)
@@ -86,7 +117,12 @@ zctas = set()
 data = defaultdict(dict)
 field_data = defaultdict(lambda: defaultdict(list))
 for y in CATEGORIES['Y']:
-    df = pd.read_csv('src/{Y}.ZCTA.Stats.csv'.format(Y=y))
+    fname = 'src/{Y}.ZCTA.Stats.csv'.format(Y=y)
+    try:
+        df = pd.read_csv(fname)
+    except FileNotFoundError:
+        print('Missing {}'.format(fname))
+        continue
     df = df.where(pd.notnull(df), None)
     for row in tqdm(df.itertuples(), total=len(df), desc='{Y} ZCTA'.format(Y=y)):
         row_data = dict(row._asdict())
@@ -156,40 +192,66 @@ for s in ['min']:
         for key in keysForCats(cats):
             key = '{}.{}'.format(k, key)
             vals = [v for v in field_data[k][key] if v is not None]
-            meta[s][key] = float(getattr(np, s)(vals))
+            try:
+                meta[s][key] = float(getattr(np, s)(vals))
+            except ValueError:
+                # Probably missing that year's data
+                meta[s][key] = None
 
 
+# School-level data
 # Associate schools with ZCTAs and load school data
 # TODO how to do this with minimal redundancy
-schools = {}
+schools_by_year = defaultdict(dict)
 schools_geojson = {
     'type': 'FeatureCollection',
     'features': []
 }
-zip_schools = defaultdict(lambda: defaultdict(list))
+schools_by_key_zip = defaultdict(lambda: defaultdict(list))
+
+school_feats = {}
+all_years = pd.read_csv('src/sci_school_list_2_19_2020.csv',
+        encoding='ISO-8859-1',
+        dtype={'year': str, 'ZIP': str})
+all_years = all_years.groupby('year')
 for y in CATEGORIES['Y']:
     # TODO these are overwriting each year atm
-    df = pd.read_csv('src/{}.School.List.csv'.format(y), encoding='ISO-8859-1')
+    df = all_years.get_group(y)
     df = df.where((pd.notnull(df)), None)
     for row in tqdm(df.itertuples(), total=len(df), desc='{} School List'.format(y)):
         row_data = dict(row._asdict())
         id = int(row_data['UNITID'])
-        schools[id] = {k: row_data[k] for k in SCHOOL_FIELDS}
-        if 'ZIP' in schools[id]:
-            schools[id]['ZIP'] = str(int(schools[id]['ZIP'])).zfill(5)
-        schools_geojson['features'].append({
-            'id': id,
-            'type': 'Feature',
-            'geometry': {
-                'type': 'Point',
-                'coordinates': (row_data['LONGITUD'], row_data['LATITUDE']),
-            },
-            'properties': schools[id]
-        })
+        schools_by_year[y][id] = {k: row_data[k] for k in SCHOOL_FIELDS}
+
+        # Get zipcode into proper format
+        zip = schools_by_year[y][id]['ZIP']
+        zip = zip.split('-')[0] # drop the -XXXX part of zip
+        if len(zip) < 5:
+            zip = str(int(zip)).zfill(5)
+        schools_by_year[y][id]['ZIP'] = zip
+
+        if id not in school_feats:
+            props = {k: schools_by_year[y][id][k] for k in SCHOOL_GEOJSON_PROPS}
+            props['years'] = []
+            school_feats[id] = {
+                'id': id,
+                'type': 'Feature',
+                'geometry': {
+                    'type': 'Point',
+                    'coordinates': (row_data['LONGITUD'], row_data['LATITUDE']),
+                },
+                'properties': props
+            }
+        school_feats[id]['properties']['years'].append(y)
 
     for i in CATEGORIES['I']:
         cat = {'Y': y, 'I': i}
-        df = pd.read_csv('src/{Y}.{I}.Schoolzones.SCI.csv'.format(**cat), encoding='ISO-8859-1')
+        fname = 'src/{Y}.{I}.Schoolzones.SCI.csv'.format(**cat)
+        try:
+            df = pd.read_csv(fname, encoding='ISO-8859-1')
+        except FileNotFoundError:
+            print('Missing {}'.format(fname))
+            continue
         df = df.where((pd.notnull(df)), None)
         for row in tqdm(df.itertuples(), total=len(df), desc='{Y}/{I} School Zones'.format(**cat)):
             row_data = dict(row._asdict())
@@ -197,8 +259,11 @@ for y in CATEGORIES['Y']:
             zipcode = str(int(row_data[CSV_ZIPCODE_FIELD])).zfill(5)
             unit_id = int(row_data['UNITID'])
             key = keyForCat(cat)
-            zip_schools[zipcode][key].append(unit_id)
+            schools_by_key_zip[key][zipcode].append(unit_id)
 
+for school in school_feats.values():
+    school['properties']['years'] = ','.join(school['properties']['years'])
+    schools_geojson['features'].append(school)
 
 # Build geojson
 geojson = []
@@ -265,8 +330,9 @@ with open('regions.json', 'w') as f:
 with open('schools.geojson', 'w') as f:
     json.dump(schools_geojson, f)
 
-with open('schools.json', 'w') as f:
-    json.dump(schools, f)
+for year, schools in schools_by_year.items():
+    with open('schools/by_year/{}.json'.format(year), 'w') as f:
+        json.dump(schools, f)
 
 with open('meta.json', 'w') as f:
     json.dump(meta, f)
@@ -275,9 +341,13 @@ for zip, bbox in bboxes.items():
     with open('bboxes/{}.json'.format(zip), 'w') as f:
         json.dump(bbox, f)
 
-for zip, schools in zip_schools.items():
-    with open('zip_schools/{}.json'.format(zip), 'w') as f:
-            json.dump(schools, f)
+for key, schools_by_zip in schools_by_key_zip.items():
+    for zip, schools in schools_by_zip.items():
+        path = 'schools/by_key/{}'.format(key)
+        if not os.path.exists(path):
+            os.makedirs(path)
+        with open('{}/{}.json'.format(path, zip), 'w') as f:
+                json.dump(schools, f)
 
 with open('zctas.geojson', 'w') as f:
     # Write one feature per line, so tippecanoe can process in parallel
