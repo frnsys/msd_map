@@ -7,7 +7,7 @@ import setupUI from './ui';
 import mapboxgl from 'mapbox-gl';
 import config from './config';
 import styles from './styles';
-import schools from '../data/schools.json';
+import db from './db';
 
 import createNumberLine from './numberLine';
 import states from '../data/states.json';
@@ -67,7 +67,7 @@ const layers = [{
   'id': 'schools',
   'type': 'circle',
   'source': 'schools',
-  'paint': styles.defaultSchools
+  'paint': styles.defaultSchools(state.cat['Y'])
 }];
 
 function focusFeatures(features, ev) {
@@ -86,8 +86,8 @@ function focusFeatures(features, ev) {
       let feat = feats[0];
       let zip = feat.properties['zipcode'].split(',')[0];
       let key = util.keyForCat({'Y': state.cat['Y'], 'I': state.cat['I']});
-      util.schoolsForZip(zip).then((schoolIds) => {
-        schoolIds = schoolIds[key] || [];
+      db.schoolsForKeyZip(key, zip).then((schoolIds) => {
+        schoolIds = schoolIds || [];
         let filter = ['!in', '$id'].concat(schoolIds);
         map.setFilter({
           id: 'schools'
@@ -147,7 +147,6 @@ const map = new Map({
       return `<div class="school-info">
         ${s.properties['INSTNM']}
         <div>Zip: ${s.properties['ZIP']}</div>
-        <div>Enrollment Seats: ${s.properties['UNDUPUG']}</div>
       </div>`;
     }).join('<br />');
   } else {

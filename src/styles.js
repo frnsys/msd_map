@@ -1,27 +1,33 @@
-const allSchools = {
+const allSchools = (year) => ({
   'circle-opacity': [
     'interpolate', ['linear'], ['zoom'], 3, 0.0, 7, [
       'case',
-      ['boolean', ['feature-state', 'mute'], false],
-        0.2,
-      1.0
+        ['!', ['in', year, ['get', 'years']]],
+          0.0,
+        ['boolean', ['feature-state', 'mute'], false],
+          0.2,
+        1.0
     ]
   ],
   'circle-stroke-opacity': [
     'interpolate', ['linear'], ['zoom'], 3, 0.0, 7, [
       'case',
-      ['boolean', ['feature-state', 'mute'], false],
-        0.2,
-      1.0
+        ['!', ['in', year, ['get', 'years']]],
+          0.0,
+        ['boolean', ['feature-state', 'mute'], false],
+          0.2,
+        1.0
     ]
   ]
-};
+});
 
-function filteredSchools(condition) {
+function filteredSchools(year, condition) {
   return {
     'circle-opacity': [
       'interpolate', ['linear'], ['zoom'], 3, 0.0, 7, [
         'case',
+          ['!', ['in', year, ['get', 'years']]],
+            0.0,
           ['!=', ['get', condition[0]], condition[1]],
             0.0,
           ['boolean', ['feature-state', 'mute'], false],
@@ -32,6 +38,8 @@ function filteredSchools(condition) {
     'circle-stroke-opacity': [
       'interpolate', ['linear'], ['zoom'], 3, 0.0, 7, [
         'case',
+          ['!', ['in', year, ['get', 'years']]],
+            0.0,
           ['!=', ['get', condition[0]], condition[1]],
             0.0,
           ['boolean', ['feature-state', 'mute'], false],
@@ -42,7 +50,7 @@ function filteredSchools(condition) {
   };
 }
 
-const defaultSchools = {
+const defaultSchools = (year) => ({
   'circle-radius': [
     'interpolate', ['linear'], ['zoom'], 5, 1, 10, 5
   ],
@@ -83,9 +91,9 @@ const defaultSchools = {
   'circle-stroke-width': [
     'interpolate', ['linear'], ['zoom'], 6, 0.0, 9, 3.0
   ],
-  'circle-opacity': allSchools['circle-opacity'],
-  'circle-stroke-opacity': allSchools['circle-stroke-opacity'],
-};
+  'circle-opacity': allSchools(year)['circle-opacity'],
+  'circle-stroke-opacity': allSchools(year)['circle-stroke-opacity'],
+});
 
 const defaultZCTAs = {
   'fill-color': '#000000', // will be replaced on map initialization

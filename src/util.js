@@ -13,19 +13,6 @@ function keyForCat(cat) {
     .join('.');
 }
 
-function schoolsForZip(zip) {
-  let url = `assets/zip_schools/${zip}.json`;
-  return fetch(url, {
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    method: 'GET',
-  })
-    .then(res => res.json())
-    .catch(err => { console.log(err) });
-}
-
 function bboxForZip(zip) {
   let url = `assets/bboxes/${zip}.json`;
   return fetch(url, {
@@ -39,4 +26,4 @@ function bboxForZip(zip) {
     .catch(err => { console.log(err) });
 }
 
-export default {propForCat, keyForCat, schoolsForZip, bboxForZip};
+export default {propForCat, keyForCat, bboxForZip};

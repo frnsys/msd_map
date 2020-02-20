@@ -42,6 +42,7 @@ function setupUI(map, legend, info, state) {
   const propertyAInput = document.querySelector('#control select[name=propertyA]');
   const propertyBInput = document.querySelector('#control select[name=propertyB]');
   const categoryInput = document.querySelector('#control select[name=category]');
+  const yearInput = document.querySelector('#control select[name=year]');
   Object.keys(config.PROPS).forEach((property) => {
     let opt = document.createElement('option');
 
@@ -70,6 +71,15 @@ function setupUI(map, legend, info, state) {
       opt.selected = true;
     }
   });
+  Object.keys(config.CATS['Y']).forEach((cat) => {
+    let opt = document.createElement('option');
+    opt.innerText = config.CATS['Y'][cat];
+    opt.value = cat;
+    yearInput.appendChild(opt);
+    if (cat == state.cat['Y']) {
+      opt.selected = true;
+    }
+  });
 
   // To set to univariate
   let opt = document.createElement('option');
@@ -94,12 +104,13 @@ function setupUI(map, legend, info, state) {
     legend.set(state.props);
 
     // Hide schools not matching the category
+    let year = state.cat['Y'];
     if (state.cat['S'] == 'allschools') {
-      map.map.setPaintProperty('schools', 'circle-opacity', styles.allSchools['circle-opacity']);
-      map.map.setPaintProperty('schools', 'circle-stroke-opacity', styles.allSchools['circle-stroke-opacity']);
+      map.map.setPaintProperty('schools', 'circle-opacity', styles.allSchools(year)['circle-opacity']);
+      map.map.setPaintProperty('schools', 'circle-stroke-opacity', styles.allSchools(year)['circle-stroke-opacity']);
     } else {
       let cond = config.CAT_PROP_EXPRS['S'][state.cat['S']];
-      let style = styles.filteredSchools(cond);
+      let style = styles.filteredSchools(year, cond);
       map.map.setPaintProperty('schools', 'circle-opacity', style['circle-opacity']);
       map.map.setPaintProperty('schools', 'circle-stroke-opacity', style['circle-stroke-opacity']);
     }
@@ -108,6 +119,27 @@ function setupUI(map, legend, info, state) {
       info.explain(map.focused['zctas'], state.cat, []);
     };
   });
+  yearInput.addEventListener('change', (ev) => {
+    state.cat['Y'] = ev.target.value;
+    state.props = state.props.map((p) => config.PROPS[util.propForCat(p.key, state.cat)]);
+    map.set('zctas', state.props);
+    legend.set(state.props);
+
+    // Hide schools not matching the category
+    let year = state.cat['Y'];
+    if (state.cat['S'] == 'allschools') {
+      map.map.setPaintProperty('schools', 'circle-opacity', styles.allSchools(year)['circle-opacity']);
+      map.map.setPaintProperty('schools', 'circle-stroke-opacity', styles.allSchools(year)['circle-stroke-opacity']);
+    } else {
+      let cond = config.CAT_PROP_EXPRS['S'][state.cat['S']];
+      let style = styles.filteredSchools(year, cond);
+      map.map.setPaintProperty('schools', 'circle-opacity', style['circle-opacity']);
+      map.map.setPaintProperty('schools', 'circle-stroke-opacity', style['circle-stroke-opacity']);
+    }
+
+    // TODO toggle zip/zone level when new data is ready
+  });
+
 
   // Toggle ZCTA layer
   let showSchools = document.getElementById('showSchools');
