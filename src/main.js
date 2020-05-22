@@ -47,6 +47,7 @@ const state = {
   cat: config.INITIAL_CAT
 };
 
+const zctaLayerName = 'ALL'; // 'zctas'
 const sources = {
   'zctas': {
     'type': 'vector',
@@ -61,7 +62,7 @@ const layers = [{
   'id': 'zctas',
   'type': 'fill',
   'source': 'zctas',
-  'source-layer': 'zctas',
+  'source-layer': zctaLayerName,
   'paint': styles.defaultZCTAs
 }, {
   'id': 'schools',
@@ -76,7 +77,7 @@ function focusFeatures(features, ev) {
     let feats = features['zctas'];
     map.focusFeatures({
       id: 'zctas',
-      layer: 'zctas'
+      layer: zctaLayerName
     }, feats);
     legend.renderFeatures(feats);
 
@@ -86,8 +87,8 @@ function focusFeatures(features, ev) {
       let feat = feats[0];
       let zip = feat.properties['zipcode'].split(',')[0];
       let key = util.keyForCat({'Y': state.cat['Y'], 'I': state.cat['I']});
-      db.schoolsForKeyZip(key, zip).then((schoolIds) => {
-        schoolIds = schoolIds || [];
+      db.dataForKeyZip(key, zip).then((data) => {
+        let schoolIds = data['schools'] || [];
         let filter = ['!in', '$id'].concat(schoolIds);
         map.setFilter({
           id: 'schools'

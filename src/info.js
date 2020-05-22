@@ -23,28 +23,36 @@ const formatter = new Intl.NumberFormat('en-US', {
 function explain(feats, cat, focusedSchools) {
   let key = util.keyForCat({'Y': cat['Y'], 'I': cat['I']});
   db.schoolsForYear(cat['Y']).then((schools) => {
-    const zipSchools = {};
+    const zipDatas = {};
     let promises = feats.map((feat) => {
       let p = feat.properties;
       let [zipcode, ...otherZips] = p['zipcode'].split(',');
-      return db.schoolsForKeyZip(key, zipcode).then((schoolIds) => {
-        zipSchools[zipcode] = schoolIds;
+      return db.dataForKeyZip(key, zipcode).then((data) => {
+        zipDatas[zipcode] = data;
       });
     });
     Promise.all(promises).then(() => {
       let html = feats.map((feat) => {
         let p = feat.properties;
-        let d = ['SCI', 'UNDUPUG', 'n'].reduce((acc, k) => {
-          acc[k] = p[util.propForCat(k, cat)];
-          return acc;
-        }, {});
-
         let [zipcode, ...otherZips] = p['zipcode'].split(',');
         let key = util.keyForCat({'Y': cat['Y'], 'I': cat['I']});
         let yearKey = util.keyForCat({'Y': cat['Y']});
-        let schoolIds = zipSchools[zipcode] || [];
+        let zipData = zipDatas[zipcode] || {};
+        let schoolIds = zipData['schools'] || [];
         let schoolsForZCTA = schoolIds.map((id) => schools[id]);
         let groupedSchools = {};
+
+        let d = ['SCI', 'ENROLLED', 'n'].reduce((acc, k) => {
+          // Only SCI on feature property
+          if (k == 'SCI') {
+            acc[k] = p[util.propForCat(k, cat)];
+          } else {
+            // Zip data already filtered by Y and I
+            let key = util.propForCat(k, {'S': cat['S']});
+            acc[k] = zipData[key];
+          }
+          return acc;
+        }, {});
 
         let [filterKey, filterVal] = !(cat['S'] == 'allschools') ? config.CAT_PROP_EXPRS['S'][cat['S']] : [null, null];
 
@@ -70,9 +78,9 @@ function explain(feats, cat, focusedSchools) {
           <h2>${zipcode}</h2>
           SCI: ${d['SCI'] > 0 ? d['SCI'].toFixed(2) : 'Education Desert'}<br/>
           Number of Schools: ${d['n'] || 'N/A'}<br/>
-          Enrollment: ${d['UNDUPUG'] || 0}<br/>
-          25mi Zone Population Estimate: ${p[`zctazonepop.${yearKey}`] || 'N/A'}<br/>
-          Median Income: ${p[`medianincome.${yearKey}`] ? formatter.format(p[`medianincome.${yearKey}`]) : 'N/A'}<br/>
+          Enrollment: ${d['ENROLLED'] || 0}<br/>
+          25mi Zone Population Estimate: ${zipData['ZCTAZONEPOP'] || 'N/A'}<br/>
+          Median Income: ${zipData['MEDIANINCOME'] ? formatter.format(zipData['MEDIANINCOME']) : 'N/A'}<br/>
           ${otherZips.length > 0 ? `<div class="other-zctas">Other Zips here: ${otherZips.join(', ')}</div>` : ''}
 
           ${feats.length == 1 && d['n'] ? `

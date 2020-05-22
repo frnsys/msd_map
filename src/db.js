@@ -12,21 +12,21 @@ class SchoolDB {
     return Promise.resolve(this._schoolsByYear[year]);
   }
 
-  async schoolsForKeyZip(key, zip) {
+  async dataForKeyZip(key, zip) {
     let k = `${key}_${zip}`;
     if (!(k in this._schoolsByKeyZip)) {
-      this._schoolsByKeyZip[k] = await this._getSchoolsForKeyZip(key, zip);
+      this._schoolsByKeyZip[k] = await this._getDataForKeyZip(key, zip);
     }
     return Promise.resolve(this._schoolsByKeyZip[k]);
   }
 
   _getSchoolsForYear(year) {
-    let url = `assets/schools/by_year/${year}.json`;
+    let url = `assets/schools/${year}.json`;
     return this._get(url);
   }
 
-  _getSchoolsForKeyZip(key, zip) {
-    let url = `assets/schools/by_key/${key}/${zip}.json`;
+  _getDataForKeyZip(key, zip) {
+    let url = `assets/zips/${key}/${zip}.json`;
     return this._get(url);
   }
 

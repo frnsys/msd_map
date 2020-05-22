@@ -80,7 +80,7 @@ class Map {
         let fl = this.filters[s];
         if (e.sourceId === s && fl.filter) {
           this.setFilter({
-            id: s
+            id: s,
           }, fl.filter, fl.state, fl.resetState);
         }
       });
