@@ -42,9 +42,9 @@ function explain(feats, cat, focusedSchools) {
         let schoolsForZCTA = schoolIds.map((id) => schools[id]);
         let groupedSchools = {};
 
-        let d = ['SCI', 'ENROLLED', 'n'].reduce((acc, k) => {
-          // Only SCI on feature property
-          if (k == 'SCI') {
+        let d = ['SCI', 'AVGNP', 'ENROLLED', 'n'].reduce((acc, k) => {
+          if (Object.keys(config.PROPS).includes(k)) {
+            // Feature properties
             acc[k] = p[util.propForCat(k, cat)];
           } else {
             // Zip data already filtered by Y and I
@@ -77,6 +77,7 @@ function explain(feats, cat, focusedSchools) {
         return `
           <h2>${zipcode}</h2>
           SCI: ${d['SCI'] > 0 ? d['SCI'].toFixed(2) : 'Education Desert'}<br/>
+          Average Net Price: ${d['AVGNP'] || 'N/A'}<br/>
           Number of Schools: ${d['n'] || 'N/A'}<br/>
           Enrollment: ${d['ENROLLED'] || 0}<br/>
           25mi Zone Population Estimate: ${zipData['ZCTAZONEPOP'] || 'N/A'}<br/>
@@ -90,8 +91,8 @@ function explain(feats, cat, focusedSchools) {
                 return `
                   <h3>${CONTROL[control]}, ${LEVEL[level]}</h3>
                   <ul class="zcta-schools">
-                    ${groupedSchools[control][level].sort((a, b) => a['INSTNM'].localeCompare(b['INSTNM']))
-                      .map((s) => `<li>${s['INSTNM']}</li>`).join('\n')}
+                    ${groupedSchools[control][level].sort((a, b) => a['MAPNAME'].localeCompare(b['MAPNAME']))
+                      .map((s) => `<li>${s['MAPNAME']}</li>`).join('\n')}
                   </ul>
                 `;
               }).join('\n');
@@ -101,7 +102,7 @@ function explain(feats, cat, focusedSchools) {
       html += `
         ${focusedSchools.length > 0 ?
             `<h2>School</h2>
-            ${focusedSchools.sort((a, b) => a.properties['INSTNM'].localeCompare(b.properties['INSTNM'])).map((s) => `${s.properties['INSTNM']}<br />`).join('\n')}`
+            ${focusedSchools.sort((a, b) => a.properties['MAPNAME'].localeCompare(b.properties['MAPNAME'])).map((s) => `${s.properties['MAPNAME']}<br />`).join('\n')}`
           : ''}`;
 
       info.explainFeature(html);

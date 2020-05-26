@@ -1,5 +1,5 @@
 import config from '../config';
-import data from '../data/meta.json';
+import data from '../data/gen/meta.json';
 
 let params = window.location.search.substr(1).split('&').reduce((acc, param) => {
     let val = true;
@@ -11,7 +11,7 @@ let params = window.location.search.substr(1).split('&').reduce((acc, param) => 
 
 const MAPBOX_TOKEN = config.MAPBOX_TOKEN;
 
-let MAP_ID = 'frnsys.7q5y08oz';
+let MAP_ID = 'frnsys.92nf979x';
 let INITIAL_CAT = {
   S: 'public',
   I: '45min',
@@ -29,6 +29,15 @@ const PROPS = {
     },
     legend: {
       flip: true
+    }
+  },
+  'AVGNP': {
+    desc: 'Average Net Price',
+    nick: 'Avg Net Price',
+    color: {
+      0.0: '#FFCC00',
+      0.5: '#43CC70',
+      1.0: '#5D5DB6'
     }
   }
 
@@ -112,7 +121,7 @@ const CAT_PROP_EXPRS = {
   }
 };
 const HAS_CATS = [
-  'SCI', 'n', 'ENROLLED'
+  'SCI', 'n', 'ENROLLED', 'AVGNP'
 ];
 const CAT_KEYS = Object.keys(CATS).sort((a, b) => a.localeCompare(b)).reduce((acc, k) => {
   if (acc.length == 0) {
@@ -142,11 +151,6 @@ const INITIAL_PROPS = ['SCI'].map((p) => {
   let k = HAS_CATS.includes(p) ? `${p}.${INITIAL_CAT_KEY}` : p;
   return PROPS[k];
 });
-
-// PROPS['medianincome'].key = 'medianincome';
-// PROPS['medianincome'].range = data.ranges['medianincome'];
-// PROPS['medianincome'].stats = {min: data.min['medianincome']};
-
 
 export default {
   MAP_ID,

@@ -10,7 +10,7 @@ import styles from './styles';
 import db from './db';
 
 import createNumberLine from './numberLine';
-import states from '../data/states.json';
+import states from '../data/gen/states.json';
 
 if (document.getElementById('sci-number-line')) {
   createNumberLine('#sci-number-line', 'Median School Concentration', states['sci'], [0, 10000], ['Pure Competition', 'Pure Monopoly']);
@@ -47,7 +47,7 @@ const state = {
   cat: config.INITIAL_CAT
 };
 
-const zctaLayerName = 'ALL'; // 'zctas'
+const zctaLayerName = 'zctas';
 const sources = {
   'zctas': {
     'type': 'vector',
@@ -146,7 +146,7 @@ const map = new Map({
     tooltip.style.display = 'block';
     tooltip.innerHTML = features['schools'].map((s) => {
       return `<div class="school-info">
-        ${s.properties['INSTNM']}
+        ${s.properties['MAPNAME']}
         <div>Zip: ${s.properties['ZIP']}</div>
       </div>`;
     }).join('<br />');

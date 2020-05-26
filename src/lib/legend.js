@@ -13,17 +13,16 @@ class Legend {
   }
 
   set(props) {
-    props = props.filter((p) => p);
+    this.props = props.filter((p) => p);
 
     // Bivariate
-    if (props.length > 1) {
-      let [propA, propB] = props;
+    if (this.props.length > 1) {
+      let [propA, propB] = this.props;
       this.bivariate(propA, propB);
     } else {
-      let [prop] = props;
+      let [prop] = this.props;
       this.range(prop);
     }
-    this.props = props;
   }
 
   renderPoint(cls, vals) {

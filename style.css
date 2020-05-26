@@ -191,7 +191,6 @@ th {
   background: #d5d5d5;
   border-top: 1px solid #000;
   justify-content: right;
-  padding-right: 27.5%;
 }
 #control > div {
   margin-right: 1em;
@@ -481,12 +480,6 @@ button {
 .number-line--focused {
   background: #FFCC00 !important;
   z-index: 9;
-}
-
-/* Hiding for now */
-select[name="propertyA"],
-select[name="propertyB"] {
-  display: none;
 }
 
 .map-only {

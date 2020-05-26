@@ -1,7 +1,7 @@
 import util from './util';
 import styles from './styles';
 import config from './config';
-import regions from '../data/regions.json';
+import regions from '../data/gen/regions.json';
 
 
 function setupUI(map, legend, info, state) {
@@ -49,8 +49,9 @@ function setupUI(map, legend, info, state) {
     // Skip categorized properties
     if (property.includes('.')) return;
 
-    opt.innerText = property.desc;
-    opt.value = property.key;
+    let prop = config.PROPS[property];
+    opt.innerText = prop.desc;
+    opt.value = property;
     propertyAInput.appendChild(opt);
     if (property == state.props[0]) {
       opt.selected = true;
@@ -62,6 +63,15 @@ function setupUI(map, legend, info, state) {
       opt.selected = true;
     }
   });
+  // To set to univariate
+  let opt = document.createElement('option');
+  opt.innerText = 'None';
+  opt.value = '';
+  if (state.props.length == 1) {
+    opt.selected = true;
+  }
+  propertyBInput.appendChild(opt);
+
   Object.keys(config.CATS['S']).forEach((cat) => {
     let opt = document.createElement('option');
     opt.innerText = config.CATS['S'][cat];
@@ -80,12 +90,6 @@ function setupUI(map, legend, info, state) {
       opt.selected = true;
     }
   });
-
-  // To set to univariate
-  let opt = document.createElement('option');
-  opt.innerText = 'None';
-  opt.value = '';
-  propertyBInput.appendChild(opt);
 
   propertyAInput.addEventListener('change', (ev) => {
     state.props[0] = config.PROPS[util.propForCat(ev.target.value, state.cat)];

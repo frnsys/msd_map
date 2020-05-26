@@ -1,5 +1,5 @@
 import createNumberLine from './numberLine';
-import states from '../data/states.json';
+import states from '../data/gen/states.json';
 
 createNumberLine('#sci-number-line', 'Median School Concentration', states['sci'], [0, 10000], ['Pure Competition', 'Pure Monopoly']);
 createNumberLine('#enrollment-number-line', 'Total Enrollment', states['enrollment'], [0, Math.max(...Object.values(states['enrollment']))], ['', '']);
