@@ -16,6 +16,7 @@ from shapely.geometry import shape
 from collections import defaultdict
 
 SCHOOL_FIELDS = [
+    'MAPNAME',
     'INSTNM',
     'SECTOR',
     'ICLEVEL',
@@ -96,6 +97,9 @@ MAPS_BY = False
 # try to include only that will be used to color tiles
 FEAT_FIELDS = {
     'SCI': ['S', 'I', 'Y'],
+
+    # average net price across all income brackets for schools in zone
+    'AVGNP': ['S', 'I', 'Y'],
 }
 
 # These are queried separately when a feature is focused on,
@@ -104,9 +108,6 @@ QUERY_FIELDS = {
     'ENROLLED': ['S', 'I', 'Y'],
 
     'n': ['S', 'I', 'Y'],
-
-    # average net price across all income brackets for schools in zone
-    'AVGNP': ['S', 'I', 'Y'],
 
     # average published tuition + fees for schools in zone
     'AVGSP': ['S', 'I', 'Y'],
@@ -131,12 +132,14 @@ FEAT_DEFAULTS = {
     # 'MEDIANINCOME': None,
     # 'SINGLEZCTAPOP': 0,
     # 'ZCTAZONEPOP': 0,
-    'SCI': 0
+    'SCI': 0,
+    'AVGNP': 0
 }
 
 # Keep only non-varying properties
 # for school geojson
 SCHOOL_GEOJSON_PROPS = [
+    'MAPNAME',
     'INSTNM', 'ZIP',
 
     # Needed for proper coloring of school points
@@ -401,7 +404,9 @@ for key in map_keys:
             bboxes[zipcode] = shape(f['geometry']).bounds
             geojson.append(f)
 
-    with open('zctas/{}.geojson'.format(key), 'w') as f:
+    if not os.path.exists('gen/zctas'):
+        os.makedirs('gen/zctas')
+    with open('gen/zctas/{}.geojson'.format(key), 'w') as f:
         # Write one feature per line, so tippecanoe can process in parallel
         f.write('\n'.join(json.dumps(feat) for feat in geojson))
 
@@ -431,36 +436,38 @@ region_bboxes['American Samoa'] = [-171.84922996050645, -14.93534547358692, -168
 
 
 print('Saving files...')
-with open('regions.json', 'w') as f:
+with open('gen/regions.json', 'w') as f:
     json.dump(region_bboxes, f)
 
-with open('schools.geojson', 'w') as f:
+with open('gen/schools.geojson', 'w') as f:
     json.dump(schools_geojson, f)
 
-if not os.path.exists('schools'):
-    os.makedirs('schools')
+if not os.path.exists('gen/schools'):
+    os.makedirs('gen/schools')
 for year, schools in schools_by_year.items():
-    with open('schools/{}.json'.format(year), 'w') as f:
+    with open('gen/schools/{}.json'.format(year), 'w') as f:
         json.dump(schools, f)
 
-with open('meta.json', 'w') as f:
+with open('gen/meta.json', 'w') as f:
     json.dump(meta, f)
 
+if not os.path.exists('gen/bboxes'):
+    os.makedirs('gen/bboxes')
 for zip, bbox in bboxes.items():
-    with open('bboxes/{}.json'.format(zip), 'w') as f:
+    with open('gen/bboxes/{}.json'.format(zip), 'w') as f:
         json.dump(bbox, f)
 
 if not os.path.exists('zips'):
     os.makedirs('zips')
 for key, schools_by_zip in data_by_key_zip.items():
     for zip, schools in schools_by_zip.items():
-        path = 'zips/{}'.format(key)
+        path = 'gen/zips/{}'.format(key)
         if not os.path.exists(path):
             os.makedirs(path)
         with open('{}/{}.json'.format(path, zip), 'w') as f:
                 json.dump(schools, f)
 
-with open('zctas.json', 'w') as f:
+with open('gen/zctas.json', 'w') as f:
     json.dump(data, f)
 
 print('Done')

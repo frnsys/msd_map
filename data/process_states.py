@@ -11,7 +11,7 @@ for i, row in df.iterrows():
     scis[state] = row['medianSCI_allschools']
     enrollments[state] = row['total_enrollment_seats']
 
-with open('states.json', 'w') as f:
+with open('gen/states.json', 'w') as f:
     json.dump({
         'sci': scis,
         'enrollment': enrollments

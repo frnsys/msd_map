@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Clean up
-for path in zctas/*.geojson; do
+for path in gen/zctas/*.geojson; do
     f=${path##*/}
-    output="tiles/${f%.*}.mbtiles"
+    output="gen/tiles/${f%.*}.mbtiles"
     rm "$output"
 
     # Generate ZCTA tiles
