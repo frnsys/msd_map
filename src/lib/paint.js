@@ -4,7 +4,7 @@ import color from './color';
 // values into 0, so we can
 // specify a different value that
 // we're using in the geojson to represent null.
-const NULL_VALUE = 0;
+const NULL_VALUE = null;
 
 function stopToValue(stop, range) {
   return range[0] + (range[1] - range[0]) * stop;
@@ -26,8 +26,9 @@ function gradientToStyle(gradient, range, idx) {
 }
 
 class Painter {
-  constructor(colors) {
+  constructor(colors, nullValue) {
     this.colors = colors;
+    this.nullValue = nullValue || NULL_VALUE;
   }
 
   bivariate(propA, propB) {
@@ -47,10 +48,10 @@ class Painter {
           this.colors.focus,
 
         // If either property is null
-        ['==', ['get', propA.key], NULL_VALUE],
+        ['==', ['get', propA.key], this.nullValue],
           this.colors.null,
 
-        ['==', ['get', propB.key], NULL_VALUE],
+        ['==', ['get', propB.key], this.nullValue],
           this.colors.null,
 
         ['concat',
@@ -95,7 +96,7 @@ class Painter {
         this.colors.focus,
 
       // If the property value is null
-      ['==', ['get', prop.key], NULL_VALUE],
+      ['==', ['get', prop.key], this.nullValue],
         this.colors.null,
 
       // Otherwise, interpolate color

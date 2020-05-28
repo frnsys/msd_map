@@ -128,13 +128,6 @@ QUERY_FIELDS = {
     'MEDIANINCOME': ['Y'],
     'ZCTAZONEPOP': ['Y']
 }
-FEAT_DEFAULTS = {
-    # 'MEDIANINCOME': None,
-    # 'SINGLEZCTAPOP': 0,
-    # 'ZCTAZONEPOP': 0,
-    'SCI': 0,
-    'AVGNP': 0
-}
 
 # Keep only non-varying properties
 # for school geojson
@@ -183,10 +176,6 @@ def subKey(key, drop):
     keep = {k: v for k, v in cats.items() if k not in drop}
     return keyForCat(keep, k=k)
 
-for k, cats in FEAT_FIELDS.items():
-    for key in keysForCats(cats):
-        FEAT_DEFAULTS['{}.{}'.format(k, key)] = FEAT_DEFAULTS.get(k, 0)
-
 
 zctas = set()
 data = defaultdict(dict)
@@ -222,15 +211,10 @@ for i in CATEGORIES['I']:
                             key = keyForCat({'Y': y, 'I': i, 'S': s}, k)
                             val = row_data['{}_{}'.format(k, s_)]
                             datadict[zipcode][key] = val
+                            field_data[k][key].append(val)
 
-                            # Using 0 as a null value, so ignore
-                            if k == 'SCI':
-                                if val == None:
-                                    datadict[zipcode][key] = 0
-                                elif val > 0:
-                                    field_data[k][key].append(val)
-                            else:
-                                field_data[k][key].append(val)
+                            # if k == 'AVGNP' and val is not None and val > 75000:
+                            #     print(f'{zipcode} y={y},i={i},s={s} -> {val}')
                     else:
                         key = keyForCat({t: cat[t] for t in cats}, k)
                         datadict[zipcode][key] = row_data[k]
@@ -248,6 +232,7 @@ for k in FEAT_FIELDS.keys():
         vals.append(float(max(vs)))
     meta['ranges'][k] = (min(vals), max(vals))
 
+# import ipdb; ipdb.set_trace()
 
 # Compute summary statistics (within categories)
 # To keep file size smaller, just using min
@@ -377,10 +362,9 @@ for key in map_keys:
         f = {**f}
         del f['id']
         zipcode = f['properties']['ZCTA5CE10']
-        try:
-            f['properties'] = dict(**data[zipcode])
-        except:
-            f['properties'] = dict(**FEAT_DEFAULTS)
+
+        # Only keep non-null values
+        f['properties'] = {k: v for k, v in data[zipcode].items() if v is not None}
 
         # Drop extraneous properties
         if keys is not None:
@@ -395,10 +379,10 @@ for key in map_keys:
         for f in tqdm(fiona.open('src/zctas/tl_2017_us_zcta510.shp'), desc='Filling missing ZCTAs'):
             zipcode = f['properties']['ZCTA5CE10']
             if zipcode not in zctas: continue
-            try:
-                f['properties'] = dict(**data[zipcode])
-            except:
-                f['properties'] = dict(**FEAT_DEFAULTS) # TODO KEEP PROPS
+
+            # Only keep non-null values
+            f['properties'] = {k: v for k, v in data[zipcode].items() if v is not None}
+
             del f['id']
             f['properties']['zipcode'] = zipcode
             bboxes[zipcode] = shape(f['geometry']).bounds
