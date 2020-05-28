@@ -183,6 +183,11 @@ th {
   font-size: 1.2em;
 }
 
+/* Hiding for now */
+.control-properties {
+  display: none;
+}
+
 #control {
   z-index: 1;
   padding: 0.5em;
