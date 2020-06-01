@@ -129,6 +129,14 @@ QUERY_FIELDS = {
     'ZCTAZONEPOP': ['Y']
 }
 
+# Use these instead of the actual data max
+RANGE_MINS = {
+    'AVGNP': 5000
+}
+RANGE_MAXS = {
+    'AVGNP': 25000
+}
+
 # Keep only non-varying properties
 # for school geojson
 SCHOOL_GEOJSON_PROPS = [
@@ -230,7 +238,10 @@ for k in FEAT_FIELDS.keys():
         vs = [v for v in vs if v is not None]
         vals.append(float(min(vs)))
         vals.append(float(max(vs)))
-    meta['ranges'][k] = (min(vals), max(vals))
+
+    mn = RANGE_MINS.get(k, min(vals))
+    mx = RANGE_MAXS.get(k, max(vals))
+    meta['ranges'][k] = (mn, mx)
 
 # import ipdb; ipdb.set_trace()
 
