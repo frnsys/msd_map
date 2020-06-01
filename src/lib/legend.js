@@ -41,6 +41,8 @@ class Legend {
       let [propA, propB] = this.props;
       let p_a = (valA-propA.range[0])/(propA.range[1] - propA.range[0]);
       let p_b = (valB-propB.range[0])/(propB.range[1] - propB.range[0]);
+      p_a = Math.max(Math.min(p_a, 1), 0);
+      p_b = Math.max(Math.min(p_b, 1), 0);
 
       let [flipA, flipB] = this.props.map((p) => p.legend && p.legend.flip);
       if (flipA) p_a = 1 - p_a;
@@ -184,8 +186,8 @@ class Legend {
     for (let i=0; i<n; i++) {
       let col = document.createElement('div');
       for (let j=0; j<n; j++) {
-        let I = flipA ? n - i - 1 : i;
-        let J = flipB ? n - j - 1 : j;
+        let I = flipA ? i : n - i - 1;
+        let J = flipB ? j : n - j - 1;
         let x = I/(n-1);
         let y = ((n-1)-J)/(n-1);
 

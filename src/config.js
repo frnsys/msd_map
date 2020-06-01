@@ -11,7 +11,7 @@ let params = window.location.search.substr(1).split('&').reduce((acc, param) => 
 
 const MAPBOX_TOKEN = config.MAPBOX_TOKEN;
 
-let MAP_ID = 'frnsys.92nf979x';
+let MAP_ID = 'frnsys.9kqttq68';
 let INITIAL_CAT = {
   S: 'public',
   I: '45min',
@@ -23,9 +23,10 @@ const PROPS = {
     desc: 'School Concentration Index',
     nick: 'SCI',
     color: {
-      0.0: '#7dd177',
-      0.3: '#f4d71a',
-      1.0: '#9b150c'
+      0.0: '#fa2525',
+      1.0: '#ffdbdb'
+      // 0.0: '#ffffff',
+      // 1.0: '#ffffff'
     },
     legend: {
       flip: true
@@ -35,9 +36,10 @@ const PROPS = {
     desc: 'Average Net Price',
     nick: 'Avg Net Price',
     color: {
-      0.0: '#FFCC00',
-      0.5: '#43CC70',
-      1.0: '#5D5DB6'
+      0.0: '#d9ddff',
+      1.0: '#263cff'
+      // 0.0: '#ffffff',
+      // 1.0: '#ffffff'
     }
   }
 
