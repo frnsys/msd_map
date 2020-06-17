@@ -5,6 +5,35 @@ import regions from '../data/gen/regions.json';
 
 
 function setupUI(map, legend, info, state) {
+  // Summary statistics table
+  [...document.querySelectorAll('#summary-tabs--level > div')].forEach((tab) => {
+    tab.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      let val = tab.dataset.value;
+      if (val !== state.summary.tab) {
+        document.querySelector('#summary-tabs--level .selected').classList.remove('selected');
+        state.summary.tab = val;
+        tab.classList.add('selected');
+        loadSummary(state);
+      }
+      return false;
+    });
+  });
+  [...document.querySelectorAll('#summary-tabs--stat > div')].forEach((tab) => {
+    tab.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      let val = tab.innerText;
+      if (val !== state.summary.stat) {
+        document.querySelector('#summary-tabs--stat .selected').classList.remove('selected');
+        state.summary.stat = val;
+        tab.classList.add('selected');
+        loadSummary(state);
+      }
+      return false;
+    });
+  });
+  loadSummary(state);
+
   // Jump to region
   let regionsEl = document.getElementById('map-regions');
   Object.keys(regions).sort((a, b) => a.localeCompare(b)).forEach((name) => {
@@ -106,6 +135,7 @@ function setupUI(map, legend, info, state) {
     state.props = state.props.map((p) => config.PROPS[util.propForCat(p.key, state.cat)]);
     map.set('zctas', state.props);
     legend.set(state.props);
+    loadSummary(state);
 
     // Hide schools not matching the category
     let year = state.cat['Y'];
@@ -128,6 +158,7 @@ function setupUI(map, legend, info, state) {
     state.props = state.props.map((p) => config.PROPS[util.propForCat(p.key, state.cat)]);
     map.set('zctas', state.props);
     legend.set(state.props);
+    loadSummary(state);
 
     // Hide schools not matching the category
     let year = state.cat['Y'];
@@ -180,13 +211,10 @@ function setupUI(map, legend, info, state) {
       document.querySelector('#control-isochrone .selected').classList.remove('selected');
       b.classList.add('selected');
       state.cat['I'] = b.value;
-      [...document.querySelectorAll('.summary')].forEach((el) => el.style.display = 'none');
-      document.getElementById(`${b.value}-summary`).style.display = 'block';
-      document.getElementById('distance').innerText = b.value;
-
       state.props = state.props.map((p) => config.PROPS[util.propForCat(p.key, state.cat)]);
       map.set('zctas', state.props);
       legend.set(state.props);
+      loadSummary(state);
       if (map.focused['zctas']) {
         info.explain(map.focused['zctas'], state.cat, []);
       };
@@ -200,6 +228,74 @@ function setupUI(map, legend, info, state) {
   document.getElementById('icon-legend-close').addEventListener('click', () => {
     legendKey.style.display = '';
   });
+}
+
+const summaryEl = document.getElementById('summary-table');
+const summaryTitle = document.querySelector('#summary h1');
+const rowHeads = [
+  '', '0<SCI=2500', '2500<SCI=5000', '5000<SCI<10000', 'SCI=10000'
+];
+function loadRows(state, rows) {
+  let {summary} = state;
+  summaryEl.innerHTML = '';
+
+  let tr = document.createElement('tr');
+  rowHeads.forEach((name, i) => {
+    if (i == 0) name = summary.tab === 'state' ? 'State' : 'School Type';
+    let td = document.createElement('th');
+    td.innerText = name;
+    tr.appendChild(td);
+    td.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      if (state.summary.sort.column == i) {
+        state.summary.sort.reverse = !state.summary.sort.reverse;
+      }
+      state.summary.sort.column = i;
+      loadRows(state, rows);
+      return false;
+    });
+  });
+  summaryEl.appendChild(tr);
+
+  rows.sort((a, b) => (a[summary.sort.column] > b[summary.sort.column]) ? 1 : -1);
+  if (summary.sort.reverse) {
+    rows.reverse();
+  }
+
+  rows.forEach((row) => {
+    let tr = document.createElement('tr');
+    row.forEach((val) => {
+      let td = document.createElement('td');
+      td.innerText = val || 'N/A';
+      tr.appendChild(td);
+    });
+    summaryEl.appendChild(tr);
+  });
+}
+
+function loadSummary(state) {
+  let url;
+  let {summary, cat} = state;
+  if (summary.tab === 'state') {
+    url = `assets/summary/${summary.tab}-${cat.I}-${cat.Y}-${cat.S}.json`;
+    summaryTitle.innerText = `Summary Statistics for ${cat.I}, ${cat.Y}, ${cat.S}`;
+  } else {
+    url = `assets/summary/${summary.tab}-${cat.I}-${cat.Y}.json`;
+    summaryTitle.innerText = `Summary Statistics for ${cat.I}, ${cat.Y}`;
+  }
+  return fetch(url, {
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then((json) => {
+      let rows = json[summary.stat];
+      loadRows(state, rows);
+    })
+    .catch(err => { console.log(err) });
 }
 
 export default setupUI;

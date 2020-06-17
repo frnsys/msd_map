@@ -93,9 +93,6 @@ section.endnotes > ul {
   font-variant: small-caps;
   text-transform: lowercase;
 }
-.summary {
-  display: none;
-}
 .summary-charts {
   display: flex;
   justify-content: space-between;
@@ -109,8 +106,27 @@ section.endnotes > ul {
   height: auto;
   max-width: 100%;
 }
+.summary-tabs {
+  display: flex;
+}
+.summary-tabs > div {
+  flex: 1;
+  text-align: center;
+  padding: 0.5em 1em;
+  border: 1px solid black;
+  border-bottom: none;
+  border-left: none;
+  cursor: pointer;
+}
+.summary-tabs > div:first-child {
+  border-left: 1px solid black;
+}
+.summary-tabs > div.selected,
+.summary-tabs > div:hover {
+  background: #D0D5FF;
+}
 
-.summary table {
+#summary table {
   min-width: 100%;
   border-collapse: collapse;
 }
@@ -130,6 +146,10 @@ th {
   font-family: 'Founders Grotesk', sans-serif;
   padding-top: 0.75em;
   min-width: 7em;
+  cursor: pointer;
+}
+th:hover {
+  background: #E2E0E6;
 }
 
 #map {
@@ -300,8 +320,8 @@ th {
   margin-right: 0;
 }
 .legend--cell {
-  width: 32px;
-  height: 32px;
+  width: 16px;
+  height: 16px;
   cursor: help;
 }
 .legend--grid {
