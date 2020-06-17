@@ -4,8 +4,8 @@ from glob import glob
 
 isos = ['30min', '45min', '60min']
 levels = {
-        'state': ['STATE', '0<SCI=2500', '2500<SCI=5000', '5000<SCI<10000', 'SCI=10000'],
-        'national': ['School_Type', '0<SCI=2500', '2500<SCI=5000', '5000<SCI<10000', 'SCI=10000']
+        'state': ['STATE', '0<SCI=2500', '2500<SCI=5000', '5000<SCI<10000', 'SCI=10000', 'Education Desert'],
+        'national': ['School_Type', '0<SCI=2500', '2500<SCI=5000', '5000<SCI<10000', 'SCI=10000', 'Education Desert']
 }
 cats_map = {
     'bachelors': 'bachelor',

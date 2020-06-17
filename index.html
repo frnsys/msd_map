@@ -95,27 +95,32 @@
                 <div id="legend"></div>
                 <div id="icon-legend-show">?</div>
                 <div id="icon-legend">
-                    <div>
-                        <div><span class="icon-key" style="background:#33C377;"></span><span>Public</span></div>
-                        <div><span class="icon-key" style="background:#ffcc00;"></span><span>Private not-for-profit</span></div>
-                        <div><span class="icon-key" style="background:#05a1ff;"></span><span>Private for-profit</span></div>
+                    <div id="icon-legend--icons">
+                        <div>
+                            <div><span class="icon-key" style="background:#33C377;"></span><span>Public</span></div>
+                            <div><span class="icon-key" style="background:#ffcc00;"></span><span>Private not-for-profit</span></div>
+                            <div><span class="icon-key" style="background:#05a1ff;"></span><span>Private for-profit</span></div>
+                        </div>
+                        <div>
+                            <div><span class="icon-key" style="border:2px solid #000;"></span><span>Bachelor Degree</span></div>
+                            <div><span class="icon-key" style="border:2px solid #888888;"></span><span>Associate Degree</span></div>
+                            <div><span class="icon-key" style="border:2px solid #ffffff;"></span><span>Below Associate Degree</span></div>
+                        </div>
                     </div>
-                    <div>
-                        <div><span class="icon-key" style="border:2px solid #000;"></span><span>Bachelor Degree</span></div>
-                        <div><span class="icon-key" style="border:2px solid #888888;"></span><span>Associate Degree</span></div>
-                        <div><span class="icon-key" style="border:2px solid #ffffff;"></span><span>Below Associate Degree</span></div>
-                    </div>
+                    <div id="icon-legend--note">Schools appear at higher zoom levels.</div>
                     <div id="icon-legend-close">✖</div>
                 </div>
             </div>
             <div id="info"></div>
         </section>
         <section id="summary" class="text summary">
-            <h1></h1>
+            <h1>Summary Statistics for <span></span></h1>
+            <div class="summary-tabs-label">Level of Analysis</div>
             <div class="summary-tabs" id="summary-tabs--level">
                 <div data-value="national">National</div>
                 <div data-value="state" class="selected">State</div>
             </div>
+            <div class="summary-tabs-label">Statistic</div>
             <div class="summary-tabs" id="summary-tabs--stat">
                 <div class="selected">Average Net Price</div>
                 <div>Count of Zips</div>

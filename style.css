@@ -125,21 +125,41 @@ section.endnotes > ul {
 .summary-tabs > div:hover {
   background: #D0D5FF;
 }
+.summary-tabs-label {
+  width: 100%;
+  padding: 0.25em 1em;
+  text-align: center;
+  border: 1px solid black;
+  border-bottom: none;
+  font-size: 0.8em;
+  background: #f0f0f0;
+}
 
 #summary table {
   min-width: 100%;
   border-collapse: collapse;
 }
+#summary h1 span {
+  display: block;
+  font-size: 0.75em;
+}
 .table-wrapper {
   max-width: 100%;
-  overflow-x: auto;
+  max-height: 50vh;
+  overflow: auto;
   margin-bottom: 2em;
+  border: 1px solid black;
+  border-left: none;
+  border-right: none;
 }
-table, th, td {
+th, td {
   border: 1px solid black;
 }
 th, td {
   padding: 0.25em;
+}
+table tr:last-child td {
+  border-bottom: none;
 }
 th {
   font-weight: normal;
@@ -147,6 +167,7 @@ th {
   padding-top: 0.75em;
   min-width: 7em;
   cursor: pointer;
+  border-top: none;
 }
 th:hover {
   background: #E2E0E6;
@@ -374,18 +395,25 @@ th:hover {
   color: #fff;
   padding: 0.5em;
   background: #5d5db6;
-  display: flex;
   position: absolute;
   top: 0.4em;
   right: 0.5em;
   z-index: 1;
   font-family: 'Founders Grotesk', sans-serif;
 }
-#icon-legend > div {
+#icon-legend--icons {
+  display: flex;
+}
+#icon-legend--note {
+  margin-top: 0.5em;
+  line-height: 0.5;
+  font-size: 0.75em;
+}
+#icon-legend--icons > div {
   flex: 1;
   font-size: 0.75em;
 }
-#icon-legend > div:first-child {
+#icon-legend--icons > div:first-child {
   margin-right: 0.75em;
 }
 .icon-key {

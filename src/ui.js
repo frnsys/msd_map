@@ -231,9 +231,9 @@ function setupUI(map, legend, info, state) {
 }
 
 const summaryEl = document.getElementById('summary-table');
-const summaryTitle = document.querySelector('#summary h1');
+const summaryTitle = document.querySelector('#summary h1 span');
 const rowHeads = [
-  '', '0<SCI=2500', '2500<SCI=5000', '5000<SCI<10000', 'SCI=10000'
+  '', '0<SCI=2500', '2500<SCI=5000', '5000<SCI<10000', 'SCI=10000', 'Education Desert'
 ];
 function loadRows(state, rows) {
   let {summary} = state;
@@ -278,10 +278,10 @@ function loadSummary(state) {
   let {summary, cat} = state;
   if (summary.tab === 'state') {
     url = `assets/summary/${summary.tab}-${cat.I}-${cat.Y}-${cat.S}.json`;
-    summaryTitle.innerText = `Summary Statistics for ${cat.I}, ${cat.Y}, ${cat.S}`;
+    summaryTitle.innerText = `Year: ${cat.Y}, Driving distance: ${cat.I}, Category: ${cat.S}`;
   } else {
     url = `assets/summary/${summary.tab}-${cat.I}-${cat.Y}.json`;
-    summaryTitle.innerText = `Summary Statistics for ${cat.I}, ${cat.Y}`;
+    summaryTitle.innerText = `Year: ${cat.Y}, Driving distance: ${cat.I}`;
   }
   return fetch(url, {
     headers: {
