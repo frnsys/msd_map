@@ -44,7 +44,11 @@ mapboxgl.accessToken = config.MAPBOX_TOKEN;
 const tooltip = document.getElementById('map-tooltip');
 const state = {
   props: config.INITIAL_PROPS,
-  cat: config.INITIAL_CAT
+  cat: config.INITIAL_CAT,
+  summary: {
+    tab: 'state',
+    stat: 'Average Net Price'
+  }
 };
 
 const zctaLayerName = 'zctas';
