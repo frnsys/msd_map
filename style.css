@@ -146,6 +146,10 @@ th {
   font-family: 'Founders Grotesk', sans-serif;
   padding-top: 0.75em;
   min-width: 7em;
+  cursor: pointer;
+}
+th:hover {
+  background: #E2E0E6;
 }
 
 #map {

@@ -47,7 +47,11 @@ const state = {
   cat: config.INITIAL_CAT,
   summary: {
     tab: 'state',
-    stat: 'Average Net Price'
+    stat: 'Average Net Price',
+    sort: {
+      column: 0,
+      reverse: false
+    }
   }
 };
 

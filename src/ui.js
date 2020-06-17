@@ -235,6 +235,44 @@ const summaryTitle = document.querySelector('#summary h1');
 const rowHeads = [
   '', '0<SCI=2500', '2500<SCI=5000', '5000<SCI<10000', 'SCI=10000'
 ];
+function loadRows(state, rows) {
+  let {summary} = state;
+  summaryEl.innerHTML = '';
+
+  let tr = document.createElement('tr');
+  rowHeads.forEach((name, i) => {
+    if (i == 0) name = summary.tab === 'state' ? 'State' : 'School Type';
+    let td = document.createElement('th');
+    td.innerText = name;
+    tr.appendChild(td);
+    td.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      if (state.summary.sort.column == i) {
+        state.summary.sort.reverse = !state.summary.sort.reverse;
+      }
+      state.summary.sort.column = i;
+      loadRows(state, rows);
+      return false;
+    });
+  });
+  summaryEl.appendChild(tr);
+
+  rows.sort((a, b) => (a[summary.sort.column] > b[summary.sort.column]) ? 1 : -1);
+  if (summary.sort.reverse) {
+    rows.reverse();
+  }
+
+  rows.forEach((row) => {
+    let tr = document.createElement('tr');
+    row.forEach((val) => {
+      let td = document.createElement('td');
+      td.innerText = val || 'N/A';
+      tr.appendChild(td);
+    });
+    summaryEl.appendChild(tr);
+  });
+}
+
 function loadSummary(state) {
   let url;
   let {summary, cat} = state;
@@ -245,7 +283,6 @@ function loadSummary(state) {
     url = `assets/summary/${summary.tab}-${cat.I}-${cat.Y}.json`;
     summaryTitle.innerText = `Summary Statistics for ${cat.I}, ${cat.Y}`;
   }
-  console.log(state);
   return fetch(url, {
     headers: {
       'Accept': 'application/json',
@@ -255,27 +292,8 @@ function loadSummary(state) {
   })
     .then(res => res.json())
     .then((json) => {
-      summaryEl.innerHTML = '';
-
-      let tr = document.createElement('tr');
-      rowHeads.forEach((name, i) => {
-        if (i == 0) name = summary.tab === 'state' ? 'State' : 'School Type';
-        let td = document.createElement('th');
-        td.innerText = name;
-        tr.appendChild(td);
-      });
-      summaryEl.appendChild(tr);
-
-      json[summary.stat].forEach((row) => {
-        let tr = document.createElement('tr');
-        row.forEach((val) => {
-          let td = document.createElement('td');
-          td.innerText = val || 'N/A';
-          tr.appendChild(td);
-        });
-        summaryEl.appendChild(tr);
-      });
-      console.log(json);
+      let rows = json[summary.stat];
+      loadRows(state, rows);
     })
     .catch(err => { console.log(err) });
 }
