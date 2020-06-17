@@ -211,10 +211,6 @@ function setupUI(map, legend, info, state) {
       document.querySelector('#control-isochrone .selected').classList.remove('selected');
       b.classList.add('selected');
       state.cat['I'] = b.value;
-      [...document.querySelectorAll('.summary')].forEach((el) => el.style.display = 'none');
-      document.getElementById(`${b.value}-summary`).style.display = 'block';
-      document.getElementById('distance').innerText = b.value;
-
       state.props = state.props.map((p) => config.PROPS[util.propForCat(p.key, state.cat)]);
       map.set('zctas', state.props);
       legend.set(state.props);
