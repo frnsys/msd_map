@@ -7,6 +7,15 @@ levels = {
         'state': ['STATE', '0<SCI=2500', '2500<SCI=5000', '5000<SCI<10000', 'SCI=10000'],
         'national': ['School_Type', '0<SCI=2500', '2500<SCI=5000', '5000<SCI<10000', 'SCI=10000']
 }
+cats_map = {
+    'bachelors': 'bachelor',
+    'associates': 'associate',
+    'private_for_profit': 'priv4prof',
+    'private_not_for_profit': 'privnot4prof',
+    'public': 'public',
+    'below_associates': 'belowassociate',
+    'all_schools': 'allschools'
+}
 
 data = {}
 cats = set()
@@ -25,6 +34,7 @@ for l, fields in levels.items():
                 if l == 'state':
                     for c, subsub_df in sub_df.groupby('School_Type'):
                         c = c.lower().replace(' ', '_')
+                        c = cats_map[c]
                         cats.add(c)
                         data[l][i][y][c] = {}
                         for stat, group in subsub_df.groupby('Statistic'):
