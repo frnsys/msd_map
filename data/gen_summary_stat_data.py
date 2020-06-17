@@ -17,6 +17,8 @@ for l, fields in levels.items():
         data[l][i] = {}
         for f in glob(f'src/summary_stats/{l}/{i}*'):
             df = pd.read_csv(f)
+            # Replace NaNs with None for proper JSON
+            df = df.where(pd.notnull(df), None)
             for y, sub_df in df.groupby('YEAR'):
                 years.add(y)
                 data[l][i][y] = data[l][i].get(y, {})
@@ -31,7 +33,7 @@ for l, fields in levels.items():
                                 data[l][i][y][c][stat].append([row[k] for k in fields])
 
                 elif l == 'national':
-                    data[l][i][y] = {}
+                    data[l][i][y] = data[l][i].get(y, {})
                     for stat, group in sub_df.groupby('Statistic'):
                         data[l][i][y][stat] = data[l][i][y].get(stat, [])
                         for _, row in group.iterrows():
@@ -43,9 +45,9 @@ for l in levels.keys():
             if l == 'national':
                 fname = f'gen/summary/{l}-{i}-{y}.json'
                 with open(fname, 'w') as f:
-                    json.dump(data[l][i][y], f)
+                    json.dump(data[l][i][y], f, allow_nan=False)
             elif l == 'state':
                 for c in cats:
                     fname = f'gen/summary/{l}-{i}-{y}-{c}.json'
                     with open(fname, 'w') as f:
-                        json.dump(data[l][i][y][c], f)
+                        json.dump(data[l][i][y][c], f, allow_nan=False)
