@@ -23,13 +23,13 @@ const PROPS = {
     desc: 'School Concentration Index',
     nick: 'SCI',
     color: {
-      0.0: '#fa2525',
-      1.0: '#ffdbdb'
+      0.0: '#ffdbdb',
+      1.0: '#fa2525'
       // 0.0: '#ffffff',
       // 1.0: '#ffffff'
     },
     legend: {
-      flip: true
+      flip: false
     }
   },
   'AVGNP': {

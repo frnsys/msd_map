@@ -174,8 +174,8 @@ class Legend {
     labels_a.appendChild(lowerLabel);
     container.appendChild(labels_a);
 
-    // 3x3
-    let n = 3;
+    // 5x5
+    let n = 5;
 
     let gridContainer = document.createElement('div');
     gridContainer.classList.add('legend--grid-container');
@@ -186,8 +186,8 @@ class Legend {
     for (let i=0; i<n; i++) {
       let col = document.createElement('div');
       for (let j=0; j<n; j++) {
-        let I = flipA ? i : n - i - 1;
-        let J = flipB ? j : n - j - 1;
+        let I = flipA ? n - i - 1 : i;
+        let J = flipB ? n - j - 1 : j;
         let x = I/(n-1);
         let y = ((n-1)-J)/(n-1);
 
