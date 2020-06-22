@@ -116,8 +116,8 @@ function empty() {
 
 function reset() {
   info.explainFeature(`<h2>Map Guide</h2>
-    <p>The map displays school concentration, sortable by level and type of higher education institutions across the US and US Territories. Use the quick zoom buttons in the top left or type in your desired zip (try your home zip code!) to locate a particular area. Toggle different maps with the school-type drop down menu, and see the corresponding summary statistics on the <span class="smallcaps">SCI</span> gradient legend. Hover over the concentration legend in the bottom left corner to highlight areas on the map that correspond to a particular <span class="smallcaps">SCI</span>. As you mouse over certain geographic areas, the schools within commuting distance of that zip will illuminate.</p>
-    <p>Click on an area to freeze the informational panel and explore the statistics and institutions for that zip. Happy mapping!</p>`);
+    <p>The map displays school concentration, net price, or their combination, sortable by year, college category, and driving distance. Use the quick zoom buttons in the top left or type in your desired zip (try your home zip code!) to locate a particular area. Toggle different maps with the school-type drop down menu, and see the corresponding summary statistics on the gradient legend. Hover over the colorful statistical legend in the bottom left corner to highlight areas on the map that correspond to a particular statistical measurement. And as you mouse over certain geographic areas, the schools within commuting distance of that zip will illuminate.</p>
+  `);
 }
 
 function schoolsOnly() {
