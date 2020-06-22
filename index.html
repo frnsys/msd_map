@@ -44,15 +44,25 @@
 <body>
     <main>
         <header>
-            <a href="https://jainfamilyinstitute.org/"><img src="assets/jfi-logo.svg" class="jfi-logo"></a>
-            <a href="https://phenomenalworld.org/"><img src="assets/pw-icon.svg"></a>
+            <nav>
+                <a href="#intro">Introduction</a>
+                <a href="#map-target">Map</a>
+                <a href="#summary">Summary Statistics</a>
+                <a href="#methodology">Methodology</a>
+                <a href="#download">Download Data</a>
+            </nav>
+            <div>
+                <a href="https://jainfamilyinstitute.org/"><img src="assets/jfi-logo.svg" class="jfi-logo" aria-label="Go to Jain Family Institute site"></a>
+                <a href="https://phenomenalworld.org/" aria-label="Go to Phenomenal World site"><img src="assets/pw-icon.svg"></a>
+            </div>
         </header>
-        <section class="text">
+        <section id="intro" class="text">
             <h1>Post-Recession Geography of US Higher Education</h1>
             <p>Does the higher education system in the United States act like a typical market economy? As the costs continue to outpace incomes and student debt loads skyrocket, higher education is, de facto, no longer a public function. Institutional supply and student demand dictates the market’s behavior, with the federal government acting as lender to individual students, rather than state governments as public funders of institutions.</p>
             <p>The <span class="smallcaps">US</span> map below has been published in tandem with <a href="#TODO">an in-depth analysis</a> on the changing geography of the <span class="smallcaps">US</span> higher education system. This map, as well as its accompanying study, explore the higher ed system at the zip code level from 2008 - 2017. Map data is delineated by year, college category, and driving distances. Using undergraduate enrollment and pricing data from <span class="smallcaps">IPEDS</span> and commuting distances around schools, researchers can show how prices interact with institutional concentration in the thousands of local higher education markets around the <span class="smallcaps">US</span>.</p>
             <p>Click on an area to freeze the informational panel and explore the statistics and institutions for that zip. Happy mapping!</p>
         </section>
+        <a id="map-target"></a>
         <div id="control">
             <div>
                 <label class="control-label">Jump to Zip</label>
@@ -134,7 +144,7 @@
             <p>Local higher education markets are, in general, highly concentrated, and they have gotten more so over the last decade. For reference, an <span class="smallcaps">SCI</span> of 2500 implies there are four local institutions (assuming equal market share for each). 5000 implies two institutions with equal market share (i.e., half), and 10,000 means one institution.</p>
             <p>Over the last decade, the <span class="smallcaps">US</span> higher education system has become more concentrated. That has several causes: the decline of the for-profit sector after the Great Recession, alongside the expansion of traditional non-profit institutions to adopt a business model similar to that of the for-profits: many more, and higher-priced, debt-financed professional degrees, and accommodating existing programs to increase enrollment among nontraditional student populations. All of that has happened in the light of reduced state support for higher education and the expansion of the federal student loan system.</p>
         </section>
-        <section class="text">
+        <section id="methodology" class="text">
             <h1>Methodology</h1>
             <p>The academic years represented here are from 2008 - 2009 to 2017 - 2018. For more information on the implications of the map and our preliminary findings, <a href="#TODO">read our report here</a>. Below, find explanations of all variables. <a href="mailto:jfi@jainfamilyinstitute.org">Email us with questions about methods and findings here</a>.</p>
             <p>Variables derived for each <span class="smallcaps">ZCTA</span>:</p>
@@ -155,7 +165,7 @@
                     <div>Every <span class="smallcaps">ZCTA</span> has a unique <em>25 Mile Zone Population Estimate</em> where $n$ number of <span class="smallcaps">ZCTA</span>s in each <span class="smallcaps">ZCTA</span>-zone equals the <span class="smallcaps">ZCTA</span>s accessible to the root <span class="smallcaps">ZCTA</span> within 25 miles. Each $\text{pop}_n$ is the 5-year population estimate for that specific <span class="smallcaps">ZCTA</span>. Both $\text{pop}_n$ and $\text{Pop}_{\text{ZCTA-ZONE}}$ take a whole number.</div>
                 </li>
                 <li>
-                    <b>Average Net Price</b> - <em>Average Net Price</em> is the average total cost of attending minus the average amount of federal, state or local government, or institutional grant and scholarship aid. Total cost of attendance is the sum of tuition, required fees, books and supplies, and the weighted average of room and board and other expenses. The value displayed for each <span class="smallcaps">ZCTA</span> is the mean of the average net price of each school considered within a 30, 45, or 60 minute drive from at least a subsection of the <span class="smallcaps">ZCTA</span>, weighted by the enrollment number of each school. The average net price per school is the average of the following variables sourced from <span class="smallcaps">IPEDS</span>: NPIS412, NPIS422, NPIS432, NPIS442, NPIS452, NPT412, NPT422, NPT432, NPT442, NPT452. These variables from <span class="smallcaps">IPEDS</span> show the average price of attendance for full-time, first-time degree/certificate-seeking undergraduates paying the in-state or in-district tuition rate who were awarded title <span class="smallcaps">IV</span> federal student aid by varying degrees of student income level. All average net price values have been adjusted for inflation using the consumer price index (<span class="smallcaps">CPI</span>) deflator  and are in 2017 <span class="smallcaps">US</span> dollars.
+                    <b>Average Net Price</b> - <em>Average Net Price</em> is the average total cost of attending minus the average amount of federal, state or local government, or institutional grant and scholarship aid. Total cost of attendance is the sum of tuition, required fees, books and supplies, and the weighted average of room and board and other expenses. The value displayed for each <span class="smallcaps">ZCTA</span> is the mean of the average net price of each school considered within a 30, 45, or 60 minute drive from at least a subsection of the <span class="smallcaps">ZCTA</span>, weighted by the enrollment number of each school. The average net price per school is the average of the following variables sourced from <span class="smallcaps">IPEDS</span>: <span class="smallcaps">NPIS412</span>, <span class="smallcaps">NPIS422</span>, <span class="smallcaps">NPIS432</span>, <span class="smallcaps">NPIS442</span>, <span class="smallcaps">NPIS452</span>, <span class="smallcaps">NPT412</span>, <span class="smallcaps">NPT422</span>, <span class="smallcaps">NPT432</span>, <span class="smallcaps">NPT442</span>, <span class="smallcaps">NPT452</span>. These variables from <span class="smallcaps">IPEDS</span> show the average price of attendance for full-time, first-time degree/certificate-seeking undergraduates paying the in-state or in-district tuition rate who were awarded title <span class="smallcaps">IV</span> federal student aid by varying degrees of student income level. All average net price values have been adjusted for inflation using the consumer price index (<span class="smallcaps">CPI</span>) deflator  and are in 2017 <span class="smallcaps">US</span> dollars.
                 </li>
             </ul>
             <p>Clear-cut variables per <span class="smallcaps">ZCTA</span>:</p>
@@ -209,7 +219,7 @@
             <h1>About Our Sources</h1>
             <p>This analysis uses school-reported Integrated Postsecondary Education Data System (<span class="smallcaps">IPEDS</span>) data from the final releases for the academic years of 2008-09 to 2017-18, and from the provisional release for the academic year 2018-19. For median income and population estimates, researchers used data from the American Community Survey. School isochrone creation for all driving distances was made using OpenStreetMap. Mapping abilities are possible because of MapBox and the <span class="smallcaps">US</span> Census Bureau’s 2018 <span class="smallcaps">TIGER</span>/Line Shapefiles.</p>
         </section>
-        <section class="text">
+        <section id="download" class="text">
             <h1>Download the Data</h1>
             <ul>
                 <li><a href="#TODO">Master School List (2008-2017)</a></li>
