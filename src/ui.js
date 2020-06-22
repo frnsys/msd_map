@@ -233,7 +233,7 @@ function setupUI(map, legend, info, state) {
 const summaryEl = document.getElementById('summary-table');
 const summaryTitle = document.querySelector('#summary h1 span');
 const rowHeads = [
-  '', '0<SCI=2500', '2500<SCI=5000', '5000<SCI<10000', 'SCI=10000', 'Education Desert'
+  '', '0&lt;SCI=2500<span>Healthy Competition for Students</span>', '2500&lt;SCI=5000<span>Moderate Competition for Students</span>', '5000&lt;SCI&lt;10000<span>Low Competition for Students</span>', 'SCI=10000<span>Local Monopoly over Students</span>', 'Education Desert<span>No Higher Ed Institutions Nearby</span>'
 ];
 function loadRows(state, rows) {
   let {summary} = state;
@@ -243,7 +243,7 @@ function loadRows(state, rows) {
   rowHeads.forEach((name, i) => {
     if (i == 0) name = summary.tab === 'state' ? 'State' : 'School Type';
     let td = document.createElement('th');
-    td.innerText = name;
+    td.innerHTML = name;
     tr.appendChild(td);
     td.addEventListener('click', (ev) => {
       ev.preventDefault();

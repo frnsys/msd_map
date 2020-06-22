@@ -169,6 +169,10 @@ th {
   cursor: pointer;
   border-top: none;
 }
+th span {
+  font-size: 0.8em;
+  display: block;
+}
 th:hover {
   background: #E2E0E6;
 }
