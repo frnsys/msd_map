@@ -22,24 +22,24 @@ const formatter = new Intl.NumberFormat('en-US', {
 
 function explain(feats, cat, focusedSchools) {
   let key = util.keyForCat({'Y': cat['Y'], 'I': cat['I']});
-  db.schoolsForYear(cat['Y']).then((schools) => {
-    const zipDatas = {};
-    let promises = feats.map((feat) => {
-      let p = feat.properties;
-      let [zipcode, ...otherZips] = p['zipcode'].split(',');
-      return db.dataForKeyZip(key, zipcode).then((data) => {
-        zipDatas[zipcode] = data;
-      });
+  const zipDatas = {};
+  let promises = feats.map((feat) => {
+    let p = feat.properties;
+    let [zipcode, ...otherZips] = p['zipcode'].split(',');
+    return db.dataForKeyZip(key, zipcode).then((data) => {
+      zipDatas[zipcode] = data;
     });
-    Promise.all(promises).then(() => {
+  });
+  Promise.all(promises).then(() => {
+    let querySchools = Object.values(zipDatas).flatMap((v) => v['schools']);
+    db.schools(querySchools).then((schools) => {
       let html = feats.map((feat) => {
         let p = feat.properties;
         let [zipcode, ...otherZips] = p['zipcode'].split(',');
-        let key = util.keyForCat({'Y': cat['Y'], 'I': cat['I']});
         let yearKey = util.keyForCat({'Y': cat['Y']});
         let zipData = zipDatas[zipcode] || {};
         let schoolIds = zipData['schools'] || [];
-        let schoolsForZCTA = schoolIds.map((id) => schools[id]);
+        let schoolsForZCTA = schoolIds.map((id) => schools[id][cat['Y']]);
         let groupedSchools = {};
 
         let d = ['SCI', 'AVGNP', 'ENROLLED', 'n'].reduce((acc, k) => {

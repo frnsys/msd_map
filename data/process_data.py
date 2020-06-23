@@ -23,7 +23,6 @@ SCHOOL_FIELDS = [
     'CONTROL',
     'UNDUPUG',
     'ENROLLED',
-    'ZIP',
 
     'CINSON',
     'CINSOFF',
@@ -140,6 +139,7 @@ RANGE_MAXS = {
 # Keep only non-varying properties
 # for school geojson
 SCHOOL_GEOJSON_PROPS = [
+    'id',
     'MAPNAME',
     'INSTNM', 'ZIP',
 
@@ -292,17 +292,19 @@ for y in CATEGORIES['Y']:
     for row in tqdm(df.itertuples(), total=len(df), desc='{} School List'.format(y)):
         row_data = dict(row._asdict())
         id = unitid_to_featid[row_data['UNITID']]
-        schools_by_year[y][id] = {k: row_data[k] for k in SCHOOL_FIELDS}
 
         # Get zipcode into proper format
-        zipcode = schools_by_year[y][id]['ZIP']
+        zipcode = row_data['ZIP']
         zipcode = zipcode.split('-')[0] # drop the -XXXX part of zip
         if len(zipcode) < 5:
             zipcode = str(int(zipcode)).zfill(5)
-        schools_by_year[y][id]['ZIP'] = zipcode
+
+        schools_by_year[id][y] = {k: row_data[k] for k in SCHOOL_FIELDS}
+        schools_by_year[id][y]['ZIP'] = zipcode
+        schools_by_year[id][y]['id'] = id
 
         if id not in school_feats:
-            props = {k: schools_by_year[y][id][k] for k in SCHOOL_GEOJSON_PROPS}
+            props = {k: schools_by_year[id][y][k] for k in SCHOOL_GEOJSON_PROPS}
             props['years'] = []
             school_feats[id] = {
                 'id': id,
@@ -439,9 +441,10 @@ with open('gen/schools.geojson', 'w') as f:
 
 if not os.path.exists('gen/schools'):
     os.makedirs('gen/schools')
-for year, schools in schools_by_year.items():
-    with open('gen/schools/{}.json'.format(year), 'w') as f:
-        json.dump(schools, f)
+for id, school in schools_by_year.items():
+    school['id'] = id
+    with open('gen/schools/{}.json'.format(id), 'w') as f:
+        json.dump(school, f)
 
 with open('gen/meta.json', 'w') as f:
     json.dump(meta, f)

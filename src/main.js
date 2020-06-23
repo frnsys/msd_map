@@ -152,12 +152,20 @@ const map = new Map({
     tooltip.style.left = `${ev.originalEvent.offsetX+10}px`;
     tooltip.style.top = `${ev.originalEvent.offsetY+10}px`;
     tooltip.style.display = 'block';
-    tooltip.innerHTML = features['schools'].map((s) => {
-      return `<div class="school-info">
-        ${s.properties['MAPNAME']}
-        <div>Zip: ${s.properties['ZIP']}</div>
-      </div>`;
-    }).join('<br />');
+    let ids = features['schools'].map((s) => s['id']);
+    db.schools(ids).then((schools) => {
+      schools = Object.values(schools)
+        .filter((s) => state.cat['Y'] in s)
+        .map((s) => s[state.cat['Y']]);
+      tooltip.innerHTML = schools.map((s) => {
+        return `<div class="school-info">
+          ${s['MAPNAME']}
+          <div>Zip: ${s['ZIP']}</div>
+          <div>Enrolled: ${s['ENROLLED'] || 'N/A'}</div>
+          <div>Average Net Price: ${s['AVGNETPRICE'] || 'N/A'}</div>
+        </div>`;
+      }).join('<br />');
+    });
   } else {
     tooltip.style.display = 'none';
   }
