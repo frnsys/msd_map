@@ -286,10 +286,10 @@ function loadSummary(state) {
   let {summary, cat} = state;
   if (summary.tab === 'state') {
     url = `assets/summary/${summary.tab}-${cat.I}-${cat.Y}-${cat.S}.json`;
-    summaryTitle.innerText = `Year: ${cat.Y}, Driving Distance: ${cat.I}, School Type: ${cat.S}`;
+    summaryTitle.innerText = `Year: ${cat.Y}\nDriving Distance: ${cat.I}\nSchool Type: ${cat.S}`;
   } else {
     url = `assets/summary/${summary.tab}-${cat.I}-${cat.Y}.json`;
-    summaryTitle.innerText = `Year: ${cat.Y}, Driving Distance: ${cat.I}`;
+    summaryTitle.innerText = `Year: ${cat.Y}\nDriving Distance: ${cat.I}`;
   }
   return fetch(url, {
     headers: {
