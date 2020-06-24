@@ -231,16 +231,24 @@ function setupUI(map, legend, info, state) {
 }
 
 const summaryEl = document.getElementById('summary-table');
-const summaryTitle = document.querySelector('#summary h1 span');
+const summaryTitle = document.querySelector('#summary h2');
 const rowHeads = [
-  '', '0&lt;SCI=2500<span>Healthy Competition for Students</span>', '2500&lt;SCI=5000<span>Moderate Competition for Students</span>', '5000&lt;SCI&lt;10000<span>Low Competition for Students</span>', 'SCI=10000<span>Local Monopoly over Students</span>', 'Education Desert<span>No Higher Ed Institutions Nearby</span>'
+  '', '0&lt;SCI=2500<span>More than four options for students</span>', '2500&lt;SCI=5000<span>Between two and four options</span>', '5000&lt;SCI&lt;10000<span>Between one and two options</span>', 'SCI=10000<span>One option</span>', 'Education Desert<span>No Higher Ed Institutions Nearby</span>',
+    'Median School Concentration', 'Average School Concentration'
 ];
+const rowMask = {
+  'Average Net Price': [0,1,2,3,4],
+  'Count of Zips': [0,1,2,3,4,5],
+  'People Affected': [0,1,2,3,4,5],
+  'Concentration': [0,6,7],
+};
 function loadRows(state, rows) {
   let {summary} = state;
   summaryEl.innerHTML = '';
 
   let tr = document.createElement('tr');
-  rowHeads.forEach((name, i) => {
+  rowMask[summary.stat].forEach((i) => {
+    let name = rowHeads[i];
     if (i == 0) name = summary.tab === 'state' ? 'State' : 'School Type';
     let td = document.createElement('th');
     td.innerHTML = name;

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>JFI: Post-Recession Geography of US Higher Education</title>
+  <title>JFI: The Geography and Price of Higher Education Post-2008</title>
   <link rel="stylesheet" type="text/css" href="style.css">
 
   <link rel="apple-touch-icon" sizes="57x57" href="assets/favicon/apple-icon-57x57.png">
@@ -28,10 +28,10 @@
   <meta property="og:site_name" content="JFI Research">
   <meta property="og:type" content="website">
   <meta property="og:description" content="Mapping access and inequality in the US higher education system.">
-  <meta property="og:title" content="Geography of Higher Education | Jain Family Institute">
+  <meta property="og:title" content="The Geography and Price of Higher Education Post-2008 | Jain Family Institute">
   <meta property="og:image" content="https://hef.jfiresearch.org/geography-of-higher-education/assets/card.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Geography of Higher Education | Jain Family Institute">
+  <meta name="twitter:title" content="The Geography and Price of Higher Education Post-2008 | Jain Family Institute">
   <meta name="twitter:description" content="Mapping access and inequality in the US higher education system.">
   <meta name="twitter:image" content="https://hef.jfiresearch.org/geography-of-higher-education/assets/card.png">
   <meta name="twitter:image:alt" content="Map of school concentration in the United States">
@@ -50,6 +50,7 @@
                 <a href="#summary">Summary Statistics</a>
                 <a href="#methodology">Methodology</a>
                 <a href="#download">Download Data</a>
+                <a href="https://forms.gle/e5zztGTrBdHLRYex9">Contact Researchers</a>
             </nav>
             <div>
                 <a href="https://jainfamilyinstitute.org/"><img src="assets/jfi-logo.svg" class="jfi-logo" aria-label="Go to Jain Family Institute site"></a>
@@ -57,7 +58,7 @@
             </div>
         </header>
         <section id="intro" class="text">
-            <h1>Post-Recession Geography of US Higher Education</h1>
+            <h1>The Geography and Price of Higher Education Post-2008</h1>
             <p>Does the higher education system in the United States act like a typical market economy? As the costs continue to outpace incomes and student debt loads skyrocket, higher education is, de facto, no longer a public function. Institutional supply and student demand dictates the market’s behavior, with the federal government acting as lender to individual students, rather than state governments as public funders of institutions.</p>
             <p>The <span class="smallcaps">US</span> map below has been published in tandem with <a href="#TODO">an in-depth analysis</a> on the changing geography of the <span class="smallcaps">US</span> higher education system. This map, as well as its accompanying study, explore the higher ed system at the zip code level from 2008 - 2017. Map data is delineated by year, college category, and driving distances. Using undergraduate enrollment and pricing data from <span class="smallcaps">IPEDS</span> and commuting distances around schools, researchers can show how prices interact with institutional concentration in the thousands of local higher education markets around the <span class="smallcaps">US</span>.</p>
             <p>Click on an area to freeze the informational panel and explore the statistics and institutions for that zip. Happy mapping!</p>
@@ -126,7 +127,11 @@
             <div id="info"></div>
         </section>
         <section id="summary" class="text summary">
-            <h1>Summary Statistics for <span></span></h1>
+            <h1>Summary Statistics</h1>
+            <p>Local higher education markets are, in general, highly concentrated, and they have gotten more so over the last decade. For reference, an <span class="smallcaps">SCI</span> of 2500 implies there are four local institutions (assuming equal market share for each). 5000 implies two institutions with equal market share (i.e., half), and 10,000 means one institution.</p>
+            <p>Over the last decade, the <span class="smallcaps">US</span> higher education system has become more concentrated. That has several causes: the decline of the for-profit sector after the Great Recession, alongside the expansion of traditional non-profit institutions to adopt a business model similar to that of the for-profits: many more, and higher-priced, debt-financed professional degrees, and accommodating existing programs to increase enrollment among nontraditional student populations. All of that has happened in the light of reduced state support for higher education and the expansion of the federal student loan system.</p>
+
+            <h2></h2>
             <div class="summary-tabs-label">Level of Analysis</div>
             <div class="summary-tabs" id="summary-tabs--level">
                 <div data-value="national">National</div>
@@ -137,12 +142,11 @@
                 <div class="selected">Average Net Price</div>
                 <div>Count of Zips</div>
                 <div>People Affected</div>
+                <div>Concentration</div>
             </div>
             <div class="table-wrapper">
                 <table id="summary-table"></table>
             </div>
-            <p>Local higher education markets are, in general, highly concentrated, and they have gotten more so over the last decade. For reference, an <span class="smallcaps">SCI</span> of 2500 implies there are four local institutions (assuming equal market share for each). 5000 implies two institutions with equal market share (i.e., half), and 10,000 means one institution.</p>
-            <p>Over the last decade, the <span class="smallcaps">US</span> higher education system has become more concentrated. That has several causes: the decline of the for-profit sector after the Great Recession, alongside the expansion of traditional non-profit institutions to adopt a business model similar to that of the for-profits: many more, and higher-priced, debt-financed professional degrees, and accommodating existing programs to increase enrollment among nontraditional student populations. All of that has happened in the light of reduced state support for higher education and the expansion of the federal student loan system.</p>
         </section>
         <section id="methodology" class="text">
             <h1>Methodology</h1>
@@ -162,7 +166,7 @@
                 <li>
                     <b>25 Mile Zone Population Estimate</b> - In place of population estimates for individual <span class="smallcaps">ZCTA</span>, we list the summation of all the population estimates for the <span class="smallcaps">ZCTA</span>s within 25 miles of the selected area; the purpose being to complement the zone-type scale used for the <span class="smallcaps">SCI</span>. The 25 mile population zone originates from the mathematical centroid of each <span class="smallcaps">ZCTA</span>.
                     <p>$$ \text{Pop}_{\text{ZCTA-ZONE}} = \text{pop}_1 + \text{pop}_2 + \dots + \text{pop}_n $$</p>
-                    <div>Every <span class="smallcaps">ZCTA</span> has a unique <em>25 Mile Zone Population Estimate</em> where $n$ number of <span class="smallcaps">ZCTA</span>s in each <span class="smallcaps">ZCTA</span>-zone equals the <span class="smallcaps">ZCTA</span>s accessible to the root <span class="smallcaps">ZCTA</span> within 25 miles. Each $\text{pop}_n$ is the 5-year population estimate for that specific <span class="smallcaps">ZCTA</span>. Both $\text{pop}_n$ and $\text{Pop}_{\text{ZCTA-ZONE}}$ take a whole number.</div>
+                    <div>Every <span class="smallcaps">ZCTA</span> has a unique <em>25 Mile Zone Population Estimate</em> where $n$ number of <span class="smallcaps">ZCTA</span>s in each <span class="smallcaps">ZCTA</span>-zone equals the <span class="smallcaps">ZCTA</span>s accessible to the root <span class="smallcaps">ZCTA</span> within 25 miles. Each $\text{pop}_n$ is the population estimate for that specific <span class="smallcaps">ZCTA</span>. Both $\text{pop}_n$ and $\text{Pop}_{\text{ZCTA-ZONE}}$ take a whole number.</div>
                 </li>
                 <li>
                     <b>Average Net Price</b> - <em>Average Net Price</em> is the average total cost of attending minus the average amount of federal, state or local government, or institutional grant and scholarship aid. Total cost of attendance is the sum of tuition, required fees, books and supplies, and the weighted average of room and board and other expenses. The value displayed for each <span class="smallcaps">ZCTA</span> is the mean of the average net price of each school considered within a 30, 45, or 60 minute drive from at least a subsection of the <span class="smallcaps">ZCTA</span>, weighted by the enrollment number of each school. The average net price per school is the average of the following variables sourced from <span class="smallcaps">IPEDS</span>: <span class="smallcaps">NPIS412</span>, <span class="smallcaps">NPIS422</span>, <span class="smallcaps">NPIS432</span>, <span class="smallcaps">NPIS442</span>, <span class="smallcaps">NPIS452</span>, <span class="smallcaps">NPT412</span>, <span class="smallcaps">NPT422</span>, <span class="smallcaps">NPT432</span>, <span class="smallcaps">NPT442</span>, <span class="smallcaps">NPT452</span>. These variables from <span class="smallcaps">IPEDS</span> show the average price of attendance for full-time, first-time degree/certificate-seeking undergraduates paying the in-state or in-district tuition rate who were awarded title <span class="smallcaps">IV</span> federal student aid by varying degrees of student income level. All average net price values have been adjusted for inflation using the consumer price index (<span class="smallcaps">CPI</span>) deflator  and are in 2017 <span class="smallcaps">US</span> dollars.
@@ -198,8 +202,8 @@
             </ul>
             <p>Exclusion Criteria:</p>
             <ul>
-                <li>We excluded schools that offered exclusively advanced degrees, exclusively distance learning degrees, and schools where <em>level</em> and <em>control</em> of institution were unknown. Also excluded were administrative offices of institutions when the institution itself was counted separately, as located. If a school offered a bachelors or higher degree but no degree below bachelors and the undergraduate enrollment was below 100, the school was excluded. For public schools, driving distances were restricted to the state where the school resides.</li>
-                <li>In regards to branch campuses: <span class="smallcaps">IPEDS</span> does not require institutions to report data separately for branch campuses. Therefore <span class="smallcaps">JFI</span> researchers parsed through websites of over 400 colleges with high likelihoods of having branch campuses. If you suspect an error on our map or missing data, please do not hesitate to <a href="mailto:jfi@jainfamilyinstitute.org">contact us</a>. More on how <span class="smallcaps">IPEDS</span> data is reported: According to the <a href="https://nces.ed.gov/statprog/handbook/pdf/ipeds.pdf">IPEDS handbook</a>,
+                <li>We excluded schools that offered exclusively advanced degrees, exclusively distance learning degrees, and schools where <em>level</em> and <em>control</em> of institution were unknown. Also excluded were administrative offices of institutions when the institution itself was counted separately, as located. If a school offered a bachelors or higher degree but no degree below bachelors, the graduate to undergraduate student ratio was over 10, and the undergraduate enrollment was below 100, the school was excluded. For public schools, driving distances were restricted to the state where the school resides.</li>
+                <li>In regards to branch campuses: <span class="smallcaps">IPEDS</span> does not require institutions to report data separately for branch campuses. Therefore <span class="smallcaps">JFI</span> researchers parsed through websites of over 400 colleges with high likelihoods of having branch campuses. If you suspect an error on our map or missing data, please do not hesitate to <a href="https://forms.gle/e5zztGTrBdHLRYex9">contact us</a>. More on how <span class="smallcaps">IPEDS</span> data is reported: According to the <a href="https://nces.ed.gov/statprog/handbook/pdf/ipeds.pdf">IPEDS handbook</a>,
                     <blockquote><em>All institutions in the <span class="smallcaps">U.S.</span> and other <span class="smallcaps">U.S.</span> jurisdictions that have a Program Participation Agreement (<span class="smallcaps">PPA</span>) with the <span class="smallcaps">U.S.</span> Department of Education to participate in Title <span class="smallcaps">IV</span> federal student financial aid programs are required to report data to <span class="smallcaps">IPEDS</span>, and are listed as separate entities in <span class="smallcaps">IPEDS</span>. These entities are considered the "main campus."</em></blockquote>
                     Additionally,
                     <ul>
@@ -213,7 +217,7 @@
         </section>
         <section class="text">
             <h1>About Our Researchers</h1>
-            <p>This project was produced by the Higher Education Finance Team at <a href="http://www.jainfamilyinstitute.org">Jain Family Institute</a>. Principal researchers were <a href="https://www.jainfamilyinstitute.org/about-us/people/laura-beamer/">Laura Beamer</a> and <a href="https://www.jainfamilyinstitute.org/about-us/people/francis-tseng/">Francis Tseng</a>, with additional research from <a href="https://www.jainfamilyinstitute.org/about-us/people/eduard-eddie-nilaj/">Eduard Nilaj</a>, <a href="https://www.jainfamilyinstitute.org/about-us/people/jack-gross/">Jack Gross</a>, <a href="https://www.jainfamilyinstitute.org/about-us/people/maya-adereth/">Maya Adereth</a>, and <a href="https://www.jainfamilyinstitute.org/about-us/people/marshall-steinbaum/">Marshall Steinbaum</a>, and Ben Weintraut.</p>
+            <p>This project was produced by the Higher Education Finance Team at <a href="http://www.jainfamilyinstitute.org">Jain Family Institute</a>. Principal researchers were <a href="https://www.jainfamilyinstitute.org/about-us/people/laura-beamer/">Laura Beamer</a> and <a href="https://www.jainfamilyinstitute.org/about-us/people/francis-tseng/">Francis Tseng</a>, with additional research from <a href="https://www.jainfamilyinstitute.org/about-us/people/eduard-eddie-nilaj/">Eduard Nilaj</a>, <a href="https://www.jainfamilyinstitute.org/about-us/people/jack-gross/">Jack Gross</a>, <a href="https://www.jainfamilyinstitute.org/about-us/people/maya-adereth/">Maya Adereth</a>, <a href="https://www.jainfamilyinstitute.org/about-us/people/marshall-steinbaum/">Marshall Steinbaum</a>, and Ben Weintraut.</p>
         </section>
         <section class="text">
             <h1>About Our Sources</h1>
@@ -222,16 +226,19 @@
         <section id="download" class="text">
             <h1>Download the Data</h1>
             <ul>
-                <li><a href="#TODO">Master School List (2008-2017)</a></li>
-                <li><a href="#TODO">Zip-Code Level (30 minute driving distance)</a></li>
-                <li><a href="#TODO">Zip-Code Level (45 minute driving distance)</a></li>
-                <li><a href="#TODO">Zip-Code Level (60 minute driving distance)</a></li>
+                <li><a href="https://drive.google.com/file/d/1dwBSgofExcyT2ym_mggFQPoq6d27hgIR/view?usp=sharing">Data Dictionary</a></li>
+                <li><a href="https://drive.google.com/file/d/121rF5Nb7w8K0qTp5jmkSqqKhjyA66-of/view?usp=sharing">Master School List (2008-2017)</a></li>
+                <li><a href="https://drive.google.com/file/d/10yBHjG2KaY7MFEqsrVFdr8N6QnJYAyXc/view?usp=sharing">Zip-Code Level (30 minute driving distance)</a></li>
+                <li><a href="https://drive.google.com/file/d/1K9p61ZGZitBooQSe5fzlC0x6E3feKE8h/view?usp=sharing">Zip-Code Level (45 minute driving distance)</a></li>
+                <li><a href="https://drive.google.com/file/d/1x4oC23meyw3LPGfHP1uuQRV1eELPsZOR/view?usp=sharing">Zip-Code Level (60 minute driving distance)</a></li>
             </ul>
         </section>
         <section class="text endnotes">
             <h1>Citations</h1>
             <ul>
                 <li>© OpenStreetMap contributors. 2019. ODbL 1.0 - <a href="http://www.openstreetmap.org/copyright">http://www.openstreetmap.org/copyright</a>. © OpenStreetMap contributors 2020. Accessed February 1, 2020.</li>
+                <li>Geocodio. 2020. Accessed May 1, 2020. www.geocod.io.</li>
+                <li>Organization for Economic Co-operation and Development, Consumer Price Index: Total All Items for the United States [CPALTT01USA661S], retrieved from <span class="smallcaps">FRED<span>, Federal Reserve Bank of St. Louis. Accessed June 7, 2020.  <a href="https://fred.stlouisfed.org/series/CPALTT01USA661S">https://fred.stlouisfed.org/series/CPALTT01USA661S</a></li>
                 <li><span class="smallcaps">NYU</span> Spatial Data Repository. 2010. “5-Digit <span class="smallcaps">ZIP</span> Code Tabulation Areas (<span class="smallcaps">ZCTA5</span>) United States 2010.” Accessed October 1, 2019. <a href="https://geo.nyu.edu/catalog/harvard-tg10uszcta5">https://geo.nyu.edu/catalog/harvard-tg10uszcta5</a>.</li>
                 <li><span class="smallcaps">U.S.</span> Census Bureau. 2006 – 2008.  American Community Survey 3-year estimates, Median Household Income in the past 12 Months (in 2008 Inflation-Adjusted Dollars); Total population. Accessed April 10, 2020. <a href="https://api.census.gov/data/2008/acs/acs3">https://api.census.gov/data/2008/acs/acs3</a></li>
                 <li><span class="smallcaps">U.S.</span> Census Bureau. 2005 – 2009.  American Community Survey 5-year estimates, Median Household Income in the past 12 Months (in 2009 Inflation-Adjusted Dollars); Total population. Accessed April 5, 2020. <a href="https://www.census.gov/data/developers/data-sets/acs-5year.html">https://www.census.gov/data/developers/data-sets/acs-5year.html</a></li>

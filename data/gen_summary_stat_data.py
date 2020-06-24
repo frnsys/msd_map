@@ -3,9 +3,20 @@ import pandas as pd
 from glob import glob
 
 isos = ['30min', '45min', '60min']
+rename_cols = {
+    'group1': '0<SCI=2500',
+    'group2': '2500<SCI=5000',
+    'group3': '5000<SCI<10000',
+    'group4': 'SCI=10000',
+    'Ed_Desert': 'Education Desert',
+}
+common = [
+    '0<SCI=2500', '2500<SCI=5000', '5000<SCI<10000', 'SCI=10000', 'Education Desert',
+    'Median School Concentration', 'Average School Concentration'
+]
 levels = {
-        'state': ['STATE', '0<SCI=2500', '2500<SCI=5000', '5000<SCI<10000', 'SCI=10000', 'Education Desert'],
-        'national': ['School_Type', '0<SCI=2500', '2500<SCI=5000', '5000<SCI<10000', 'SCI=10000', 'Education Desert']
+    'state': ['STATE'] + common,
+    'national': ['School_Type'] + common
 }
 cats_map = {
     'bachelors': 'bachelor',
@@ -28,6 +39,7 @@ for l, fields in levels.items():
             df = pd.read_csv(f)
             # Replace NaNs with None for proper JSON
             df = df.where(pd.notnull(df), None)
+            df.rename(columns=rename_cols, inplace=True)
             for y, sub_df in df.groupby('YEAR'):
                 years.add(y)
                 data[l][i][y] = data[l][i].get(y, {})
@@ -38,16 +50,18 @@ for l, fields in levels.items():
                         cats.add(c)
                         data[l][i][y][c] = {}
                         for stat, group in subsub_df.groupby('Statistic'):
+                            group = group.dropna(axis=1, how='all')
                             data[l][i][y][c][stat] = []
                             for _, row in group.iterrows():
-                                data[l][i][y][c][stat].append([row[k] for k in fields])
+                                data[l][i][y][c][stat].append([row[k] for k in fields if k in group.columns])
 
                 elif l == 'national':
                     data[l][i][y] = data[l][i].get(y, {})
                     for stat, group in sub_df.groupby('Statistic'):
+                        group = group.dropna(axis=1, how='all')
                         data[l][i][y][stat] = data[l][i][y].get(stat, [])
                         for _, row in group.iterrows():
-                            data[l][i][y][stat].append([row[k] for k in fields])
+                            data[l][i][y][stat].append([row[k] for k in fields if k in group.columns])
 
 for l in levels.keys():
     for i in isos:
