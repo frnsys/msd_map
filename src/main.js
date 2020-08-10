@@ -4,7 +4,6 @@ import Painter from './lib/paint';
 import info from './info';
 import util from './util';
 import setupUI from './ui';
-// import mapboxgl from 'mapbox-gl';
 import config from './config';
 import styles from './styles';
 import db from './db';
@@ -176,6 +175,24 @@ const map = new Map({
 map.map.on('dragstart', () => {
   tooltip.style.display = 'none';
 });
+
+function setSchoolCategory(state) {
+  let year = state.cat['Y'];
+  if (state.cat['S'] == 'allschools') {
+    map.map.setPaintProperty('schools', 'circle-opacity', styles.allSchools(year)['circle-opacity']);
+    map.map.setPaintProperty('schools', 'circle-stroke-opacity', styles.allSchools(year)['circle-stroke-opacity']);
+  } else {
+    let cond = config.CAT_PROP_EXPRS['S'][state.cat['S']];
+    let style = styles.filteredSchools(year, cond);
+    map.map.setPaintProperty('schools', 'circle-opacity', style['circle-opacity']);
+    map.map.setPaintProperty('schools', 'circle-stroke-opacity', style['circle-stroke-opacity']);
+  }
+}
+map.setSchoolCategory = setSchoolCategory;
+map.map.on('load', () => {
+  map.setSchoolCategory(state);
+});
+
 const legend = new Legend(map, {id: 'zctas', layer: 'zctas'}, state.props, {
   'Education Desert': config.COLORS['null'],
   'No Zip': '#520004'

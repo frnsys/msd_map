@@ -138,16 +138,7 @@ function setupUI(map, legend, info, state) {
     loadSummary(state);
 
     // Hide schools not matching the category
-    let year = state.cat['Y'];
-    if (state.cat['S'] == 'allschools') {
-      map.map.setPaintProperty('schools', 'circle-opacity', styles.allSchools(year)['circle-opacity']);
-      map.map.setPaintProperty('schools', 'circle-stroke-opacity', styles.allSchools(year)['circle-stroke-opacity']);
-    } else {
-      let cond = config.CAT_PROP_EXPRS['S'][state.cat['S']];
-      let style = styles.filteredSchools(year, cond);
-      map.map.setPaintProperty('schools', 'circle-opacity', style['circle-opacity']);
-      map.map.setPaintProperty('schools', 'circle-stroke-opacity', style['circle-stroke-opacity']);
-    }
+    map.setSchoolCategory(state);
 
     if (map.focused['zctas']) {
       info.explain(map.focused['zctas'], state.cat, []);
