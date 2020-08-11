@@ -273,25 +273,28 @@ data_by_key_zip = defaultdict(lambda: defaultdict(lambda: {'schools': []}))
 
 # School-level
 school_feats = {}
-all_years = pd.read_csv('src/master_05.01.2020.csv',
+all_years = pd.read_csv('gen/master_05.01.2020.reverse_geocoded.csv',
         encoding='ISO-8859-1',
         dtype={'YEAR': str, 'ZIP': str})
 
 # Mapbox does not allow string feature ids,
 # so we have to convert these to uints
 # <https://github.com/mapbox/mapbox-gl-js/issues/2716>
-unitid_to_featid = {}
-for i, unitid in enumerate(all_years['UNITID'].unique()):
-    unitid_to_featid[unitid] = i
+schoolidx_to_featid = {}
+for i, key in enumerate(all_years.groupby(['UNITID', 'ADDR', 'MAPNAME']).groups.keys()):
+    key = '__'.join(str(k) for k in key)
+    schoolidx_to_featid[key] = i
 
 all_years = all_years.groupby('YEAR')
+reverse_geocode_lookup = json.load(open('gen/reverse_geocode_lookup.json'))
 for y in CATEGORIES['Y']:
     # TODO these are overwriting each year atm
     df = all_years.get_group(y)
     df = df.where((pd.notnull(df)), None)
     for row in tqdm(df.itertuples(), total=len(df), desc='{} School List'.format(y)):
         row_data = dict(row._asdict())
-        id = unitid_to_featid[row_data['UNITID']]
+        key = '__'.join(str(v) if v is not None else 'nan' for v in [row_data[k] for k in ['UNITID', 'ADDR', 'MAPNAME']])
+        id = schoolidx_to_featid[key]
 
         # Get zipcode into proper format
         zipcode = row_data['ZIP']
@@ -331,7 +334,11 @@ for y in CATEGORIES['Y']:
             row_data = dict(row._asdict())
             if row_data['ZCTA5CE10'] is None: continue
             zipcode = str(int(row_data['ZCTA5CE10'])).zfill(5)
-            id = unitid_to_featid[row_data['UNITID']]
+            if not isinstance(row_data['ADDR'], str):
+                lat, lng = row_data['LATITUDE'], row_data['LONGITUD']
+                row_data['ADDR'] = reverse_geocode_lookup['{},{}'.format(lat, lng)]
+            key = '__'.join(str(v) if v is not None else 'nan' for v in [row_data[k] for k in ['UNITID', 'ADDR', 'MAPNAME']])
+            id = schoolidx_to_featid[key]
             data_by_key_zip[key][zipcode]['schools'].append(id)
 
         # Zip level data
