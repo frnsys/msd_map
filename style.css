@@ -553,6 +553,7 @@ input {
 }
 select {
   padding: 0.16em 0.16em 0 0.16em;
+  width: 100%;
 }
 button {
   padding: 0.25em 1em 0 1em;

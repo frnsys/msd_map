@@ -70,7 +70,7 @@
                 <input name="zipcode" type="text" placeholder="Zip">
             </div>
             <div>
-                <label class="control-label">Year</label>
+                <label class="control-label">Academic Year</label>
                 <select name="year"></select>
             </div>
             <div>
@@ -84,11 +84,11 @@
             </div>
             <div>
                 <label class="control-label">Display</label>
-                <div>
-                    <button id="showSCI" class="selected">SCI</button>
-                    <button id="showAVGNP">Average Net Price</button>
-                    <button id="showBoth">SCI &amp; Average Net Price</button>
-                </div>
+                <select name="display">
+                    <option value="SCI">SCI</option>
+                    <option value="AVGNP">Average Net Price</option>
+                    <option value="SCI,AVGNP">SCI &amp; Average Net Price</option>
+                </select>
             </div>
 
             <div id="control-isochrone">

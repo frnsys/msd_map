@@ -166,34 +166,12 @@ function setupUI(map, legend, info, state) {
     // TODO toggle zip/zone level when new data is ready
   });
 
-
   // Toggle properties
-  let showAVGNP = document.getElementById('showAVGNP');
-  let showSCI = document.getElementById('showSCI');
-  let showBoth = document.getElementById('showBoth');
-  function setSelected(el) {
-    showAVGNP.classList.remove('selected');
-    showSCI.classList.remove('selected');
-    showBoth.classList.remove('selected');
-    el.classList.add('selected');
-  }
-  showAVGNP.addEventListener('click', () => {
-    state.props = [config.PROPS[util.propForCat('AVGNP', state.cat)]];
+  const displayInput = document.querySelector('#control select[name=display]');
+  displayInput.addEventListener('change', (ev) => {
+    state.props = ev.target.value.split(',').map((p) => config.PROPS[util.propForCat(p, state.cat)]);
     map.set('zctas', state.props);
     legend.set(state.props);
-    setSelected(showAVGNP);
-  });
-  showSCI.addEventListener('click', () => {
-    state.props = [config.PROPS[util.propForCat('SCI', state.cat)]];
-    map.set('zctas', state.props);
-    legend.set(state.props);
-    setSelected(showSCI);
-  });
-  showBoth.addEventListener('click', () => {
-    state.props = ['SCI', 'AVGNP'].map((p) => config.PROPS[util.propForCat(p, state.cat)]);
-    map.set('zctas', state.props);
-    legend.set(state.props);
-    setSelected(showBoth);
   });
 
   // Toggle isochrone layer
