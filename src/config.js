@@ -40,6 +40,10 @@ const PROPS = {
       1.0: '#263cff'
       // 0.0: '#ffffff',
       // 1.0: '#ffffff'
+    },
+    legend: {
+      maxClamped: true,
+      minClamped: true
     }
   },
   'MEDIANINCOME': {
@@ -48,6 +52,10 @@ const PROPS = {
     color: {
       0.0: '#9b150c',
       1.0: '#7dd177'
+    },
+    legend: {
+      maxClamped: true,
+      minClamped: true
     }
   },
   'STU_ND_BAL': {
@@ -56,6 +64,10 @@ const PROPS = {
     color: {
       0.0: '#9b150c',
       1.0: '#7dd177'
+    },
+    legend: {
+      maxClamped: true,
+      minClamped: true
     }
   },
   'STU_DF_BAL': {
@@ -64,6 +76,10 @@ const PROPS = {
     color: {
       0.0: '#9b150c',
       1.0: '#7dd177'
+    },
+    legend: {
+      maxClamped: true,
+      minClamped: true
     }
   },
 

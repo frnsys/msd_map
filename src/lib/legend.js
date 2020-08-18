@@ -162,7 +162,11 @@ class Legend {
     let labels_a = document.createElement('div');
     labels_a.classList.add('legend--labels');
 
-    let labelTexts_a = [Math.floor(ranges.a[0]), Math.ceil(ranges.a[1])];
+    let legend_a = propA.legend || {};
+    let labelTexts_a = [
+      legend_a.minClamped ? `≤${Math.floor(ranges.a[0])}` : Math.floor(ranges.a[0]),
+      legend_a.maxClamped ? `≥${Math.ceil(ranges.a[1])}` : Math.ceil(ranges.a[1]),
+    ];
     if (flipA) labelTexts_a.reverse();
 
     let upperLabel = document.createElement('div');
@@ -230,7 +234,12 @@ class Legend {
     labels_b.classList.add('legend--labels');
     labels_b.classList.add('legend--labels_x');
 
-    let labelTexts_b = [Math.floor(ranges.b[0]), Math.ceil(ranges.b[1])];
+    let legend_b = propB.legend || {};
+    let labelTexts_b = [
+      legend_b.minClamped ? `≤${Math.floor(ranges.b[0])}` : Math.floor(ranges.b[0]),
+      legend_b.maxClamped ? `≥${Math.ceil(ranges.b[1])}` : Math.ceil(ranges.b[1]),
+    ];
+
     if (flipB) labelTexts_b.reverse();
 
     upperLabel = document.createElement('div');
@@ -306,7 +315,12 @@ class Legend {
     let labels = document.createElement('div');
     labels.classList.add('legend--labels');
 
-    let labelTexts = [Math.floor(range[0]), Math.ceil(range[1])];
+    let legendSpec = prop.legend || {};
+    let labelTexts = [
+      legendSpec.minClamped ? `≤${Math.floor(range[0])}` : Math.floor(range[0]),
+      legendSpec.maxClamped ? `≥${Math.ceil(range[1])}` : Math.ceil(range[1]),
+    ];
+
     if (flip) labelTexts.reverse();
 
     let lowerLabel = document.createElement('div');
