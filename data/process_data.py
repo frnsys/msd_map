@@ -271,8 +271,8 @@ all_years = pd.read_csv('src/Master_SchoolList.csv',
 # <https://github.com/mapbox/mapbox-gl-js/issues/2716>
 schoolidx_to_featid = {}
 for i, key in enumerate(all_years.groupby(['UNITID', 'ADDR', 'MAPNAME']).groups.keys()):
-    key = '__'.join(str(k) for k in key)
-    schoolidx_to_featid[key] = i
+    schoolkey = '__'.join(str(k) for k in key)
+    schoolidx_to_featid[schoolkey] = i
 
 all_years = all_years.groupby('YEAR')
 reverse_geocode_lookup = json.load(open('gen/reverse_geocode_lookup.json'))
@@ -282,8 +282,8 @@ for y in CATEGORIES['Y']:
     df = df.where((pd.notnull(df)), None)
     for row in tqdm(df.itertuples(), total=len(df), desc='{} School List'.format(y)):
         row_data = dict(row._asdict())
-        key = '__'.join(str(v) if v is not None else 'nan' for v in [row_data[k] for k in ['UNITID', 'ADDR', 'MAPNAME']])
-        id = schoolidx_to_featid[key]
+        schoolkey = '__'.join(str(v) if v is not None else 'nan' for v in [row_data[k] for k in ['UNITID', 'ADDR', 'MAPNAME']])
+        id = schoolidx_to_featid[schoolkey]
 
         # Get zipcode into proper format
         zipcode = row_data['ZIP']
@@ -327,8 +327,8 @@ for y in CATEGORIES['Y']:
                 lat, lng = row_data['LATITUDE'], row_data['LONGITUD']
                 row_data['ADDR'] = reverse_geocode_lookup['{},{}'.format(lat, lng)]
             # Use ftfy to fix encoding issues (double encoded utf8, I believe)
-            key = '__'.join(ftfy.fix_text(str(v)) if v is not None else 'nan' for v in [row_data[k] for k in ['UNITID', 'ADDR', 'MAPNAME']])
-            id = schoolidx_to_featid[key]
+            schoolkey = '__'.join(ftfy.fix_text(str(v)) if v is not None else 'nan' for v in [row_data[k] for k in ['UNITID', 'ADDR', 'MAPNAME']])
+            id = schoolidx_to_featid[schoolkey]
             data_by_key_zip[key][zipcode]['schools'].append(id)
 
         # Zip level data
