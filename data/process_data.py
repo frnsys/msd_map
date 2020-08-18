@@ -6,6 +6,7 @@ are replaced w/ "_"
 """
 
 import os
+import ftfy
 import json
 import fiona
 import numpy as np
@@ -18,24 +19,10 @@ from collections import defaultdict
 SCHOOL_FIELDS = [
     'MAPNAME',
     'INSTNM',
-    'SECTOR',
     'ICLEVEL',
     'CONTROL',
     'UNDUPUG',
     'ENROLLED',
-
-    'CINSON',
-    'CINSOFF',
-    'CINSFAM',
-
-    'PSET4FLG',
-
-    'NPIS412',
-    'NPIS422',
-    'NPIS432',
-    'NPIS442',
-    'NPIS452',
-
     'AVGNETPRICE',
 ]
 
@@ -235,10 +222,11 @@ meta['ranges'] = {}
 for k in FEAT_FIELDS.keys():
     vals = []
     # Get min/max across all categories
-    for vs in field_data[k].values():
+    for K, vs in field_data[k].items():
         vs = [v for v in vs if v is not None]
-        vals.append(float(min(vs)))
-        vals.append(float(max(vs)))
+        if vs:
+            vals.append(float(min(vs)))
+            vals.append(float(max(vs)))
 
     mn = RANGE_MINS.get(k, min(vals))
     mx = RANGE_MAXS.get(k, max(vals))
@@ -338,7 +326,8 @@ for y in CATEGORIES['Y']:
             if not isinstance(row_data['ADDR'], str):
                 lat, lng = row_data['LATITUDE'], row_data['LONGITUD']
                 row_data['ADDR'] = reverse_geocode_lookup['{},{}'.format(lat, lng)]
-            key = '__'.join(str(v) if v is not None else 'nan' for v in [row_data[k] for k in ['UNITID', 'ADDR', 'MAPNAME']])
+            # Use ftfy to fix encoding issues (double encoded utf8, I believe)
+            key = '__'.join(ftfy.fix_text(str(v)) if v is not None else 'nan' for v in [row_data[k] for k in ['UNITID', 'ADDR', 'MAPNAME']])
             id = schoolidx_to_featid[key]
             data_by_key_zip[key][zipcode]['schools'].append(id)
 
