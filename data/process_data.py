@@ -6,6 +6,7 @@ are replaced w/ "_"
 """
 
 import os
+import ftfy
 import json
 import fiona
 import numpy as np
@@ -18,24 +19,10 @@ from collections import defaultdict
 SCHOOL_FIELDS = [
     'MAPNAME',
     'INSTNM',
-    'SECTOR',
     'ICLEVEL',
     'CONTROL',
     'UNDUPUG',
     'ENROLLED',
-
-    'CINSON',
-    'CINSOFF',
-    'CINSFAM',
-
-    'PSET4FLG',
-
-    'NPIS412',
-    'NPIS422',
-    'NPIS432',
-    'NPIS442',
-    'NPIS452',
-
     'AVGNETPRICE',
 ]
 
@@ -71,7 +58,6 @@ CATEGORIES = {
         '60min'
     ],
     'Y': [
-        '2008',
         '2009',
         '2010',
         '2011',
@@ -81,6 +67,8 @@ CATEGORIES = {
         '2015',
         '2016',
         '2017',
+        '2018',
+        '2019',
     ]
 }
 CSV_ZIPCODE_FIELD = 'ZCTA'
@@ -234,10 +222,11 @@ meta['ranges'] = {}
 for k in FEAT_FIELDS.keys():
     vals = []
     # Get min/max across all categories
-    for vs in field_data[k].values():
+    for K, vs in field_data[k].items():
         vs = [v for v in vs if v is not None]
-        vals.append(float(min(vs)))
-        vals.append(float(max(vs)))
+        if vs:
+            vals.append(float(min(vs)))
+            vals.append(float(max(vs)))
 
     mn = RANGE_MINS.get(k, min(vals))
     mx = RANGE_MAXS.get(k, max(vals))
@@ -273,25 +262,28 @@ data_by_key_zip = defaultdict(lambda: defaultdict(lambda: {'schools': []}))
 
 # School-level
 school_feats = {}
-all_years = pd.read_csv('src/master_05.01.2020.csv',
+all_years = pd.read_csv('src/Master_SchoolList.csv',
         encoding='ISO-8859-1',
         dtype={'YEAR': str, 'ZIP': str})
 
 # Mapbox does not allow string feature ids,
 # so we have to convert these to uints
 # <https://github.com/mapbox/mapbox-gl-js/issues/2716>
-unitid_to_featid = {}
-for i, unitid in enumerate(all_years['UNITID'].unique()):
-    unitid_to_featid[unitid] = i
+schoolidx_to_featid = {}
+for i, key in enumerate(all_years.groupby(['UNITID', 'ADDR', 'MAPNAME']).groups.keys()):
+    key = '__'.join(str(k) for k in key)
+    schoolidx_to_featid[key] = i
 
 all_years = all_years.groupby('YEAR')
+reverse_geocode_lookup = json.load(open('gen/reverse_geocode_lookup.json'))
 for y in CATEGORIES['Y']:
     # TODO these are overwriting each year atm
     df = all_years.get_group(y)
     df = df.where((pd.notnull(df)), None)
     for row in tqdm(df.itertuples(), total=len(df), desc='{} School List'.format(y)):
         row_data = dict(row._asdict())
-        id = unitid_to_featid[row_data['UNITID']]
+        key = '__'.join(str(v) if v is not None else 'nan' for v in [row_data[k] for k in ['UNITID', 'ADDR', 'MAPNAME']])
+        id = schoolidx_to_featid[key]
 
         # Get zipcode into proper format
         zipcode = row_data['ZIP']
@@ -331,7 +323,13 @@ for y in CATEGORIES['Y']:
             row_data = dict(row._asdict())
             if row_data['ZCTA5CE10'] is None: continue
             zipcode = str(int(row_data['ZCTA5CE10'])).zfill(5)
-            id = unitid_to_featid[row_data['UNITID']]
+            if not isinstance(row_data['ADDR'], str):
+                lat, lng = row_data['LATITUDE'], row_data['LONGITUD']
+                row_data['ADDR'] = reverse_geocode_lookup['{},{}'.format(lat, lng)]
+
+            # Use ftfy to fix encoding issues (double encoded utf8, I believe)
+            key = '__'.join(ftfy.fix_text(str(v)) if v is not None else 'nan' for v in [row_data[k] for k in ['UNITID', 'ADDR', 'MAPNAME']])
+            id = schoolidx_to_featid[key]
             data_by_key_zip[key][zipcode]['schools'].append(id)
 
         # Zip level data
