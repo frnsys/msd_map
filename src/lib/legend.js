@@ -60,6 +60,7 @@ class Legend {
       let [val] = vals;
       if (val) {
         let p = (val-prop.range[0])/(prop.range[1] - prop.range[0]);
+        p = Math.max(Math.min(p, 1), 0);
 
         let flip = prop.legend && prop.legend.flip;
         if (flip) p = 1 - p;
