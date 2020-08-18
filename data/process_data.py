@@ -121,11 +121,18 @@ QUERY_FIELDS = {
 }
 
 # Use these instead of the actual data max
+# To deal with outliers squashing the visual data range
 RANGE_MINS = {
-    'AVGNP': 5000
+    'AVGNP': 5000,
+    'STU_ND_BAL': 0,
+    'STU_DF_BAL': 0,
+    'MEDIANINCOME': 10000,
 }
 RANGE_MAXS = {
-    'AVGNP': 25000
+    'AVGNP': 25000,
+    'STU_ND_BAL': 100000,
+    'STU_DF_BAL': 100000,
+    'MEDIANINCOME': 40000,
 }
 
 # Keep only non-varying properties
