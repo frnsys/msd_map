@@ -87,6 +87,10 @@ FEAT_FIELDS = {
 
     # average net price across all income brackets for schools in zone
     'AVGNP': ['S', 'I', 'Y'],
+
+    'MEDIANINCOME': ['Y'],
+    'STU_ND_BAL': ['Y'],
+    'STU_DF_BAL': ['Y'],
 }
 
 # These are queried separately when a feature is focused on,
