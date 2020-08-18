@@ -11,7 +11,7 @@ let params = window.location.search.substr(1).split('&').reduce((acc, param) => 
 
 const MAPBOX_TOKEN = config.MAPBOX_TOKEN;
 
-let MAP_ID = 'frnsys.9kqttq68';
+let MAP_ID = 'frnsys.msd__3_0_beta';
 let INITIAL_CAT = {
   S: 'public',
   I: '45min',
@@ -41,7 +41,31 @@ const PROPS = {
       // 0.0: '#ffffff',
       // 1.0: '#ffffff'
     }
-  }
+  },
+  'MEDIANINCOME': {
+    desc: 'Median Household Income',
+    nick: 'Median Income',
+    color: {
+      0.0: '#9b150c',
+      1.0: '#7dd177'
+    }
+  },
+  'STU_ND_BAL': {
+    desc: 'Median Non-Deferred Total Balance',
+    nick: 'Median Non-Deferred Total Balance',
+    color: {
+      0.0: '#9b150c',
+      1.0: '#7dd177'
+    }
+  },
+  'STU_DF_BAL': {
+    desc: 'Median Deferred Total Balance',
+    nick: 'Median Deferred Total Balance',
+    color: {
+      0.0: '#9b150c',
+      1.0: '#7dd177'
+    }
+  },
 
   // Not including these as part of the map feature properties
   // to keep tileset size down. Thus we can't use them here.
@@ -69,14 +93,6 @@ const PROPS = {
   //     1.0: '#c65cff'
   //   }
   // },
-  // 'MEDIANINCOME': {
-  //   desc: 'Median Household Income',
-  //   nick: 'Median Income',
-  //   color: {
-  //     0.0: '#9b150c',
-  //     1.0: '#7dd177'
-  //   }
-  // }
 }
 
 const COLORS = {
@@ -124,19 +140,27 @@ const CAT_PROP_EXPRS = {
     'belowassociate': ['ICLEVEL', 3]
   }
 };
-const HAS_CATS = [
-  'SCI', 'n', 'ENROLLED', 'AVGNP'
-];
-const CAT_KEYS = Object.keys(CATS).sort((a, b) => a.localeCompare(b)).reduce((acc, k) => {
-  if (acc.length == 0) {
-    return Object.keys(CATS[k]).map((v) => `${k}:${v}`);
-  } else {
-    return [].concat(...acc.map((key) => Object.keys(CATS[k]).map((v) => `${key}.${k}:${v}`)));
-  }
-}, []);
+const CATS_FOR_PROPS = {
+  'SCI': ['S', 'I', 'Y'],
+  'n': ['S', 'I', 'Y'],
+  'ENROLLED': ['S', 'I', 'Y'],
+  'AVGNP': ['S', 'I', 'Y'],
+  'MEDIANINCOME': ['Y'],
+  'STU_ND_BAL': ['Y'],
+  'STU_DF_BAL': ['Y']
+};
+const HAS_CATS = Object.keys(CATS_FOR_PROPS);
 HAS_CATS.forEach((p) => {
   if (p in PROPS) {
-    CAT_KEYS.forEach((key) => {
+    const cat_keys = CATS_FOR_PROPS[p].sort((a, b) => a.localeCompare(b)).reduce((acc, k) => {
+      if (acc.length == 0) {
+        return Object.keys(CATS[k]).map((v) => `${k}:${v}`);
+      } else {
+        return [].concat(...acc.map((key) => Object.keys(CATS[k]).map((v) => `${key}.${k}:${v}`)));
+      }
+    }, []);
+
+    cat_keys.forEach((key) => {
       let k = `${p}.${key}`;
       PROPS[k] = JSON.parse(JSON.stringify(PROPS[p]));
       PROPS[k].key = k;
@@ -163,5 +187,6 @@ export default {
   INITIAL_PROPS,
   INITIAL_CAT,
   CATS, HAS_CATS, CAT_PROP_EXPRS,
+  CATS_FOR_PROPS,
   MAPBOX_TOKEN
 };

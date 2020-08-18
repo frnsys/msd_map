@@ -2,8 +2,16 @@ import config from './config';
 
 function propForCat(prop, cat) {
   let [p, ..._] = prop.split('.');
-  let key = keyForCat(cat);
-  return config.HAS_CATS.includes(p) ? `${p}.${key}` : p;
+  if (!config.HAS_CATS.includes(p)) {
+    return p;
+  } else {
+    cat = config.CATS_FOR_PROPS[p].reduce((acc, k) => {
+      acc[k] = cat[k];
+      return acc;
+    }, {});
+    let key = keyForCat(cat);
+    return `${p}.${key}`;
+  }
 }
 
 function keyForCat(cat) {
