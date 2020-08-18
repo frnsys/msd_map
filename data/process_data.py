@@ -71,7 +71,6 @@ CATEGORIES = {
         '60min'
     ],
     'Y': [
-        '2008',
         '2009',
         '2010',
         '2011',
@@ -81,6 +80,8 @@ CATEGORIES = {
         '2015',
         '2016',
         '2017',
+        '2018',
+        '2019',
     ]
 }
 CSV_ZIPCODE_FIELD = 'ZCTA'
@@ -273,7 +274,7 @@ data_by_key_zip = defaultdict(lambda: defaultdict(lambda: {'schools': []}))
 
 # School-level
 school_feats = {}
-all_years = pd.read_csv('gen/master_05.01.2020.reverse_geocoded.csv',
+all_years = pd.read_csv('src/Master_SchoolList.csv',
         encoding='ISO-8859-1',
         dtype={'YEAR': str, 'ZIP': str})
 
