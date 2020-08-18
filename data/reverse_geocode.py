@@ -19,7 +19,7 @@ def reverse_geocode(lat, lng):
     return results
 
 if __name__ == '__main__':
-    all_years = pd.read_csv('src/master_05.01.2020.csv',
+    all_years = pd.read_csv('src/master_08.06.2020.csv',
             encoding='ISO-8859-1',
             dtype={'YEAR': str, 'ZIP': str})
 
@@ -46,6 +46,6 @@ if __name__ == '__main__':
             addr = '{}*'.format(res['route'])
         all_years.loc[idx, 'ADDR'] = addr
         lookup['{},{}'.format(lat, lng)] = addr
-    all_years.to_csv('gen/master_05.01.2020.reverse_geocoded.csv', index=False)
+    all_years.to_csv('gen/master_08.06.2020.reverse_geocoded.csv', index=False)
     with open('gen/reverse_geocode_lookup.json', 'w') as f:
         json.dump(lookup, f)
