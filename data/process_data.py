@@ -326,7 +326,6 @@ for y in CATEGORIES['Y']:
             if not isinstance(row_data['ADDR'], str):
                 lat, lng = row_data['LATITUDE'], row_data['LONGITUD']
                 row_data['ADDR'] = reverse_geocode_lookup['{},{}'.format(lat, lng)]
-
             # Use ftfy to fix encoding issues (double encoded utf8, I believe)
             key = '__'.join(ftfy.fix_text(str(v)) if v is not None else 'nan' for v in [row_data[k] for k in ['UNITID', 'ADDR', 'MAPNAME']])
             id = schoolidx_to_featid[key]
