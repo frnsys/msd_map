@@ -50,9 +50,11 @@ const PROPS = {
     desc: 'Median Household Income',
     nick: 'Median Income',
     color: {
-      0.0: '#9b150c',
-      1.0: '#7dd177'
+      0.0: '#fcfcea',
+      0.5: '#e8ca0b',
+      1.0: '#079b1d'
     },
+    nullColor: '#333333',
     legend: {
       maxClamped: true,
       minClamped: true
@@ -62,9 +64,10 @@ const PROPS = {
     desc: 'Median Non-Deferred Total Balance',
     nick: 'Median Non-Deferred Total Balance',
     color: {
-      0.0: '#9b150c',
-      1.0: '#7dd177'
+      0.0: '#defceb',
+      1.0: '#025e2c'
     },
+    nullColor: '#333333',
     legend: {
       maxClamped: true,
       minClamped: true
@@ -74,9 +77,10 @@ const PROPS = {
     desc: 'Median Deferred Total Balance',
     nick: 'Median Deferred Total Balance',
     color: {
-      0.0: '#9b150c',
-      1.0: '#7dd177'
+      0.0: '#f6edf9',
+      1.0: '#b41ff4'
     },
+    nullColor: '#333333',
     legend: {
       maxClamped: true,
       minClamped: true

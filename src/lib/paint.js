@@ -97,7 +97,7 @@ class Painter {
 
       // If the property value is null
       ['==', ['get', prop.key], this.nullValue],
-        this.colors.null,
+        prop.nullColor || this.colors.null,
 
       // Otherwise, interpolate color
       ['interpolate', ['linear'], ['get', prop.key]].concat(gradientToStyle(prop.color, prop.range))
