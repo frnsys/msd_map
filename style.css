@@ -563,6 +563,10 @@ button {
   font-size: 0.9em;
   font-family: 'Founders Grotesk', sans-serif;
 }
+.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
 
 #number-lines {
   display: none;

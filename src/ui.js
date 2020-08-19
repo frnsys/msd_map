@@ -169,9 +169,22 @@ function setupUI(map, legend, info, state) {
   // Toggle properties
   const displayInput = document.querySelector('#control select[name=display]');
   displayInput.addEventListener('change', (ev) => {
-    state.props = ev.target.value.split(',').map((p) => config.PROPS[util.propForCat(p, state.cat)]);
+    let propKeys = ev.target.value.split(',');
+    state.props = propKeys.map((p) => config.PROPS[util.propForCat(p, state.cat)]);
     map.set('zctas', state.props);
+    // config.CATS_FOR_PROPS
     legend.set(state.props);
+
+    // TODO
+    let catProps = new Set();
+    propKeys.forEach((p) => config.CATS_FOR_PROPS[p].forEach((cat) => catProps.add(cat)));
+    document.querySelectorAll(['[data-control-cat]']).forEach((el) => {
+      if (catProps.has(el.dataset.controlCat)) {
+        el.classList.remove('disabled');
+      } else {
+        el.classList.add('disabled');
+      }
+    });
   });
 
   // Toggle isochrone layer
