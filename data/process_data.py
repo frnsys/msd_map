@@ -89,8 +89,7 @@ FEAT_FIELDS = {
     'AVGNP': ['S', 'I', 'Y'],
 
     'MEDIANINCOME': ['Y'],
-    'STU_ND_BAL': ['Y'],
-    'STU_DF_BAL': ['Y'],
+    'STU_TOT_BAL': ['Y'],
 }
 
 # These are queried separately when a feature is focused on,
@@ -124,14 +123,12 @@ QUERY_FIELDS = {
 # To deal with outliers squashing the visual data range
 RANGE_MINS = {
     'AVGNP': 5000,
-    'STU_ND_BAL': 0,
-    'STU_DF_BAL': 0,
+    'STU_TOT_BAL': 0,
     'MEDIANINCOME': 10000,
 }
 RANGE_MAXS = {
     'AVGNP': 25000,
-    'STU_ND_BAL': 100000,
-    'STU_DF_BAL': 100000,
+    'STU_TOT_BAL': 100000,
     'MEDIANINCOME': 40000,
 }
 
