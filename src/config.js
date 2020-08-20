@@ -60,22 +60,9 @@ const PROPS = {
       minClamped: true
     }
   },
-  'STU_ND_BAL': {
-    desc: 'Median Non-Deferred Total Balance',
-    nick: 'Median Non-Deferred Total Balance',
-    color: {
-      0.0: '#defceb',
-      1.0: '#025e2c'
-    },
-    nullColor: '#333333',
-    legend: {
-      maxClamped: true,
-      minClamped: true
-    }
-  },
-  'STU_DF_BAL': {
-    desc: 'Median Deferred Total Balance',
-    nick: 'Median Deferred Total Balance',
+  'STU_TOT_BAL': {
+    desc: 'Median Total Balance for Student Loan Borrowers aged 18-35',
+    nick: 'Median Total Balance',
     color: {
       0.0: '#f6edf9',
       1.0: '#b41ff4'
@@ -165,8 +152,7 @@ const CATS_FOR_PROPS = {
   'ENROLLED': ['S', 'I', 'Y'],
   'AVGNP': ['S', 'I', 'Y'],
   'MEDIANINCOME': ['Y'],
-  'STU_ND_BAL': ['Y'],
-  'STU_DF_BAL': ['Y']
+  'STU_TOT_BAL': ['Y'],
 };
 const HAS_CATS = Object.keys(CATS_FOR_PROPS);
 HAS_CATS.forEach((p) => {
