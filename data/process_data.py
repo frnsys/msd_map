@@ -123,12 +123,12 @@ QUERY_FIELDS = {
 # To deal with outliers squashing the visual data range
 RANGE_MINS = {
     'AVGNP': 5000,
-    'STU_TOT_BAL': 0,
+    'STU_TOT_BAL': 10000,
     'MEDIANINCOME': 10000,
 }
 RANGE_MAXS = {
     'AVGNP': 25000,
-    'STU_TOT_BAL': 100000,
+    'STU_TOT_BAL': 30000,
     'MEDIANINCOME': 40000,
 }
 
