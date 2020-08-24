@@ -19,13 +19,13 @@ function setupUI(map, legend, info, state) {
       return false;
     });
   });
-  [...document.querySelectorAll('#summary-tabs--stat > div')].forEach((tab) => {
+  [...document.querySelectorAll('#summary-tabs--school-type > div')].forEach((tab) => {
     tab.addEventListener('click', (ev) => {
       ev.preventDefault();
-      let val = tab.innerText;
-      if (val !== state.summary.stat) {
-        document.querySelector('#summary-tabs--stat .selected').classList.remove('selected');
-        state.summary.stat = val;
+      let val = tab.dataset.value;
+      if (val !== state.summary.type) {
+        document.querySelector('#summary-tabs--school-type .selected').classList.remove('selected');
+        state.summary.type = val;
         tab.classList.add('selected');
         loadSummary(state);
       }
@@ -135,7 +135,6 @@ function setupUI(map, legend, info, state) {
     state.props = state.props.map((p) => config.PROPS[util.propForCat(p.key, state.cat)]);
     map.set('zctas', state.props);
     legend.set(state.props);
-    loadSummary(state);
 
     // Hide schools not matching the category
     map.setSchoolCategory(state);
@@ -149,7 +148,6 @@ function setupUI(map, legend, info, state) {
     state.props = state.props.map((p) => config.PROPS[util.propForCat(p.key, state.cat)]);
     map.set('zctas', state.props);
     legend.set(state.props);
-    loadSummary(state);
 
     // Hide schools not matching the category
     let year = state.cat['Y'];
@@ -172,10 +170,8 @@ function setupUI(map, legend, info, state) {
     let propKeys = ev.target.value.split(',');
     state.props = propKeys.map((p) => config.PROPS[util.propForCat(p, state.cat)]);
     map.set('zctas', state.props);
-    // config.CATS_FOR_PROPS
     legend.set(state.props);
 
-    // TODO
     let catProps = new Set();
     propKeys.forEach((p) => config.CATS_FOR_PROPS[p].forEach((cat) => catProps.add(cat)));
     document.querySelectorAll(['[data-control-cat]']).forEach((el) => {
@@ -196,7 +192,6 @@ function setupUI(map, legend, info, state) {
       state.props = state.props.map((p) => config.PROPS[util.propForCat(p.key, state.cat)]);
       map.set('zctas', state.props);
       legend.set(state.props);
-      loadSummary(state);
       if (map.focused['zctas']) {
         info.explain(map.focused['zctas'], state.cat, []);
       };
@@ -214,27 +209,41 @@ function setupUI(map, legend, info, state) {
 
 const summaryEl = document.getElementById('summary-table');
 const summaryTitle = document.querySelector('#summary h2');
-const rowHeads = [
-  '', '0&lt;SCI=2500<span>More than four options for students</span>', '2500&lt;SCI=5000<span>Between two and four options</span>', '5000&lt;SCI&lt;10000<span>Between one and two options</span>', 'SCI=10000<span>One option</span>', 'Education Desert<span>No Higher Ed Institutions Nearby</span>',
-    'Median School Concentration', 'Average School Concentration'
-];
-const rowMask = {
-  'Average Net Price': [0,1,2,3,4],
-  'Count of Zips': [0,1,2,3,4,5],
-  'People Affected': [0,1,2,3,4,5],
-  'Concentration': [0,6,7],
+const summaryNotes = document.querySelector('#summary .summary-notes');
+const rowHeads = {
+  schools: [
+    'Academic Year',
+    'Total Campuses',
+    'National Enrollment',
+    'Avg Net Price',
+    'Median Net Price',
+    'Avg Sticker Price',
+    'Median Sticker Price'
+  ],
+  zips: [
+    'Academic Year',
+    'Median Young Adult Student Debt',
+    'Median Income',
+    'Avg Net Price',
+    'Avg Sticker Price',
+    'Count of Education Deserts ZCTAs',
+    'Median Local School Count',
+    'Median All-School Concentration'
+  ]
 };
 function loadRows(state, rows) {
   let {summary} = state;
   summaryEl.innerHTML = '';
 
+  // Headers
   let tr = document.createElement('tr');
-  rowMask[summary.stat].forEach((i) => {
-    let name = rowHeads[i];
-    if (i == 0) name = summary.tab === 'state' ? 'State' : 'School Type';
+  let cols = rowHeads[summary.tab];
+  cols.forEach((name, i) => {
     let td = document.createElement('th');
     td.innerHTML = name;
     tr.appendChild(td);
+
+    // Sort on click
     td.addEventListener('click', (ev) => {
       ev.preventDefault();
       if (state.summary.sort.column == i) {
@@ -247,14 +256,15 @@ function loadRows(state, rows) {
   });
   summaryEl.appendChild(tr);
 
-  rows.sort((a, b) => (a[summary.sort.column] > b[summary.sort.column]) ? 1 : -1);
+  rows.sort((a, b) => (Object.values(a)[summary.sort.column] > Object.values(b)[summary.sort.column]) ? 1 : -1);
   if (summary.sort.reverse) {
     rows.reverse();
   }
 
   rows.forEach((row) => {
     let tr = document.createElement('tr');
-    row.forEach((val) => {
+    cols.forEach((key) => {
+      let val = row[key];
       let td = document.createElement('td');
       td.innerText = val || 'N/A';
       tr.appendChild(td);
@@ -266,12 +276,16 @@ function loadRows(state, rows) {
 function loadSummary(state) {
   let url;
   let {summary, cat} = state;
-  if (summary.tab === 'state') {
-    url = `assets/summary/${summary.tab}-${cat.I}-${cat.Y}-${cat.S}.json`;
-    summaryTitle.innerText = `Year: ${cat.Y}\nDriving Distance: ${cat.I}\nSchool Type: ${cat.S}`;
+  if (summary.tab === 'schools') {
+    url = `assets/summary/${summary.tab}-${summary.type}.json`;
+    summaryTitle.innerText = 'Year-to-year Analysis of On-Campus Higher Education Institutions in the US and US Territories';
+    summaryNotes.innerText = 'Note: All dollar amounts are nominal.';
+    document.getElementById('summary-tabs--school').style.display = 'block';
   } else {
-    url = `assets/summary/${summary.tab}-${cat.I}-${cat.Y}.json`;
-    summaryTitle.innerText = `Year: ${cat.Y}\nDriving Distance: ${cat.I}`;
+    url = `assets/summary/${summary.tab}.json`;
+    summaryTitle.innerText = 'Year-to-year Analysis of Zip-Level Data in the US and US Territories';
+    summaryNotes.innerText = 'Note: All dollar amounts are inflation-adjusted to 2019. Student debt statistic is conditional on a zip having sampled 18-35 year-old individuals with positive student loan balances. School Prices, Concentration, and Count statistics are inclusive of all school types and available only for ZCTAs that are not education deserts.';
+    document.getElementById('summary-tabs--school').style.display = 'none';
   }
   return fetch(url, {
     headers: {
@@ -282,7 +296,7 @@ function loadSummary(state) {
   })
     .then(res => res.json())
     .then((json) => {
-      let rows = json[summary.stat];
+      let rows = json;
       loadRows(state, rows);
     })
     .catch(err => { console.log(err) });

@@ -45,8 +45,8 @@ const state = {
   props: config.INITIAL_PROPS,
   cat: config.INITIAL_CAT,
   summary: {
-    tab: 'state',
-    stat: 'Average Net Price',
+    tab: 'zips',
+    type: 'public',
     sort: {
       column: 0,
       reverse: false

@@ -155,7 +155,11 @@ section.endnotes > ul {
 .summary-tabs > div:hover {
   background: #D0D5FF;
 }
-.summary-tabs-label {
+#summary-tabs--school-type {
+  font-size: 0.75em;
+}
+.summary-tabs-label,
+.summary-tabs-divider {
   width: 100%;
   padding: 0.25em 1em;
   text-align: center;
@@ -163,6 +167,14 @@ section.endnotes > ul {
   border-bottom: none;
   font-size: 0.8em;
   background: #f0f0f0;
+}
+.summary-notes {
+  font-style: italic;
+  font-size: 0.85em;
+  margin-top: 0;
+}
+#summary h2 {
+  margin-bottom: 0;
 }
 
 #summary table {
@@ -678,13 +690,13 @@ button {
 }
 
 @media only screen and (max-width: 480px) {
-  #summary-tabs--stat {
+  #summary-tabs--school-type {
     flex-wrap: wrap;
   }
-  #summary-tabs--stat > div {
+  #summary-tabs--school-type > div {
     flex-basis: 50%;
   }
-  #summary-tabs--stat > div:nth-child(odd) {
+  #summary-tabs--school-type > div:nth-child(odd) {
     border-left: none;
   }
 }

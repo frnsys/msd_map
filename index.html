@@ -134,18 +134,25 @@
             <p>Over the last decade, the <span class="smallcaps">US</span> higher education system has become more concentrated. That has several causes: the decline of the for-profit sector after the Great Recession, alongside the expansion of traditional non-profit institutions to adopt a business model similar to that of the for-profits: many more, and higher-priced, debt-financed professional degrees, and accommodating existing programs to increase enrollment among nontraditional student populations. All of that has happened in the light of reduced state support for higher education and the expansion of the federal student loan system.</p>
 
             <h2></h2>
+            <p class="summary-notes"></p>
             <div class="summary-tabs-label">Level of Analysis</div>
             <div class="summary-tabs" id="summary-tabs--level">
-                <div data-value="national">National</div>
-                <div data-value="state" class="selected">State</div>
+                <div data-value="schools">Schools</div>
+                <div data-value="zips" class="selected">Zips</div>
             </div>
-            <div class="summary-tabs-label">Statistic</div>
-            <div class="summary-tabs" id="summary-tabs--stat">
-                <div class="selected">Average Net Price</div>
-                <div>Count of Zips</div>
-                <div>People Affected</div>
-                <div>Concentration</div>
+            <div id="summary-tabs--school">
+                <div class="summary-tabs-label">School Type</div>
+                <div class="summary-tabs" id="summary-tabs--school-type">
+                    <div data-value="allschools">All Schools</div>
+                    <div data-value="public" class="selected">Public</div>
+                    <div data-value="privnot4prof">Private Not-for-profit</div>
+                    <div data-value="priv4prof">Private For-profit</div>
+                    <div data-value="bachelor">Four-Year</div>
+                    <div data-value="associate">Two-Year</div>
+                    <div data-value="belowassociate">Below Two-Year</div>
+                </div>
             </div>
+            <div class="summary-tabs-divider"></div>
             <div class="table-wrapper">
                 <table id="summary-table"></table>
             </div>

@@ -15,7 +15,7 @@ let MAP_ID = 'frnsys.msd__3_0_beta';
 let INITIAL_CAT = {
   S: 'public',
   I: '45min',
-  Y: '2017'
+  Y: '2018'
 };
 
 const PROPS = {
