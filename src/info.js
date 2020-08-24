@@ -42,7 +42,7 @@ function explain(feats, cat, focusedSchools) {
         let schoolsForZCTA = schoolIds.map((id) => schools[id][cat['Y']]);
         let groupedSchools = {};
 
-        let d = ['SCI', 'AVGNP', 'ENROLLED', 'n'].reduce((acc, k) => {
+        let d = ['SCI', 'AVGNP', 'ENROLLED', 'STU_TOT_BAL', 'n'].reduce((acc, k) => {
           if (Object.keys(config.PROPS).includes(k)) {
             // Feature properties
             acc[k] = p[util.propForCat(k, cat)];
@@ -82,6 +82,7 @@ function explain(feats, cat, focusedSchools) {
           Enrollment: ${d['ENROLLED'] || 0}<br/>
           25mi Zone Population Estimate: ${zipData['ZCTAZONEPOP'] || 'N/A'}<br/>
           Median Income: ${zipData['MEDIANINCOME'] ? formatter.format(zipData['MEDIANINCOME']) : 'N/A'}<br/>
+          Median Total Student Loans Balance: ${d['STU_TOT_BAL'] ? formatter.format(d['STU_TOT_BAL']) : 'N/A'}<br/>
           ${otherZips.length > 0 ? `<div class="other-zctas">Other Zips here: ${otherZips.join(', ')}</div>` : ''}
 
           ${feats.length == 1 && d['n'] ? `
