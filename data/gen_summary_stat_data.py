@@ -96,10 +96,10 @@ for key, sub_df in sum_school.groupby('School Type'):
     fname = f'gen/summary/schools-{school_type}.json'
     with open(fname, 'w') as f:
         data = sub_df.to_json(orient='records')
-        json.dump(data, f)
+        f.write(data)
 
 sum_zips = pd.read_csv('src/summary_stats/sumstats_zips.csv')
 fname = f'gen/summary/zips.json'
 with open(fname, 'w') as f:
     data = sum_zips.to_json(orient='records')
-    json.dump(data, f)
+    f.write(data)
