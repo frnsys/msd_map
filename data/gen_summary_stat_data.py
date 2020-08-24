@@ -2,6 +2,7 @@ import json
 import pandas as pd
 from glob import glob
 
+# Part 2
 isos = ['30min', '45min', '60min']
 rename_cols = {
     'group1': '0<SCI=2500',
@@ -75,3 +76,30 @@ for l in levels.keys():
                     fname = f'gen/summary/{l}-{i}-{y}-{c}.json'
                     with open(fname, 'w') as f:
                         json.dump(data[l][i][y][c], f, allow_nan=False)
+
+
+# Part 3
+school_type_map = {
+    'All Schools': 'allschools',
+    'Public': 'public',
+    'Private Not-for-profit': 'privnot4prof',
+    'Private For-profit': 'priv4prof',
+    'Four-Year': 'bachelor',
+    'Two-Year': 'associate',
+    'Below Two-Year': 'belowassociate'
+}
+
+sum_school = pd.read_csv('src/summary_stats/sumstats_schools.csv')
+for key, sub_df in sum_school.groupby('School Type'):
+    school_type = school_type_map[key]
+    sub_df.drop('School Type', axis=1, inplace=True)
+    fname = f'gen/summary/schools-{school_type}.json'
+    with open(fname, 'w') as f:
+        data = sub_df.to_json(orient='records')
+        json.dump(data, f)
+
+sum_zips = pd.read_csv('src/summary_stats/sumstats_zips.csv')
+fname = f'gen/summary/zips.json'
+with open(fname, 'w') as f:
+    data = sum_zips.to_json(orient='records')
+    json.dump(data, f)
