@@ -180,7 +180,7 @@ HAS_CATS.forEach((p) => {
 const INITIAL_CAT_KEY = Object.keys(INITIAL_CAT)
   .sort((a, b) => a.localeCompare(b))
   .map((k) => `${k}:${INITIAL_CAT[k]}`).join('.');
-const INITIAL_PROPS = ['SCI'].map((p) => {
+const INITIAL_PROPS = ['AVGNP'].map((p) => {
   let k = HAS_CATS.includes(p) ? `${p}.${INITIAL_CAT_KEY}` : p;
   return PROPS[k];
 });
