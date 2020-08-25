@@ -64,8 +64,9 @@ const PROPS = {
     desc: 'Median Total Balance for Student Loan Borrowers aged 18-35',
     nick: 'Median Total Balance',
     color: {
-      0.0: '#f6edf9',
-      1.0: '#b41ff4'
+      0.0: '#079b1d',
+      0.5: '#f4e61a',
+      1.0: '#f4371a'
     },
     nullColor: '#333333',
     legend: {
