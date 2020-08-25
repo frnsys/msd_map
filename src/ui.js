@@ -3,6 +3,15 @@ import styles from './styles';
 import config from './config';
 import regions from '../data/gen/regions.json';
 
+const mapOverlay = document.getElementById('map-notification');
+function checkMissingData(props) {
+  if (props.some((p) => config.NO_DATA.includes(p.key))) {
+    mapOverlay.innerText = 'No data available for this selection.';
+    mapOverlay.style.display = 'flex';
+  } else {
+    mapOverlay.style.display = 'none';
+  }
+}
 
 function setupUI(map, legend, info, state) {
   // Summary statistics table
@@ -124,17 +133,20 @@ function setupUI(map, legend, info, state) {
     state.props[0] = config.PROPS[util.propForCat(ev.target.value, state.cat)];
     map.set('zctas', state.props);
     legend.set(state.props);
+    checkMissingData(state.props);
   });
   propertyBInput.addEventListener('change', (ev) => {
     state.props[1] = config.PROPS[util.propForCat(ev.target.value, state.cat)];
     map.set('zctas', state.props);
     legend.set(state.props);
+    checkMissingData(state.props);
   });
   categoryInput.addEventListener('change', (ev) => {
     state.cat['S'] = ev.target.value;
     state.props = state.props.map((p) => config.PROPS[util.propForCat(p.key, state.cat)]);
     map.set('zctas', state.props);
     legend.set(state.props);
+    checkMissingData(state.props);
 
     // Hide schools not matching the category
     map.setSchoolCategory(state);
@@ -148,6 +160,7 @@ function setupUI(map, legend, info, state) {
     state.props = state.props.map((p) => config.PROPS[util.propForCat(p.key, state.cat)]);
     map.set('zctas', state.props);
     legend.set(state.props);
+    checkMissingData(state.props);
 
     // Hide schools not matching the category
     let year = state.cat['Y'];
@@ -169,6 +182,7 @@ function setupUI(map, legend, info, state) {
     state.props = propKeys.map((p) => config.PROPS[util.propForCat(p, state.cat)]);
     map.set('zctas', state.props);
     legend.set(state.props);
+    checkMissingData(state.props);
 
     let catProps = new Set();
     propKeys.forEach((p) => config.CATS_FOR_PROPS[p].forEach((cat) => catProps.add(cat)));
@@ -194,6 +208,7 @@ function setupUI(map, legend, info, state) {
       state.props = state.props.map((p) => config.PROPS[util.propForCat(p.key, state.cat)]);
       map.set('zctas', state.props);
       legend.set(state.props);
+      checkMissingData(state.props);
       if (map.focused['zctas']) {
         info.explain(map.focused['zctas'], state.cat, []);
       };

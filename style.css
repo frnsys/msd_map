@@ -37,7 +37,7 @@ header {
   position: fixed;
   top: 0;
   background: #fff;
-  z-index: 2;
+  z-index: 5;
   border-bottom: 1px solid #eee;
 }
 header nav a {
@@ -246,6 +246,23 @@ th:hover {
   background: #000;
   display: none;
   z-index: 100;
+}
+
+#map-notification {
+  position: absolute;
+  background: rgba(0,0,0,0.8);
+  padding: 1em;
+  text-align: center;
+  color: #fff;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  display: none;
 }
 
 #info {

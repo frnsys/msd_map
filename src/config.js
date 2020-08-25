@@ -200,10 +200,22 @@ const INITIAL_PROPS = ['AVGNP'].map((p) => {
   return PROPS[k];
 });
 
+const NO_DATA = [
+  'MEDIANINCOME.Y:2019',
+];
+CATS_FOR_PROPS['AVGNP'].sort((a, b) => a.localeCompare(b)).reduce((acc, k) => {
+  if (acc.length == 0) {
+    return Object.keys(CATS[k]).map((v) => `${k}:${v}`);
+  } else {
+    return [].concat(...acc.map((key) => Object.keys(CATS[k]).map((v) => `${key}.${k}:${v}`)));
+  }
+}, []).filter((k) => k.includes('Y:2019')).forEach((k) => NO_DATA.push(`AVGNP.${k}`));
+
 export default {
   MAP_ID,
   PROPS,
   COLORS,
+  NO_DATA,
   INITIAL_PROPS,
   INITIAL_CAT,
   CATS, HAS_CATS, CAT_PROP_EXPRS,
