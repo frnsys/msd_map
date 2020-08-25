@@ -18,6 +18,11 @@ let INITIAL_CAT = {
   Y: '2018'
 };
 
+const COLORS = {
+  focus: '#f9ca74',
+  null: '#6b0106'
+};
+
 const PROPS = {
   'SCI': {
     desc: 'School Concentration Index',
@@ -29,7 +34,10 @@ const PROPS = {
       // 1.0: '#ffffff'
     },
     legend: {
-      flip: false
+      flip: false,
+      special: {
+        'Education Desert': COLORS['null'],
+      }
     }
   },
   'AVGNP': {
@@ -43,7 +51,10 @@ const PROPS = {
     },
     legend: {
       maxClamped: true,
-      minClamped: true
+      minClamped: true,
+      special: {
+        'Education Desert': COLORS['null'],
+      }
     }
   },
   'MEDIANINCOME': {
@@ -57,7 +68,10 @@ const PROPS = {
     nullColor: '#333333',
     legend: {
       maxClamped: true,
-      minClamped: true
+      minClamped: true,
+      special: {
+        'Data Unavailable': '#333333'
+      }
     }
   },
   'STU_TOT_BAL': {
@@ -71,7 +85,10 @@ const PROPS = {
     nullColor: '#333333',
     legend: {
       maxClamped: true,
-      minClamped: true
+      minClamped: true,
+      special: {
+        'Data Unavailable': '#333333'
+      }
     }
   },
 
@@ -103,10 +120,6 @@ const PROPS = {
   // },
 }
 
-const COLORS = {
-  focus: '#f9ca74',
-  null: '#6b0106'
-};
 
 const CATS = {
   S: {

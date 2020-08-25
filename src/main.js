@@ -195,9 +195,7 @@ map.map.on('load', () => {
 });
 
 const legend = new Legend(map, {id: 'zctas', layer: 'zctas'}, state.props, {
-  'Education Desert': config.COLORS['null'],
-  'No Zip': '#520004',
-  'Data Unavailable': '#333333'
+  'No Zip': '#520004'
 }, ['min']);
 
 setupUI(map, legend, info, state);

@@ -116,11 +116,16 @@ class Legend {
 
   _special() {
     // Special keys, if any
-    if (this.special) {
+    let specs = [this.special].concat(this.props.map((p) => (p.legend || {}).special || {}));
+    let special = specs.reduce((acc, s) => {
+      Object.keys(s).forEach((k) => acc[k] = s[k]);
+      return acc;
+    }, {});
+    if (Object.keys(special).length) {
       let container = document.createElement('div');
       container.classList.add('legend--special');
-      Object.keys(this.special).forEach((key) => {
-        let color = this.special[key];
+      Object.keys(special).forEach((key) => {
+        let color = special[key];
         let el = document.createElement('div');
         el.classList.add('legend--single');
 
