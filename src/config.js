@@ -151,6 +151,7 @@ const CATS_FOR_PROPS = {
   'n': ['S', 'I', 'Y'],
   'ENROLLED': ['S', 'I', 'Y'],
   'AVGNP': ['S', 'I', 'Y'],
+  'AVGSP': ['S', 'I', 'Y'],
   'MEDIANINCOME': ['Y'],
   'STU_TOT_BAL': ['Y'],
 };

@@ -6,7 +6,9 @@ function propForCat(prop, cat) {
     return p;
   } else {
     cat = config.CATS_FOR_PROPS[p].reduce((acc, k) => {
-      acc[k] = cat[k];
+      if (Object.keys(cat).includes(k)) {
+        acc[k] = cat[k];
+      }
       return acc;
     }, {});
     let key = keyForCat(cat);
