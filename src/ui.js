@@ -179,6 +179,10 @@ function setupUI(map, legend, info, state) {
         el.classList.remove('disabled');
       } else {
         el.classList.add('disabled');
+        if (el.dataset.controlCat == 'S') {
+          el.querySelector('select').value = 'allschools';
+          state.cat.S = 'allschools';
+        }
       }
     });
   });
