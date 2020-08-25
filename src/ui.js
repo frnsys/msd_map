@@ -160,8 +160,6 @@ function setupUI(map, legend, info, state) {
       map.map.setPaintProperty('schools', 'circle-opacity', style['circle-opacity']);
       map.map.setPaintProperty('schools', 'circle-stroke-opacity', style['circle-stroke-opacity']);
     }
-
-    // TODO toggle zip/zone level when new data is ready
   });
 
   // Toggle properties
