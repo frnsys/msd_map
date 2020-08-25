@@ -161,12 +161,18 @@ section.endnotes > ul {
 .summary-tabs-label,
 .summary-tabs-divider {
   width: 100%;
-  padding: 0.25em 1em;
+  padding: 0.7em 1em 0.25em 1em;
   text-align: center;
   border: 1px solid black;
   border-bottom: none;
-  font-size: 0.8em;
+  font-size: 1em;
   background: #f0f0f0;
+  font-family: 'Founders Grotesk', sans-serif;
+}
+.summary-tabs-divider {
+  padding: 0;
+  height: 1px;
+  background: #000;
 }
 .summary-notes {
   font-style: italic;
