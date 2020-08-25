@@ -76,14 +76,14 @@ function explain(feats, cat, focusedSchools) {
 
         return `
           <h2>${zipcode}</h2>
-          SCI: ${d['SCI'] > 0 ? d['SCI'].toFixed(2) : 'Education Desert'}<br/>
-          Average Net Price: ${d['AVGNP'] || 'N/A'}<br/>
-          Number of Schools: ${d['n'] || 'N/A'}<br/>
-          Enrollment: ${d['ENROLLED'] || 0}<br/>
-          25mi Zone Population Estimate: ${zipData['ZCTAZONEPOP'] || 'N/A'}<br/>
-          Median Income: ${zipData['MEDIANINCOME'] ? formatter.format(zipData['MEDIANINCOME']) : 'N/A'}<br/>
-          Median Total Student Loans Balance: ${d['STU_TOT_BAL'] ? formatter.format(d['STU_TOT_BAL']) : 'N/A'}<br/>
-          ${otherZips.length > 0 ? `<div class="other-zctas">Other Zips here: ${otherZips.join(', ')}</div>` : ''}
+          <span class="variable-name">SCI</span>: ${d['SCI'] > 0 ? d['SCI'].toFixed(2) : 'Education Desert'}<br/>
+          <span class="variable-name">Average Net Price</span>: ${d['AVGNP'] || 'N/A'}<br/>
+          <span class="variable-name">Number of Schools</span>: ${d['n'] || 'N/A'}<br/>
+          <span class="variable-name">Enrollment</span>: ${d['ENROLLED'] || 0}<br/>
+          <span class="variable-name">25mi Zone Population Estimate</span>: ${zipData['ZCTAZONEPOP'] || 'N/A'}<br/>
+          <span class="variable-name">Median Income</span>: ${zipData['MEDIANINCOME'] ? formatter.format(zipData['MEDIANINCOME']) : 'N/A'}<br/>
+          <span class="variable-name">Median Total Student Loans Balance</span>: ${d['STU_TOT_BAL'] ? formatter.format(d['STU_TOT_BAL']) : 'N/A'}<br/>
+          ${otherZips.length > 0 ? `<div class="other-zctas"<span class="variable-name">>Other zips here</span>: ${otherZips.join(', ')}</div>` : ''}
 
           ${feats.length == 1 && d['n'] ? `
             <h2>Schools for Zips</h2>

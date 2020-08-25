@@ -279,6 +279,9 @@ th:hover {
 #info p {
   font-size: 1.2em;
 }
+.variable-name {
+  color: #33C377;
+}
 
 /* Hiding for now */
 .control-properties {
