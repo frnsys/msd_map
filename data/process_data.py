@@ -24,6 +24,7 @@ SCHOOL_FIELDS = [
     'UNDUPUG',
     'ENROLLED',
     'AVGNETPRICE',
+    'TUFEYR3' # sticker price
 ]
 
 # ISO A2
