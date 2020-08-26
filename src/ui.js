@@ -234,15 +234,15 @@ const rowHeads = {
     'National Enrollment',
     'Avg Net Price',
     'Median Net Price',
-    'Avg Sticker Price',
-    'Median Sticker Price'
+    'Avg Tuition & Fees',
+    'Median Tuition & Fees'
   ],
   zips: [
     'Academic Year',
     'Median Young Adult Student Debt',
     'Median Income',
     'Avg Net Price',
-    'Avg Sticker Price',
+    'Avg Tuition & Fees',
     'Count of Education Deserts ZCTAs',
     'Median Local School Count',
     'Median All-School Concentration'

@@ -161,7 +161,7 @@ const map = new Map({
           ${s['MAPNAME']}
           <div>Zip: ${s['ZIP']}</div>
           <div>Enrolled: ${s['ENROLLED'] || 'N/A'}</div>
-          <div>Sticker Price: ${s['TUFEYR3'] || 'N/A'}</div>
+          <div>Tuition & Fees: ${s['TUFEYR3'] || 'N/A'}</div>
           <div>Average Net Price: ${s['AVGNETPRICE'] || 'N/A'}</div>
         </div>`;
       }).join('<br />');

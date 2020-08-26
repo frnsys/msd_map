@@ -78,7 +78,7 @@ function explain(feats, cat, focusedSchools) {
           <h2>${zipcode}</h2>
           <span class="variable-name">SCI</span>: ${d['SCI'] > 0 ? d['SCI'].toFixed(2) : 'Education Desert'}<br/>
           <span class="variable-name">Average Net Price</span>: ${d['AVGNP'] || 'N/A'}<br/>
-          <span class="variable-name">Average Sticker Price</span>: ${d['AVGSP'] || 'N/A'}<br/>
+          <span class="variable-name">Average Tuition & Fees</span>: ${d['AVGSP'] || 'N/A'}<br/>
           <span class="variable-name">Number of Schools</span>: ${d['n'] || 'N/A'}<br/>
           <span class="variable-name">Enrollment</span>: ${d['ENROLLED'] || 0}<br/>
           <span class="variable-name">25mi Zone Population Estimate</span>: ${zipData['ZCTAZONEPOP'] || 'N/A'}<br/>
