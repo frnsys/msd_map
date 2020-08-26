@@ -118,26 +118,13 @@ function empty() {
 
 function reset() {
   info.explainFeature(`<h2>Map Guide</h2>
-    <p>The map displays school concentration, net price, or their combination, sortable by year, college category, and driving distance. Use the quick zoom buttons in the top left or type in your desired zip (try your home zip code!) to locate a particular area. Toggle different maps with the school-type drop down menu, and see the corresponding summary statistics on the gradient legend. Hover over the colorful statistical legend in the bottom left corner to highlight areas on the map that correspond to a particular statistical measurement. And as you mouse over certain geographic areas, the schools within commuting distance of that zip will illuminate.</p>
+    <p>The map displays school concentration (<span class="smallcaps">SCI</span>), net price, total student debt, and median income at the <span class="smallcaps">ZCTA</span> level, sortable by year (college category and driving distance toggles are applicable to net price and school concentration maps only). <em style="color:#fff;">All dollar amounts are 2019-inflation adjusted.</em></p>
+    <p>Use the quick zoom buttons in the top left or type in your desired zip (try your home zip code!) to locate a particular area. Toggle different maps with the drop-downs and buttons; see the corresponding summary statistics on the gradient legend. Hover over the colorful statistical legend in the bottom left corner to highlight areas on the map that correspond to a particular statistical measurement. As you mouse over certain geographic areas, the schools within commuting distance of that zip will illuminate.</p>
   `);
 }
 
 function schoolsOnly() {
-  info.explainFeature(`
-    <h2>Total Higher Education Institutions: 6,295</h2>
-    <h3>By Control:</h3>
-    <ul>
-      <li>Public: 1,954</li>
-      <li>Private not-for-profit: 1,599</li>
-      <li>Private for-profit: 2,742</li>
-    </ul>
-    <h3>By Level:</h3>
-    <ul>
-      <li>Bachelor: 2,532</li>
-      <li>Associate: 1,961</li>
-      <li>Below Associate: 1,802</li>
-    </ul>
-    <em>For information on our exclusion criteria, see the Methodology section at the bottom of this page.</em>`);
+  // Not using in this part
 }
 
 export default {
