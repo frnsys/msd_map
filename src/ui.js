@@ -301,7 +301,7 @@ function loadSummary(state) {
   } else {
     url = `assets/summary/${summary.tab}.json`;
     summaryTitle.innerText = 'Year-to-year Analysis of Zip-Level Data in the US and US Territories';
-    summaryNotes.innerText = 'Note: All dollar amounts are inflation-adjusted to 2019. Student debt statistic is conditional on a zip having sampled 18-35 year-old individuals with positive student loan balances. School Prices, Concentration, and Count statistics are inclusive of all school types and available only for ZCTAs that are not education deserts.';
+    summaryNotes.innerText = 'Note: All dollar amounts are inflation-adjusted to 2019. Student debt statistic is conditional on a zip having sampled 18 – 35 year-old individuals with positive student loan balances. School Prices, Concentration, and Count statistics are inclusive of all school types and available only for ZCTAs that are not education deserts.';
     document.getElementById('summary-tabs--school').style.display = 'none';
   }
   return fetch(url, {
