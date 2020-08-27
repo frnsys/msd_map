@@ -1,4 +1,4 @@
-function createNumberLine(selector, slug, name, data, range, labels) {
+function createNumberLine(selector, slug, name, data, range, labels, fmtRange) {
   let parent = document.querySelector(selector);
   let container = document.createElement('div');
   container.style.width = '100%';
@@ -24,10 +24,10 @@ function createNumberLine(selector, slug, name, data, range, labels) {
   legend.style.display = 'flex';
   legend.style.justifyContent = 'space-between';
   let leftLabel = document.createElement('div');
-  leftLabel.innerHTML = `${range[0]}<br />${labels[0]}`;
+  leftLabel.innerHTML = `${fmtRange(range[0])}<br />${labels[0]}`;
   legend.appendChild(leftLabel);
   let rightLabel = document.createElement('div');
-  rightLabel.innerHTML = `${range[1]}<br />${labels[1]}`;
+  rightLabel.innerHTML = `${fmtRange(range[1])}<br />${labels[1]}`;
   rightLabel.style.textAlign = 'right';
   legend.appendChild(rightLabel);
   container.appendChild(legend);
@@ -39,6 +39,7 @@ function createNumberLine(selector, slug, name, data, range, labels) {
   tooltip.style.padding = '0.5em';
   tooltip.style.position = 'absolute';
   tooltip.style.background = '#333333';
+  tooltip.style.minWidth = '100px';
   tooltip.style.color = '#fff';
   line.appendChild(tooltip);
 

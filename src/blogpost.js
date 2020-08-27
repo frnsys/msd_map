@@ -1,7 +1,10 @@
 import createNumberLine from './numberLine';
 import {data,meta} from '../data/gen/numberline.json';
 
-console.log(data);
+let formatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+});
 
 createNumberLine(
   '#income-number-line',
@@ -9,7 +12,8 @@ createNumberLine(
   'Median Income (2018)',
   data['median_income'],
   meta['median_income']['range'],
-  ['', '']
+  ['', ''],
+  (val) => formatter.format(val)
 );
 createNumberLine(
   '#debt-number-line',
@@ -17,7 +21,8 @@ createNumberLine(
   'Median Student Loan Debt (2019)',
   data['median_debt'],
   meta['median_debt']['range'],
-  ['', '']
+  ['', ''],
+  (val) => formatter.format(val)
 );
 createNumberLine(
   '#change-number-line',
@@ -25,7 +30,8 @@ createNumberLine(
   'Percent Change in Median Student Loan Since 2009',
   data['2009_change'],
   meta['2009_change']['range'],
-  ['', '']
+  ['', ''],
+  (val) => `${val}%`
 );
 
 // State selector for the number line
