@@ -616,6 +616,11 @@ button {
   background: #FFCC00 !important;
   z-index: 9;
 }
+.number-line--hovered {
+  background: #ef1717 !important;
+  border: 2px solid #820a0a !important;
+  z-index: 9;
+}
 
 .map-only {
   display: flex;

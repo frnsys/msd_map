@@ -60,16 +60,23 @@ function createNumberLine(selector, slug, name, data, range, labels, fmtRange) {
     point.style.top = `-${top}px`;
     point.classList.add('number-line--point');
     point.id = `number-line--${slug}-${key}`;
+    point.dataset.key = key;
 
     point.addEventListener('mouseenter', () => {
-      point.style.background = '#33C377';
+      point.classList.add('number-line--hovered');
       tooltip.style.display = 'block';
       tooltip.style.left = `calc(${p*100}% + ${radius/2}px)`;
       tooltip.style.top = `${top}px`;
       tooltip.innerText = `${key}: ${data[key]['label']} (Rank: ${data[key]['rank']})`;
+      [...document.querySelectorAll(`[data-key=${key}]`)].forEach((el) => {
+        el.classList.add('number-line--hovered');
+      });
     });
     point.addEventListener('mouseleave', () => {
-      point.style.background = '#5D5DB6';
+      point.classList.remove('number-line--hovered');
+      [...document.querySelectorAll(`[data-key=${key}]`)].forEach((el) => {
+        el.classList.remove('number-line--hovered');
+      });
       tooltip.style.display = 'none';
     });
 

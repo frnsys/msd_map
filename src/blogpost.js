@@ -53,8 +53,8 @@ stateSelect.addEventListener('change', (ev) => {
     el.classList.remove('number-line--focused');
   });
   if (val !== 'all') {
-    document.getElementById(`number-line--median-income-${val}`).classList.add('number-line--focused');
-    document.getElementById(`number-line--median-debt-${val}`).classList.add('number-line--focused');
-    document.getElementById(`number-line--percent-change-${val}`).classList.add('number-line--focused');
+    [...document.querySelectorAll(`[data-key=${val}]`)].forEach((el) => {
+      el.classList.add('number-line--focused');
+    });
   }
 });
