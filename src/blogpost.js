@@ -1,28 +1,54 @@
 import createNumberLine from './numberLine';
-import states from '../data/gen/states.json';
+import {data,meta} from '../data/gen/numberline.json';
 
-createNumberLine('#sci-number-line', 'Median School Concentration', states['sci'], [0, 10000], ['Pure Competition', 'Pure Monopoly']);
-createNumberLine('#enrollment-number-line', 'Total Enrollment', states['enrollment'], [0, Math.max(...Object.values(states['enrollment']))], ['', '']);
+console.log(data);
+
+createNumberLine(
+  '#income-number-line',
+  'median-income',
+  'Median Income (2018)',
+  data['median_income'],
+  meta['median_income']['range'],
+  ['', '']
+);
+createNumberLine(
+  '#debt-number-line',
+  'median-debt',
+  'Median Student Loan Debt (2019)',
+  data['median_debt'],
+  meta['median_debt']['range'],
+  ['', '']
+);
+createNumberLine(
+  '#change-number-line',
+  'percent-change',
+  'Percent Change in Median Student Loan Since 2009',
+  data['2009_change'],
+  meta['2009_change']['range'],
+  ['', '']
+);
 
 // State selector for the number line
-let sciStateSelect = document.getElementById('sci-number-line-select');
+let states = Object.keys(data['median_income']);
+let stateSelect = document.getElementById('number-line-select');
 let allStates = document.createElement('option');
 allStates.innerText = 'All States';
 allStates.value = 'all';
-sciStateSelect.append(allStates);
-Object.keys(states['sci']).sort((a, b) => a.localeCompare(b)).forEach((key) => {
+stateSelect.append(allStates);
+states.sort((a, b) => a.localeCompare(b)).forEach((key) => {
   let opt = document.createElement('option');
   opt.innerText = key;
   opt.value = key;
-  sciStateSelect.append(opt);
+  stateSelect.append(opt);
 });
-sciStateSelect.addEventListener('change', (ev) => {
+stateSelect.addEventListener('change', (ev) => {
   let val = ev.target.value;
   [...document.querySelectorAll('.number-line--focused')].forEach((el) => {
     el.classList.remove('number-line--focused');
   });
   if (val !== 'all') {
-    document.getElementById(`number-line--median-school-concentration-${val}`).classList.add('number-line--focused');
-    document.getElementById(`number-line--total-enrollment-${val}`).classList.add('number-line--focused');
+    document.getElementById(`number-line--median-income-${val}`).classList.add('number-line--focused');
+    document.getElementById(`number-line--median-debt-${val}`).classList.add('number-line--focused');
+    document.getElementById(`number-line--percent-change-${val}`).classList.add('number-line--focused');
   }
 });

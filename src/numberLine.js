@@ -1,4 +1,4 @@
-function createNumberLine(selector, name, data, range, labels) {
+function createNumberLine(selector, slug, name, data, range, labels) {
   let parent = document.querySelector(selector);
   let container = document.createElement('div');
   container.style.width = '100%';
@@ -45,7 +45,7 @@ function createNumberLine(selector, name, data, range, labels) {
   let radius = 12;
   let top = radius/2 - thickness/2;
   Object.keys(data).forEach((key) => {
-    let val = data[key];
+    let val = data[key]['val'];
     let p = (val-range[0])/(range[1] - range[0]);
 
     let point = document.createElement('div');
@@ -58,14 +58,14 @@ function createNumberLine(selector, name, data, range, labels) {
     point.style.left = `${p*100}%`;
     point.style.top = `-${top}px`;
     point.classList.add('number-line--point');
-    point.id = `number-line--${name.toLowerCase().replace(/ /g, '-')}-${key}`;
+    point.id = `number-line--${slug}-${key}`;
 
     point.addEventListener('mouseenter', () => {
       point.style.background = '#33C377';
       tooltip.style.display = 'block';
       tooltip.style.left = `calc(${p*100}% + ${radius/2}px)`;
       tooltip.style.top = `${top}px`;
-      tooltip.innerText = `${key}: ${val.toLocaleString()}`;
+      tooltip.innerText = `${key}: ${data[key]['label']} (Rank: ${data[key]['rank']})`;
     });
     point.addEventListener('mouseleave', () => {
       point.style.background = '#5D5DB6';
