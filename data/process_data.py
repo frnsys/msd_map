@@ -101,7 +101,7 @@ QUERY_FIELDS = {
     'n': ['S', 'I', 'Y'],
 
     # average published tuition + fees for schools in zone
-    'AVGSP': ['S', 'I', 'Y'],
+    'AVGTF': ['S', 'I', 'Y'],
 
     # average total price for students living on campus for schools in zone
     # 'AVGCINSON': ['S', 'I', 'Y'],
