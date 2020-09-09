@@ -4,7 +4,7 @@ const dev = process.env.NODE_ENV !== 'production';
 module.exports = {
   entry: {
     'main': ['@babel/polyfill', './src/main'],
-    'blogpost': ['@babel/polyfill', './src/blogpost'],
+    'numberLines': ['@babel/polyfill', './src/numberLines'],
   },
   output: {
     path: path.resolve(__dirname, 'dist'),

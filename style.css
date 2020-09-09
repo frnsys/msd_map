@@ -607,7 +607,7 @@ button {
 }
 
 #number-lines {
-  display: none;
+  margin: 4em 0;
 }
 .number-line {
   margin: 1em 0;

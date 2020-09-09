@@ -133,6 +133,12 @@
             <h1>Summary Statistics</h1>
             <p>Between the 2008–09 and 2018–19 academic years, the higher education industry has undergone major changes: the wave of post-recession enrollment, a boom and bust of for-profit institutions, traditional not-for-profit higher ed adopting for-profit business strategies, and a funding crisis coupled with bloating costs borne by students and increasing <a href="https://phenomenalworld.org/analysis/the-geography-and-cost-of-higher-education-post-2008">enrollment concentration</a> across schools. As these shifts unfolded, the volume of student debt ballooned from $675 billion at the end of 2008 to over $1.6 trillion in 2019.</p>
             <p>We have compiled data on most of these issues and summarized key statistics below. Higher education institutional summary statistics look at trends in the country for schools that have physical campuses as sourced from the Integrated Postsecondary Education Data System (<span class="smallcaps">IPEDS</span>). Zip-level summary statistics look at trends across the country in income, indebtedness, and institutional choice. Student loan data is sourced from a repeated cross-sectional credit archive sample on 18–35 year-olds with student loan activity conducted by Experian Information Solutions, Inc. Income and population statistics are sourced from the American Community Survey. Concentration, enrollment, and school prices at the <span class="smallcaps">ZCTA</span>-level are calculated according to 45 minute commuting distances. All tables are reproducible with the data that’s <a href="#download">available for download</a>.</p>
+            <div id="number-lines">
+                <select id="number-line-select"></select>
+                <div id="income-number-line"></div>
+                <div id="debt-number-line"></div>
+                <div id="change-number-line"></div>
+            </div>
             <h2></h2>
             <p class="summary-notes"></p>
             <div class="summary-tabs-label">Choose your Level of Analysis:</div>
@@ -291,6 +297,7 @@
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="dist/main.js"></script>
+    <script src="dist/numberLines.js"></script>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-151742079-2"></script>

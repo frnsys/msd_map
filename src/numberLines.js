@@ -6,33 +6,40 @@ let formatter = new Intl.NumberFormat('en-US', {
   currency: 'USD',
 });
 
-createNumberLine(
+let numberLines = [];
+let income = createNumberLine(
   '#income-number-line',
   'median-income',
   'Median Income (2018)',
   data['median_income'],
   meta['median_income']['range'],
   ['', ''],
-  (val) => formatter.format(val)
+  (val) => formatter.format(val),
+  numberLines
 );
-createNumberLine(
+numberLines.push(income);
+let debt = createNumberLine(
   '#debt-number-line',
   'median-debt',
   'Median Student Loan Debt (2019)',
   data['median_debt'],
   meta['median_debt']['range'],
   ['', ''],
-  (val) => formatter.format(val)
+  (val) => formatter.format(val),
+  numberLines
 );
-createNumberLine(
+numberLines.push(debt);
+let change = createNumberLine(
   '#change-number-line',
   'percent-change',
   'Percent Change in Median Student Loan Since 2009',
   data['2009_change'],
   meta['2009_change']['range'],
   ['', ''],
-  (val) => `${val}%`
+  (val) => `${val}%`,
+  numberLines
 );
+numberLines.push(change);
 
 // State selector for the number line
 let states = Object.keys(data['median_income']);

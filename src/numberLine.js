@@ -1,8 +1,8 @@
-function createNumberLine(selector, slug, name, data, range, labels, fmtRange) {
+function createNumberLine(selector, slug, name, data, range, labels, fmtRange, linked) {
   let parent = document.querySelector(selector);
   let container = document.createElement('div');
   container.style.width = '100%';
-  container.style.height = '120px';
+  container.style.height = '70px';
   container.classList.add('number-line');
   parent.appendChild(container);
 
@@ -45,10 +45,34 @@ function createNumberLine(selector, slug, name, data, range, labels, fmtRange) {
 
   let radius = 12;
   let top = radius/2 - thickness/2;
+
+  function showTooltip(key) {
+    let p = lefts[key];
+    tooltip.style.display = 'block';
+    tooltip.style.left = `calc(${p*100}% + ${radius/2}px)`;
+    tooltip.style.top = `${top}px`;
+    tooltip.innerText = `${key}: ${data[key]['label']} (Rank: ${data[key]['rank']})`;
+    [...document.querySelectorAll(`[data-key=${key}]`)].forEach((el) => {
+      el.classList.add('number-line--hovered');
+    });
+  }
+  function hideTooltip(key) {
+    [...document.querySelectorAll(`[data-key=${key}]`)].forEach((el) => {
+      el.classList.remove('number-line--hovered');
+    });
+    tooltip.style.display = 'none';
+  }
+
+
+  let lefts = {};
   Object.keys(data).forEach((key) => {
     let val = data[key]['val'];
     let p = (val-range[0])/(range[1] - range[0]);
+    lefts[key] = p;
+  });
 
+  Object.keys(data).forEach((key) => {
+    let p = lefts[key];
     let point = document.createElement('div');
     point.style.position = 'absolute';
     point.style.height = `${radius}px`;
@@ -64,24 +88,22 @@ function createNumberLine(selector, slug, name, data, range, labels, fmtRange) {
 
     point.addEventListener('mouseenter', () => {
       point.classList.add('number-line--hovered');
-      tooltip.style.display = 'block';
-      tooltip.style.left = `calc(${p*100}% + ${radius/2}px)`;
-      tooltip.style.top = `${top}px`;
-      tooltip.innerText = `${key}: ${data[key]['label']} (Rank: ${data[key]['rank']})`;
-      [...document.querySelectorAll(`[data-key=${key}]`)].forEach((el) => {
-        el.classList.add('number-line--hovered');
-      });
+      showTooltip(key);
+      linked.forEach((l) => l.showTooltip(key));
     });
     point.addEventListener('mouseleave', () => {
       point.classList.remove('number-line--hovered');
-      [...document.querySelectorAll(`[data-key=${key}]`)].forEach((el) => {
-        el.classList.remove('number-line--hovered');
-      });
-      tooltip.style.display = 'none';
+      hideTooltip(key);
+      linked.forEach((l) => l.hideTooltip(key));
     });
 
     line.appendChild(point);
   });
+
+  return {
+    showTooltip,
+    hideTooltip
+  };
 }
 
 export default createNumberLine;
