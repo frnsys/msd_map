@@ -7,6 +7,7 @@ import setupUI from './ui';
 import config from './config';
 import styles from './styles';
 import db from './db';
+import SimpleLightbox from 'simple-lightbox';
 
 // import createNumberLine from './numberLine';
 // import states from '../data/gen/states.json';
@@ -203,3 +204,6 @@ info.reset();
 
 // For getting bounds
 // window.getbbox = () => map.map.getBounds();
+
+// Visualization lightbox
+new SimpleLightbox({elements: '.viz-gallery a'});

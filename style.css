@@ -658,6 +658,21 @@ button {
   overflow-y: hidden;
 }
 
+.viz-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.viz-gallery a {
+  flex-basis: 24%;
+  border: 1px solid #ddd;
+  padding: 0.5em;
+  margin-bottom: 0.75em;
+}
+.viz-gallery img {
+  max-width: 100%;
+}
+
 @media only screen and (max-width: 1080px) {
   #icon-legend {
     display: none;
