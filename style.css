@@ -733,6 +733,10 @@ button {
   #stage {
     height: 75vh;
   }
+
+  .viz-gallery a {
+    flex-basis: 32%;
+  }
 }
 
 @media only screen and (max-width: 480px) {
@@ -744,5 +748,9 @@ button {
   }
   #summary-tabs--school-type > div:nth-child(odd) {
     border-left: none;
+  }
+
+  .viz-gallery a {
+    flex-basis: 49%;
   }
 }
