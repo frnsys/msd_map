@@ -13,7 +13,7 @@ const MAPBOX_TOKEN = config.MAPBOX_TOKEN;
 
 let MAP_ID = 'frnsys.msd__3_0_beta';
 let INITIAL_CAT = {
-  S: 'public',
+  S: 'allschools',
   I: '45min',
   Y: '2018'
 };

@@ -77,14 +77,14 @@ function explain(feats, cat, focusedSchools) {
         return `
           <h2>${zipcode}</h2>
           <span class="variable-name">SCI</span>: ${d['SCI'] > 0 ? d['SCI'].toFixed(2) : 'Education Desert'}<br/>
-          <span class="variable-name">Average Net Price</span>: ${d['AVGNP'] || 'N/A'}<br/>
-          <span class="variable-name">Average Tuition & Fees</span>: ${d['AVGTF'] || 'N/A'}<br/>
+          <span class="variable-name">Average Net Price</span>: ${formatter.format(d['AVGNP']) || 'N/A'}<br/>
+          <span class="variable-name">Average Tuition & Fees</span>: ${formatter.format(d['AVGTF']) || 'N/A'}<br/>
           <span class="variable-name">Number of Schools</span>: ${d['n'] || 'N/A'}<br/>
           <span class="variable-name">Enrollment</span>: ${d['ENROLLED'] || 0}<br/>
           <span class="variable-name">25mi Zone Population Estimate</span>: ${zipData['ZCTAZONEPOP'] || 'N/A'}<br/>
           <span class="variable-name">Median Income</span>: ${zipData['MEDIANINCOME'] ? formatter.format(zipData['MEDIANINCOME']) : 'N/A'}<br/>
           <span class="variable-name">Median Total Student Loans Balance</span>: ${d['STU_TOT_BAL'] ? formatter.format(d['STU_TOT_BAL']) : 'N/A'}<br/>
-          ${otherZips.length > 0 ? `<div class="other-zctas"><span class="variable-name">Other zips here</span>: ${otherZips.join(', ')}</div>` : ''}
+          ${otherZips.length > 0 ? `<div class="other-zctas"><span class="variable-name">Other zips here</span>: ${otherZips.slice(0, 5).join(', ')}${otherZips.length > 5 ? `, ... +${otherZips.length-5} more <em>(zoom in to see)</em>.` : ''}</div>` : ''}
 
           ${feats.length == 1 && d['n'] ? `
             <h2>Schools for Zips</h2>
