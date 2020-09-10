@@ -285,6 +285,7 @@ for i, key in enumerate(all_years.groupby(['UNITID', 'ADDR', 'MAPNAME']).groups.
 
 all_years = all_years.groupby('YEAR')
 reverse_geocode_lookup = json.load(open('gen/reverse_geocode_lookup.json'))
+coordinate_corrections = json.load(open('gen/coordinate_corrections.json'))
 for y in CATEGORIES['Y']:
     # TODO these are overwriting each year atm
     df = all_years.get_group(y)
@@ -293,6 +294,7 @@ for y in CATEGORIES['Y']:
         row_data = dict(row._asdict())
         schoolkey = '__'.join(str(v) if v is not None else 'nan' for v in [row_data[k] for k in ['UNITID', 'ADDR', 'MAPNAME']])
         id = schoolidx_to_featid[schoolkey]
+        fixed_coords = coordinate_corrections.get(schoolkey, {})
 
         # Get zipcode into proper format
         zipcode = row_data['ZIP']
@@ -307,12 +309,19 @@ for y in CATEGORIES['Y']:
         if id not in school_feats:
             props = {k: schools_by_year[id][y][k] for k in SCHOOL_GEOJSON_PROPS}
             props['years'] = []
+
+            # Get corrected coordinates, if any
+            coord_key = '{}_{}'.format(row_data['LATITUDE'], row_data['LONGITUD'])
+            coords = fixed_coords.get(coord_key, {
+                'lat': row_data['LATITUDE'],
+                'lng': row_data['LONGITUD']
+            })
             school_feats[id] = {
                 'id': id,
                 'type': 'Feature',
                 'geometry': {
                     'type': 'Point',
-                    'coordinates': (row_data['LONGITUD'], row_data['LATITUDE']),
+                    'coordinates': (coords['lng'], coords['lat']),
                 },
                 'properties': props
             }
