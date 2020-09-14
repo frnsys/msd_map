@@ -29,7 +29,6 @@ if LOA == 'ZCTA':
     ZONE_LOA_FIELD = 'ZCTA5CE10'
     SHAPE_LOA_FIELD = 'ZCTA5CE10'
     LOA_FIELD_DIGITS = 5
-    GEOJSON_LOA_KEY = 'zipcode'
     REF_GEOJSON = 'src/zipcodes.geojson'
 elif LOA == 'CD':
     AREA_LEVEL_PATH = 'src/congressional_districts/CD_Level.{I}.csv'
@@ -39,7 +38,6 @@ elif LOA == 'CD':
     ZONE_LOA_FIELD = 'CONG_DIST'
     SHAPE_LOA_FIELD = 'GEOID'
     LOA_FIELD_DIGITS = 4
-    GEOJSON_LOA_KEY = 'cong_dist'
     REF_GEOJSON = 'src/congressional_districts/shapes/cds.geojson'
 
 SCHOOL_FIELDS = [
@@ -225,7 +223,7 @@ for i in CATEGORIES['I']:
         df = df.where(pd.notnull(df), None)
         for row in tqdm(df.itertuples(), total=len(df), desc='{Y}/{I} {loa}'.format(**cat, loa=LOA)):
             row_data = dict(row._asdict())
-            if row_data[CSV_LOA_FIELD] is None or math.isnan(row_data[ZONE_LOA_FIELD]): continue
+            if row_data[CSV_LOA_FIELD] is None or math.isnan(row_data[CSV_LOA_FIELD]): continue
             loa_key = str(int(row_data[CSV_LOA_FIELD])).zfill(LOA_FIELD_DIGITS)
             loa_keys.add(loa_key)
 
@@ -430,7 +428,7 @@ for key in map_keys:
         if keys is not None:
             f['properties'] = {subKey(k, drop=cat): f['properties'][k] for k in keys}
 
-        f['properties'][GEOJSON_LOA_KEY] = loa_key
+        f['properties']['loa_key'] = loa_key
         bboxes[loa_key] = shape(f['geometry']).bounds
         geojson.append(f)
 
@@ -445,7 +443,7 @@ for key in map_keys:
 
             if 'id' in f:
                 del f['id']
-            f['properties'][GEOJSON_LOA_KEY] = loa_key
+            f['properties']['loa_key'] = loa_key
             bboxes[loa_key] = shape(f['geometry']).bounds
             geojson.append(f)
 
