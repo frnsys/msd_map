@@ -1,11 +1,13 @@
-"""Merges zipcode geojson data
-and also merges in other zipcode data.
+"""Merges zipcode/congressional district geojson data
+and also merges in other zipcode/congressional district data.
 
 Note: occurences of "." in a column name
 are replaced w/ "_"
 """
 
 import os
+import sys
+import math
 import ftfy
 import json
 import fiona
@@ -15,6 +17,30 @@ from tqdm import tqdm
 from itertools import product
 from shapely.geometry import shape
 from collections import defaultdict
+
+# loa = Level of analysis
+LOA = sys.argv[1] # 'ZCTA' OR 'CD'
+
+if LOA == 'ZCTA':
+    AREA_LEVEL_PATH = 'src/zips/ZipLevel.{I}.csv'
+    ZONE_LEVEL_PATH = 'src/school_zones/{Y}.{I}.Schoolzones.SCI.csv'
+    SHAPES_PATH = 'src/zctas/tl_2017_us_zcta510.shp'
+    CSV_LOA_FIELD = 'ZCTA'
+    ZONE_LOA_FIELD = 'ZCTA5CE10'
+    SHAPE_LOA_FIELD = 'ZCTA5CE10'
+    LOA_FIELD_DIGITS = 5
+    GEOJSON_LOA_KEY = 'zipcode'
+    REF_GEOJSON = 'src/zipcodes.geojson'
+elif LOA == 'CD':
+    AREA_LEVEL_PATH = 'src/congressional_districts/CD_Level.{I}.csv'
+    ZONE_LEVEL_PATH = 'src/congressional_districts/zones/{Y}.{I}.Schoolzones.CD.csv'
+    SHAPES_PATH = 'src/congressional_districts/shapes/tl_2018_us_cd116.shp'
+    CSV_LOA_FIELD = 'CONG_DIST'
+    ZONE_LOA_FIELD = 'CONG_DIST'
+    SHAPE_LOA_FIELD = 'GEOID'
+    LOA_FIELD_DIGITS = 4
+    GEOJSON_LOA_KEY = 'cong_dist'
+    REF_GEOJSON = 'src/congressional_districts/shapes/cds.geojson'
 
 SCHOOL_FIELDS = [
     'MAPNAME',
@@ -72,7 +98,9 @@ CATEGORIES = {
         '2019',
     ]
 }
-CSV_ZIPCODE_FIELD = 'ZCTA'
+if LOA == 'CD':
+    CATEGORIES['I'] = ['45min']
+
 
 # Make separate maps on these keys
 # MAPS_BY = ['I']
@@ -90,14 +118,12 @@ FEAT_FIELDS = {
     'AVGNP': ['S', 'I', 'Y'],
 
     'MEDIANINCOME': ['Y'],
-    'STU_TOT_BAL': ['Y'],
+    'STU_TOT_BAL': ['Y']
 }
 
 # These are queried separately when a feature is focused on,
 # instead of being part of the feature itself
 QUERY_FIELDS = {
-    'ENROLLED': ['S', 'I', 'Y'],
-
     'n': ['S', 'I', 'Y'],
 
     # average published tuition + fees for schools in zone
@@ -115,10 +141,14 @@ QUERY_FIELDS = {
     # average net price for low income students (fam income < 30k) for schools in zone
     # 'AVGNPI30': ['S', 'I', 'Y'],
 
-    'SINGLEZCTAPOP': ['Y'],
     'MEDIANINCOME': ['Y'],
-    'ZCTAZONEPOP': ['Y']
 }
+if LOA == 'ZCTA':
+    QUERY_FIELDS['ENROLLED'] = ['S', 'I', 'Y']
+    QUERY_FIELDS['SINGLEZCTAPOP'] = ['Y']
+    QUERY_FIELDS['ZCTAZONEPOP'] = ['Y']
+elif LOA == 'CD':
+    QUERY_FIELDS['CDPOP'] = ['Y']
 
 # Use these instead of the actual data max
 # To deal with outliers squashing the visual data range
@@ -182,31 +212,30 @@ def subKey(key, drop):
     return keyForCat(keep, k=k)
 
 
-zctas = set()
+loa_keys = set()
 data = defaultdict(dict)
 query_data = defaultdict(dict)
 field_data = defaultdict(lambda: defaultdict(list))
 for i in CATEGORIES['I']:
-    df_all = pd.read_csv('src/zips/ZipLevel.{I}.csv'.format(I=i))
+    df_all = pd.read_csv(AREA_LEVEL_PATH.format(I=i))
     groups = df_all.groupby('YEAR')
     for y in CATEGORIES['Y']:
         cat = {'Y': y, 'I': i}
         df = groups.get_group(int(y))
         df = df.where(pd.notnull(df), None)
-        for row in tqdm(df.itertuples(), total=len(df), desc='{Y}/{I} ZCTA'.format(**cat)):
+        for row in tqdm(df.itertuples(), total=len(df), desc='{Y}/{I} {loa}'.format(**cat, loa=LOA)):
             row_data = dict(row._asdict())
-            if row_data[CSV_ZIPCODE_FIELD] is None: continue
-            zipcode = str(int(row_data[CSV_ZIPCODE_FIELD])).zfill(5)
-            assert len(zipcode) == 5
-            zctas.add(zipcode)
+            if row_data[CSV_LOA_FIELD] is None or math.isnan(row_data[ZONE_LOA_FIELD]): continue
+            loa_key = str(int(row_data[CSV_LOA_FIELD])).zfill(LOA_FIELD_DIGITS)
+            loa_keys.add(loa_key)
 
             for datadict, fields in [(data, FEAT_FIELDS), (query_data, QUERY_FIELDS)]:
                 for k, cats in fields.items():
-                    # ZCTA year-level stats
+                    # LOA year-level stats
                     if cats == ['Y']:
                         key = keyForCat({'Y': y}, k)
                         val = row_data[k]
-                        datadict[zipcode][key] = val
+                        datadict[loa_key][key] = val
                         field_data[k][key].append(val)
 
                     elif 'I' not in cats: continue
@@ -215,14 +244,14 @@ for i in CATEGORIES['I']:
                             s_ = KEY_FIXES_MAP.get(s, s)
                             key = keyForCat({'Y': y, 'I': i, 'S': s}, k)
                             val = row_data['{}_{}'.format(k, s_)]
-                            datadict[zipcode][key] = val
+                            datadict[loa_key][key] = val
                             field_data[k][key].append(val)
 
                             # if k == 'AVGNP' and val is not None and val > 75000:
                             #     print(f'{zipcode} y={y},i={i},s={s} -> {val}')
                     else:
                         key = keyForCat({t: cat[t] for t in cats}, k)
-                        datadict[zipcode][key] = row_data[k]
+                        datadict[loa_key][key] = row_data[k]
                         field_data[k][key].append(val)
 
 # Compute ranges
@@ -260,14 +289,14 @@ for s in ['min']:
 
 
 # School-level data
-# Associate schools with ZCTAs and load school data
+# Associate schools with LOAs and load school data
 # TODO how to do this with minimal redundancy
 schools_by_year = defaultdict(dict)
 schools_geojson = {
     'type': 'FeatureCollection',
     'features': []
 }
-data_by_key_zip = defaultdict(lambda: defaultdict(lambda: {'schools': []}))
+data_by_key_loa = defaultdict(lambda: defaultdict(lambda: {'schools': []}))
 
 # School-level
 school_feats = {}
@@ -330,24 +359,23 @@ for y in CATEGORIES['Y']:
     for i in CATEGORIES['I']:
         cat = {'Y': y, 'I': i}
         key = keyForCat(cat)
-        fname = 'src/school_zones/{Y}.{I}.Schoolzones.SCI.csv'.format(**cat)
+        fname = ZONE_LEVEL_PATH.format(**cat)
         try:
             df = pd.read_csv(fname, encoding='ISO-8859-1')
         except FileNotFoundError:
             print('Missing {}'.format(fname))
             continue
-        zipcodes = set()
         for row in tqdm(df.itertuples(), total=len(df), desc='{Y}/{I} School Zones'.format(**cat)):
             row_data = dict(row._asdict())
-            if row_data['ZCTA5CE10'] is None: continue
-            zipcode = str(int(row_data['ZCTA5CE10'])).zfill(5)
+            if row_data[ZONE_LOA_FIELD] is None or math.isnan(row_data[ZONE_LOA_FIELD]): continue
+            loa_key = str(int(row_data[ZONE_LOA_FIELD])).zfill(LOA_FIELD_DIGITS)
             if not isinstance(row_data['ADDR'], str):
                 lat, lng = row_data['LATITUDE'], row_data['LONGITUD']
                 row_data['ADDR'] = reverse_geocode_lookup['{},{}'.format(lat, lng)]
             # Use ftfy to fix encoding issues (double encoded utf8, I believe)
             schoolkey = '__'.join(ftfy.fix_text(str(v)) if v is not None else 'nan' for v in [row_data[k] for k in ['UNITID', 'ADDR', 'MAPNAME']])
             id = schoolidx_to_featid[schoolkey]
-            data_by_key_zip[key][zipcode]['schools'].append(id)
+            data_by_key_loa[key][loa_key]['schools'].append(id)
 
         # Zip level data
         key_map = {}
@@ -355,19 +383,22 @@ for y in CATEGORIES['Y']:
             for fullkey in keysForCats(cats, fixed=cat, k=k):
                 subkey = subKey(fullkey, drop=cat)
                 key_map[fullkey] = subkey
-        for zipcode in tqdm(zctas, desc='{Y}/{I} Zip Data'.format(**cat)):
+        for loa_key in tqdm(loa_keys, desc='{Y}/{I} {loa} Data'.format(**cat, loa=LOA)):
             for fullkey, subkey in key_map.items():
-                data_by_key_zip[key][zipcode][subkey] = query_data[zipcode][fullkey]
+                data_by_key_loa[key][loa_key][subkey] = query_data[loa_key][fullkey]
 
 for school in school_feats.values():
     school['properties']['years'] = ','.join(school['properties']['years'])
     schools_geojson['features'].append(school)
 
-# Get missing zctas to fill in
-zipcode_geojson = json.load(open('src/zipcodes.geojson'))
-for f in zipcode_geojson['features']:
-    zipcode = f['properties']['ZCTA5CE10']
-    zctas.remove(zipcode)
+# Get missing features to fill in
+ref_geojson = json.load(open(REF_GEOJSON))
+for f in ref_geojson['features']:
+    loa_key = f['properties'][SHAPE_LOA_FIELD]
+    try:
+        loa_keys.remove(loa_key)
+    except KeyError:
+        continue
 
 # Build geojson
 bboxes = {}
@@ -386,39 +417,41 @@ for key in map_keys:
         keys = None
 
     geojson = []
-    for f in tqdm(zipcode_geojson['features'], desc='Geojson for {}'.format(key)):
+    for f in tqdm(ref_geojson['features'], desc='Geojson for {}'.format(key)):
         f = {**f}
-        del f['id']
-        zipcode = f['properties']['ZCTA5CE10']
+        if 'id' in f:
+            del f['id']
+        loa_key = f['properties'][SHAPE_LOA_FIELD]
 
         # Only keep non-null values
-        f['properties'] = {k: v for k, v in data[zipcode].items() if v is not None}
+        f['properties'] = {k: v for k, v in data[loa_key].items() if v is not None}
 
         # Drop extraneous properties
         if keys is not None:
             f['properties'] = {subKey(k, drop=cat): f['properties'][k] for k in keys}
 
-        f['properties']['zipcode'] = zipcode
-        bboxes[zipcode] = shape(f['geometry']).bounds
+        f['properties'][GEOJSON_LOA_KEY] = loa_key
+        bboxes[loa_key] = shape(f['geometry']).bounds
         geojson.append(f)
 
     # Fill in leftover zctas
-    if zctas:
-        for f in tqdm(fiona.open('src/zctas/tl_2017_us_zcta510.shp'), desc='Filling missing ZCTAs'):
-            zipcode = f['properties']['ZCTA5CE10']
-            if zipcode not in zctas: continue
+    if loa_keys:
+        for f in tqdm(fiona.open(SHAPES_PATH), desc='Filling missing {}s'.format(LOA)):
+            loa_key = f['properties'][SHAPE_LOA_FIELD]
+            if loa_key not in loa_keys: continue
 
             # Only keep non-null values
-            f['properties'] = {k: v for k, v in data[zipcode].items() if v is not None}
+            f['properties'] = {k: v for k, v in data[loa_key].items() if v is not None}
 
-            del f['id']
-            f['properties']['zipcode'] = zipcode
-            bboxes[zipcode] = shape(f['geometry']).bounds
+            if 'id' in f:
+                del f['id']
+            f['properties'][GEOJSON_LOA_KEY] = loa_key
+            bboxes[loa_key] = shape(f['geometry']).bounds
             geojson.append(f)
 
-    if not os.path.exists('gen/zctas'):
-        os.makedirs('gen/zctas')
-    with open('gen/zctas/{}.geojson'.format(key), 'w') as f:
+    if not os.path.exists('gen/tile_data/{}'.format(LOA)):
+        os.makedirs('gen/tile_data/{}'.format(LOA))
+    with open('gen/tile_data/{}/{}.geojson'.format(LOA, key), 'w') as f:
         # Write one feature per line, so tippecanoe can process in parallel
         f.write('\n'.join(json.dumps(feat) for feat in geojson))
 
@@ -448,6 +481,8 @@ region_bboxes['American Samoa'] = [-171.84922996050645, -14.93534547358692, -168
 
 
 print('Saving files...')
+
+# Common to all LOA
 with open('gen/regions.json', 'w') as f:
     json.dump(region_bboxes, f)
 
@@ -461,26 +496,32 @@ for id, school in schools_by_year.items():
     with open('gen/schools/{}.json'.format(id), 'w') as f:
         json.dump(school, f)
 
-with open('gen/meta.json', 'w') as f:
+# LOA specific
+if not os.path.exists('gen/{}'.format(LOA)):
+    os.makedirs('gen/{}'.format(LOA))
+
+with open('gen/{}/meta.json'.format(LOA), 'w') as f:
     json.dump(meta, f)
 
-if not os.path.exists('gen/bboxes'):
-    os.makedirs('gen/bboxes')
+bboxes_dir = 'gen/{}/bboxes'.format(LOA)
+if not os.path.exists(bboxes_dir):
+    os.makedirs(bboxes_dir)
 for zip, bbox in bboxes.items():
-    with open('gen/bboxes/{}.json'.format(zip), 'w') as f:
+    with open('{}/{}.json'.format(bboxes_dir, zip), 'w') as f:
         json.dump(bbox, f)
 
-if not os.path.exists('zips'):
-    os.makedirs('zips')
-for key, schools_by_zip in data_by_key_zip.items():
-    for zip, schools in schools_by_zip.items():
-        path = 'gen/zips/{}'.format(key)
+loa_path = 'gen/{}/by_cat'.format(LOA)
+if not os.path.exists(loa_path):
+    os.makedirs(loa_path)
+for key, schools_by_loa in data_by_key_loa.items():
+    for loa_key, schools in schools_by_loa.items():
+        path = '{}/{}'.format(loa_path, key)
         if not os.path.exists(path):
             os.makedirs(path)
-        with open('{}/{}.json'.format(path, zip), 'w') as f:
+        with open('{}/{}.json'.format(path, loa_key), 'w') as f:
                 json.dump(schools, f)
 
-with open('gen/zctas.json', 'w') as f:
-    json.dump(data, f)
+# with open('gen/{}/data.json'.format(LOA), 'w') as f:
+#     json.dump(data, f)
 
 print('Done')

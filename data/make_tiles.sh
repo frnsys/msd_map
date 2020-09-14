@@ -1,15 +1,12 @@
 #!/bin/bash
 
 # Clean up
-for path in gen/zctas/*.geojson; do
-    f=${path##*/}
-    output="gen/tiles/${f%.*}.mbtiles"
-    rm "$output"
-
-    # Generate ZCTA tiles
-    # tippecanoe -l "zctas" -o "$output" -P -z12 --coalesce-densest-as-needed --hilbert --extend-zooms-if-still-dropping --generate-ids --detect-shared-borders --simplify-only-low-zooms --no-tiny-polygon-reduction --accumulate-attribute=zipcode:comma -D 11 $path
-    tippecanoe -l "zctas" -o "$output" -P -z12 --coalesce-densest-as-needed --hilbert --extend-zooms-if-still-dropping --generate-ids --detect-shared-borders -S 10  --accumulate-attribute=zipcode:comma -D 11 $path
+for dir in gen/tile_data/*/; do
+    loa=$(basename $dir)
+    for path in "$dir"/*.geojson; do
+        f=${path##*/}
+        output="gen/tiles/${loa}__${f%.*}.mbtiles"
+        rm "$output"
+        tippecanoe -l "data" -o "$output" -P -z12 --coalesce-densest-as-needed --hilbert --extend-zooms-if-still-dropping --generate-ids --detect-shared-borders -S 10  --accumulate-attribute=zipcode:comma -D 11 $path
+    done
 done
-
-# # Merge tilesets
-# tile-join -o msd.mbtiles zctas.mbtiles schools.mbtiles
