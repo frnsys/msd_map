@@ -163,7 +163,7 @@ RANGE_MINS = {
 }
 RANGE_MAXS = {
     'AVGNP': 20000,
-    'STU_TOT_BAL': 30000,
+    'STU_TOT_BAL': 25000,
     'MEDIANINCOME': 40000,
 }
 
