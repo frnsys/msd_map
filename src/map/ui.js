@@ -1,6 +1,5 @@
 import util from './util';
 import styles from './styles';
-import config from '../config';
 import regions from '../../data/gen/regions.json';
 
 

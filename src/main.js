@@ -4,6 +4,7 @@ import SimpleLightbox from 'simple-lightbox';
 
 // Maps
 mapboxgl.accessToken = config.MAPBOX_TOKEN;
+
 const maps = {};
 maps['zcta'] = MSDMap('zcta', {
   props: config.ZCTA.INITIAL_PROPS,

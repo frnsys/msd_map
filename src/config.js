@@ -140,36 +140,40 @@ const CATS_FOR_PROPS = {
   'MEDIANINCOME': ['Y'],
   'STU_TOT_BAL': ['Y'],
 };
+const PROPS_FOR_LOA = {};
+const META = {
+  zcta: zctaData,
+  cd: cdData
+};
 const HAS_CATS = Object.keys(CATS_FOR_PROPS);
-HAS_CATS.forEach((p) => {
-  if (p in PROPS) {
-    const cat_keys = CATS_FOR_PROPS[p].sort((a, b) => a.localeCompare(b)).reduce((acc, k) => {
-      if (acc.length == 0) {
-        return Object.keys(CATS[k]).map((v) => `${k}:${v}`);
-      } else {
-        return [].concat(...acc.map((key) => Object.keys(CATS[k]).map((v) => `${key}.${k}:${v}`)));
-      }
-    }, []);
+['zcta', 'cd'].forEach((loa) => {
+  PROPS_FOR_LOA[loa] = JSON.parse(JSON.stringify(PROPS));
+  HAS_CATS.forEach((p) => {
+    if (p in PROPS) {
+      const cat_keys = CATS_FOR_PROPS[p].sort((a, b) => a.localeCompare(b)).reduce((acc, k) => {
+        if (acc.length == 0) {
+          return Object.keys(CATS[k]).map((v) => `${k}:${v}`);
+        } else {
+          return [].concat(...acc.map((key) => Object.keys(CATS[k]).map((v) => `${key}.${k}:${v}`)));
+        }
+      }, []);
 
-    cat_keys.forEach((key) => {
-      let k = `${p}.${key}`;
-      PROPS[k] = JSON.parse(JSON.stringify(PROPS[p]));
-      PROPS[k].key = k;
-      PROPS[k].range = zctaData.ranges[p];
-      PROPS[k].stats = {
-        min: zctaData.min[k]
-      };
-    });
-  }
+      cat_keys.forEach((key) => {
+        let k = `${p}.${key}`;
+        PROPS_FOR_LOA[loa][k] = JSON.parse(JSON.stringify(PROPS[p]));
+        PROPS_FOR_LOA[loa][k].key = k;
+        PROPS_FOR_LOA[loa][k].range = META[loa].ranges[p];
+        PROPS_FOR_LOA[loa][k].stats = {
+          min: META[loa].min[k]
+        };
+      });
+    }
+  });
 });
 
 const INITIAL_CAT_KEY = Object.keys(INITIAL_CAT)
   .sort((a, b) => a.localeCompare(b))
   .map((k) => `${k}:${INITIAL_CAT[k]}`).join('.');
-const INITIAL_PROPS = ['AVGNP'].map((p) => {
-  let k = HAS_CATS.includes(p) ? `${p}.${INITIAL_CAT_KEY}` : p;
-  return PROPS[k];
-});
 
 const NO_DATA = [
   'MEDIANINCOME.Y:2019',
@@ -183,10 +187,8 @@ CATS_FOR_PROPS['AVGNP'].sort((a, b) => a.localeCompare(b)).reduce((acc, k) => {
 }, []).filter((k) => k.includes('Y:2019')).forEach((k) => NO_DATA.push(`AVGNP.${k}`));
 
 const CONFIG = {
-  PROPS,
   COLORS,
   NO_DATA,
-  INITIAL_PROPS,
   INITIAL_CAT,
   CATS, HAS_CATS, CAT_PROP_EXPRS,
   CATS_FOR_PROPS,
@@ -199,6 +201,11 @@ export default {
     SHORT_NAME: 'zip',
     MIN_PLACE_LENGTH: 5,
     NO_TERRITORIES: false,
+    PROPS: PROPS_FOR_LOA['zcta'],
+    INITIAL_PROPS: ['AVGNP'].map((p) => {
+      let k = HAS_CATS.includes(p) ? `${p}.${INITIAL_CAT_KEY}` : p;
+      return PROPS_FOR_LOA['zcta'][k];
+    }),
     ...CONFIG
   },
   CD: {
@@ -207,6 +214,11 @@ export default {
     SHORT_NAME: 'district',
     MIN_PLACE_LENGTH: 4,
     NO_TERRITORIES: true,
+    PROPS: PROPS_FOR_LOA['cd'],
+    INITIAL_PROPS: ['AVGNP'].map((p) => {
+      let k = HAS_CATS.includes(p) ? `${p}.${INITIAL_CAT_KEY}` : p;
+      return PROPS_FOR_LOA['cd'][k];
+    }),
     ...CONFIG
   },
 
