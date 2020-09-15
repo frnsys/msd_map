@@ -1,5 +1,6 @@
 import config from '../config';
-import data from '../data/gen/meta.json';
+import cdData from '../data/gen/CD/meta.json';
+import zctaData from '../data/gen/ZCTA/meta.json';
 
 let params = window.location.search.substr(1).split('&').reduce((acc, param) => {
     let val = true;
@@ -11,7 +12,6 @@ let params = window.location.search.substr(1).split('&').reduce((acc, param) => 
 
 const MAPBOX_TOKEN = config.MAPBOX_TOKEN;
 
-let MAP_ID = 'frnsys.msd__3_0_beta';
 let INITIAL_CAT = {
   S: 'allschools',
   I: '45min',
@@ -30,8 +30,6 @@ const PROPS = {
     color: {
       0.0: '#ffdbdb',
       1.0: '#fa2525'
-      // 0.0: '#ffffff',
-      // 1.0: '#ffffff'
     },
     legend: {
       flip: false,
@@ -90,34 +88,7 @@ const PROPS = {
         'Data Unavailable': '#333333'
       }
     }
-  },
-
-  // Not including these as part of the map feature properties
-  // to keep tileset size down. Thus we can't use them here.
-  // 'n': {
-  //   desc: 'Number of Schools',
-  //   nick: '# Schools',
-  //   color: {
-  //     0.0: '#f5fff8',
-  //     1.0: '#32a852'
-  //   }
-  // },
-  // 'ZCTAZONEPOP': {
-  //   desc: 'Population Estimate',
-  //   nick: 'Pop. Est.',
-  //   color: {
-  //     0.0: '#fff8d6',
-  //     1.0: '#ffd721'
-  //   }
-  // },
-  // 'ENROLLED': {
-  //   desc: 'Enrollment Seats',
-  //   nick: 'Enrollment Seats',
-  //   color: {
-  //     0.0: '#ffedff',
-  //     1.0: '#c65cff'
-  //   }
-  // },
+  }
 }
 
 
@@ -184,9 +155,9 @@ HAS_CATS.forEach((p) => {
       let k = `${p}.${key}`;
       PROPS[k] = JSON.parse(JSON.stringify(PROPS[p]));
       PROPS[k].key = k;
-      PROPS[k].range = data.ranges[p];
+      PROPS[k].range = zctaData.ranges[p];
       PROPS[k].stats = {
-        min: data.min[k]
+        min: zctaData.min[k]
       };
     });
   }
@@ -211,8 +182,7 @@ CATS_FOR_PROPS['AVGNP'].sort((a, b) => a.localeCompare(b)).reduce((acc, k) => {
   }
 }, []).filter((k) => k.includes('Y:2019')).forEach((k) => NO_DATA.push(`AVGNP.${k}`));
 
-export default {
-  MAP_ID,
+const CONFIG = {
   PROPS,
   COLORS,
   NO_DATA,
@@ -220,5 +190,25 @@ export default {
   INITIAL_CAT,
   CATS, HAS_CATS, CAT_PROP_EXPRS,
   CATS_FOR_PROPS,
-  MAPBOX_TOKEN
+};
+
+export default {
+  ZCTA: {
+    MAP_ID: 'frnsys.msd__3_0',
+    INFO: '<p>The map displays school concentration (<span class="smallcaps">SCI</span>), net price, total student debt, and median income at the <span class="smallcaps">ZCTA</span> level, sortable by year (college category and driving distance toggles are applicable to net price and school concentration maps only). <em style="color:#fff;">All dollar amounts are 2019-inflation adjusted.</em></p>',
+    SHORT_NAME: 'zip',
+    MIN_PLACE_LENGTH: 5,
+    NO_TERRITORIES: false,
+    ...CONFIG
+  },
+  CD: {
+    MAP_ID: 'frnsys.msd_cd__3_0',
+    INFO: '<p>Welcome to the Millennial Student Debt map aggregated to Congressional District level!  While some states routinely redraw district lines, this map applies the same district map to all years under analysis - this means you can see how your current district has fluctuated along the variables through time. Happy mapping!</p>',
+    SHORT_NAME: 'district',
+    MIN_PLACE_LENGTH: 4,
+    NO_TERRITORIES: true,
+    ...CONFIG
+  },
+
+  HAS_CATS, CATS_FOR_PROPS, MAPBOX_TOKEN
 };

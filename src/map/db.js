@@ -1,8 +1,10 @@
 // DB-like interface
 class SchoolDB {
-  constructor() {
+  constructor(loa, config) {
+    this.loa = loa;
+    this.config = config;
     this._schools = {};
-    this._schoolsByKeyZip = {};
+    this._schoolsByKeyPlace = {};
   }
 
   async school(id) {
@@ -21,12 +23,12 @@ class SchoolDB {
       }, {}));
   }
 
-  async dataForKeyZip(key, zip) {
-    let k = `${key}_${zip}`;
-    if (!(k in this._schoolsByKeyZip)) {
-      this._schoolsByKeyZip[k] = await this._getDataForKeyZip(key, zip);
+  async dataForKeyPlace(key, place) {
+    let k = `${key}_${place}`;
+    if (!(k in this._schoolsByKeyPlace)) {
+      this._schoolsByKeyPlace[k] = await this._getDataForKeyPlace(key, place);
     }
-    return Promise.resolve(this._schoolsByKeyZip[k]);
+    return Promise.resolve(this._schoolsByKeyPlace[k]);
   }
 
   _getSchool(id) {
@@ -34,8 +36,8 @@ class SchoolDB {
     return this._get(url);
   }
 
-  _getDataForKeyZip(key, zip) {
-    let url = `assets/zips/${key}/${zip}.json`;
+  _getDataForKeyPlace(key, place) {
+    let url = `assets/maps/${this.loa}/by_cat/${key}/${place}.json`;
     return this._get(url);
   }
 
@@ -52,6 +54,4 @@ class SchoolDB {
   }
 }
 
-const db = new SchoolDB();
-
-export default db;
+export default SchoolDB;

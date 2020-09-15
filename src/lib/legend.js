@@ -1,9 +1,9 @@
 import color from './color';
 
-const legend = document.getElementById('legend');
 
 class Legend {
-  constructor(map, source, initProps, special, stats) {
+  constructor(id, map, source, initProps, special, stats) {
+    this.el = document.getElementById(id);
     this.map = map;
     this.props = initProps;
     this.source = source;
@@ -29,7 +29,7 @@ class Legend {
     // Focused feature indicator
     let pointEl = document.createElement('div');
     pointEl.classList.add(cls);
-    document.querySelector('.legend--focus-point-host').appendChild(pointEl);
+    this.el.querySelector('.legend--focus-point-host').appendChild(pointEl);
 
     let bivariate = this.props.length > 1;
 
@@ -91,17 +91,17 @@ class Legend {
   }
 
   hideFeatures() {
-    [...document.querySelectorAll('.focus-point')].forEach((el) => {
+    [...this.el.querySelectorAll('.focus-point')].forEach((el) => {
       el.remove();
     });
   }
 
   reset() {
     // Clear legend element
-    while (legend.hasChildNodes()) {
-      legend.removeChild(legend.lastChild);
+    while (this.el.hasChildNodes()) {
+      this.el.removeChild(this.el.lastChild);
     }
-    legend.classList = '';
+    this.el.classList = 'legend';
   }
 
   _stats() {
@@ -139,13 +139,13 @@ class Legend {
         el.appendChild(label);
         container.appendChild(el);
       });
-      legend.appendChild(container);
+      this.el.appendChild(container);
     }
   }
 
   bivariate(propA, propB) {
     this.reset();
-    legend.classList.add('legend--bivariate');
+    this.el.classList.add('legend--bivariate');
 
     let flipA = propA.legend && propA.legend.flip;
     let flipB = propB.legend && propB.legend.flip;
@@ -272,7 +272,7 @@ class Legend {
     gridContainer.appendChild(b_label);
 
     wrapper.appendChild(container);
-    legend.appendChild(wrapper);
+    this.el.appendChild(wrapper);
 
     this._stats();
     this._special();
@@ -338,13 +338,13 @@ class Legend {
     labels.appendChild(upperLabel);
     labels.appendChild(lowerLabel);
 
-    legend.appendChild(title);
+    this.el.appendChild(title);
 
     let wrapper = document.createElement('div');
     wrapper.classList.add('legend--range');
     wrapper.appendChild(rangeBar);
     wrapper.appendChild(labels);
-    legend.appendChild(wrapper);
+    this.el.appendChild(wrapper);
 
     this._stats();
     this._special();

@@ -1,12 +1,16 @@
-const infoEl = document.getElementById('info');
+class Info {
+  constructor(id) {
+    this.el = document.getElementById(id);
+  }
 
-function explainFeature(html) {
-  infoEl.innerHTML = html;
-  infoEl.style.display = 'block';
+  explainFeature(html) {
+    this.el.innerHTML = html;
+    this.el.style.display = 'block';
+  }
+
+  hide() {
+    this.el.style.display = 'none';
+  }
 }
 
-function hide() {
-  infoEl.style.display = 'none';
-}
-
-export default {explainFeature, hide};
+export default Info;

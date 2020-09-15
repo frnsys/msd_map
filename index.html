@@ -65,71 +65,131 @@
             <p>Click on an area to freeze the informational panel and explore the statistics and institutions for that zip. Happy mapping!</p>
         </section>
         <a id="maptool"></a>
-        <div id="control">
-            <div>
-                <label class="control-label">Jump to Zip</label>
-                <input name="zipcode" type="text" placeholder="Zip">
-            </div>
-            <div data-control-cat="Y">
-                <label class="control-label">Academic Year</label>
-                <select name="year"></select>
-            </div>
-            <div data-control-cat="S">
-                <label class="control-label">School Types</label>
-                <select name="category"></select>
-            </div>
-            <div class="control-properties">
-                <label class="control-label">Properties</label>
-                <select name="propertyA"></select>
-                <select name="propertyB"></select>
-            </div>
-            <div>
-                <label class="control-label">Display</label>
-                <select name="display" autocomplete="off">
-                    <option value="AVGNP">Average Net Price</option>
-                    <option value="STU_TOT_BAL">Median Total Balance for Student Loan Borrowers aged 18-35</option>
-                    <option value="MEDIANINCOME">Median Income</option>
-                    <option value="SCI">School Concentration Index (SCI)</option>
-                    <option value="SCI,AVGNP">SCI &amp; Average Net Price</option>
-                </select>
-            </div>
-
-            <div id="control-isochrone" data-control-cat="I">
-                <label class="control-label">Driving Distance</label>
-                <div>
-                    <button value="30min">30 min</button>
-                    <button value="45min" class="selected">45 min</button>
-                    <button value="60min">60 min</button>
-                </div>
-            </div>
+        <div class="map-tabs">
+            <div class="map-tab selected" data-tab="zcta">ZCTA</div>
+            <div class="map-tab" data-tab="cd">Congressional Districts</div>
         </div>
-        <section id="stage">
-            <div id="map-regions"></div>
-            <div id="map-wrapper">
-                <div id="map-notification"></div>
-                <div id="map"></div>
-                <div id="map-tooltip"></div>
-                <div id="legend"></div>
-                <div id="icon-legend-show">?</div>
-                <div id="icon-legend">
-                    <div id="icon-legend--icons">
-                        <div>
-                            <div><span class="icon-key" style="background:#33C377;"></span><span>Public</span></div>
-                            <div><span class="icon-key" style="background:#ffcc00;"></span><span>Private not-for-profit</span></div>
-                            <div><span class="icon-key" style="background:#05a1ff;"></span><span>Private for-profit</span></div>
-                        </div>
-                        <div>
-                            <div><span class="icon-key" style="border:2px solid #000;"></span><span>Bachelor Degree</span></div>
-                            <div><span class="icon-key" style="border:2px solid #888888;"></span><span>Associate Degree</span></div>
-                            <div><span class="icon-key" style="border:2px solid #ffffff;"></span><span>Below Associate Degree</span></div>
-                        </div>
+        <div class="map-tab-pane active" id="zcta--map-tab">
+            <div class="control" id="zcta--control">
+                <div>
+                    <label class="control-label">Jump to Zip</label>
+                    <input name="place" type="text" placeholder="Zip">
+                </div>
+                <div data-control-cat="Y">
+                    <label class="control-label">Academic Year</label>
+                    <select name="year"></select>
+                </div>
+                <div data-control-cat="S">
+                    <label class="control-label">School Types</label>
+                    <select name="category"></select>
+                </div>
+                <div class="control-properties">
+                    <label class="control-label">Properties</label>
+                    <select name="propertyA"></select>
+                    <select name="propertyB"></select>
+                </div>
+                <div>
+                    <label class="control-label">Display</label>
+                    <select name="display" autocomplete="off">
+                        <option value="AVGNP">Average Net Price</option>
+                        <option value="STU_TOT_BAL">Median Total Balance for Student Loan Borrowers aged 18-35</option>
+                        <option value="MEDIANINCOME">Median Income</option>
+                        <option value="SCI">School Concentration Index (SCI)</option>
+                        <option value="SCI,AVGNP">SCI &amp; Average Net Price</option>
+                    </select>
+                </div>
+
+                <div class="control-isochrone" data-control-cat="I">
+                    <label class="control-label">Driving Distance</label>
+                    <div>
+                        <button value="30min">30 min</button>
+                        <button value="45min" class="selected">45 min</button>
+                        <button value="60min">60 min</button>
                     </div>
-                    <div id="icon-legend--note">Schools appear at higher zoom levels.</div>
-                    <div id="icon-legend-close">✖</div>
                 </div>
             </div>
-            <div id="info"></div>
-        </section>
+            <section class="stage">
+                <div class="map-regions" id="zcta--map-regions"></div>
+                <div class="map-wrapper">
+                    <div class="map-notification" id="zcta--map-notification"></div>
+                    <div class="map" id="zcta--map"></div>
+                    <div class="map-tooltip" id="zcta--map-tooltip"></div>
+                    <div class="legend" id="zcta--legend"></div>
+                    <div class="icon-legend-show" id="zcta--icon-legend-show">?</div>
+                    <div class="icon-legend" id="zcta--icon-legend">
+                        <div class="icon-legend--icons">
+                            <div>
+                                <div><span class="icon-key" style="background:#33C377;"></span><span>Public</span></div>
+                                <div><span class="icon-key" style="background:#ffcc00;"></span><span>Private not-for-profit</span></div>
+                                <div><span class="icon-key" style="background:#05a1ff;"></span><span>Private for-profit</span></div>
+                            </div>
+                            <div>
+                                <div><span class="icon-key" style="border:2px solid #000;"></span><span>Bachelor Degree</span></div>
+                                <div><span class="icon-key" style="border:2px solid #888888;"></span><span>Associate Degree</span></div>
+                                <div><span class="icon-key" style="border:2px solid #ffffff;"></span><span>Below Associate Degree</span></div>
+                            </div>
+                        </div>
+                        <div class="icon-legend--note">Schools appear at higher zoom levels.</div>
+                        <div class="icon-legend-close" id="zcta--icon-legend-close">✖</div>
+                    </div>
+                </div>
+                <div class="info" id="zcta--info"></div>
+            </section>
+        </div>
+        <div class="map-tab-pane" id="cd--map-tab">
+            <div class="control" id="cd--control">
+                <div data-control-cat="Y">
+                    <label class="control-label">Academic Year</label>
+                    <select name="year"></select>
+                </div>
+                <div data-control-cat="S">
+                    <label class="control-label">School Types</label>
+                    <select name="category"></select>
+                </div>
+                <div class="control-properties">
+                    <label class="control-label">Properties</label>
+                    <select name="propertyA"></select>
+                    <select name="propertyB"></select>
+                </div>
+                <div>
+                    <label class="control-label">Display</label>
+                    <select name="display" autocomplete="off">
+                        <option value="AVGNP">Average Net Price</option>
+                        <option value="STU_TOT_BAL">Median Total Balance for Student Loan Borrowers aged 18-35</option>
+                        <option value="MEDIANINCOME">Median Income</option>
+                        <option value="SCI">School Concentration Index (SCI)</option>
+                        <option value="SCI,AVGNP">SCI &amp; Average Net Price</option>
+                    </select>
+                </div>
+            </div>
+            <section class="stage">
+                <div class="map-regions" id="cd--map-regions"></div>
+                <div class="map-wrapper">
+                    <div class="map-notification" id="cd--map-notification"></div>
+                    <div class="map" id="cd--map"></div>
+                    <div class="map-tooltip" id="cd--map-tooltip"></div>
+                    <div class="legend" id="cd--legend"></div>
+                    <div class="icon-legend-show" id="cd--icon-legend-show">?</div>
+                    <div class="icon-legend" id="cd--icon-legend">
+                        <div class="icon-legend--icons">
+                            <div>
+                                <div><span class="icon-key" style="background:#33C377;"></span><span>Public</span></div>
+                                <div><span class="icon-key" style="background:#ffcc00;"></span><span>Private not-for-profit</span></div>
+                                <div><span class="icon-key" style="background:#05a1ff;"></span><span>Private for-profit</span></div>
+                            </div>
+                            <div>
+                                <div><span class="icon-key" style="border:2px solid #000;"></span><span>Bachelor Degree</span></div>
+                                <div><span class="icon-key" style="border:2px solid #888888;"></span><span>Associate Degree</span></div>
+                                <div><span class="icon-key" style="border:2px solid #ffffff;"></span><span>Below Associate Degree</span></div>
+                            </div>
+                        </div>
+                        <div class="icon-legend--note">Schools appear at higher zoom levels.</div>
+                        <div class="icon-legend-close" id="cd--icon-legend-close">✖</div>
+                    </div>
+                </div>
+                <div class="info" id="cd--info"></div>
+            </section>
+        </div>
         <section id="summary" class="text summary">
             <h1>Summary Statistics</h1>
             <p>Between the 2008–09 and 2018–19 academic years, the higher education industry has undergone major changes: the wave of post-recession enrollment, a boom and bust of for-profit institutions, traditional not-for-profit higher ed adopting for-profit business strategies, and a funding crisis coupled with bloating costs borne by students and increasing <a href="https://phenomenalworld.org/analysis/the-geography-and-cost-of-higher-education-post-2008">enrollment concentration</a> across schools. As these shifts unfolded, the volume of student debt ballooned from $675 billion at the end of 2008 to over $1.6 trillion in 2019.</p>

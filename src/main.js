@@ -1,50 +1,36 @@
-import Map from './lib/map';
-import Legend from './lib/legend';
-import Painter from './lib/paint';
-import info from './info';
-import util from './util';
-import setupUI from './ui';
 import config from './config';
-import styles from './styles';
-import db from './db';
+import MSDMap from './map/msd';
 import SimpleLightbox from 'simple-lightbox';
 
-// import createNumberLine from './numberLine';
-// import states from '../data/gen/states.json';
-
-// if (document.getElementById('sci-number-line')) {
-//   createNumberLine('#sci-number-line', 'Median School Concentration', states['sci'], [0, 10000], ['Pure Competition', 'Pure Monopoly']);
-//   createNumberLine('#enrollment-number-line', 'Total Enrollment', states['enrollment'], [0, Math.max(...Object.values(states['enrollment']))], ['', '']);
-
-//   // State selector for the number line
-//   let sciStateSelect = document.getElementById('sci-number-line-select');
-//   let allStates = document.createElement('option');
-//   allStates.innerText = 'All States';
-//   allStates.value = 'all';
-//   sciStateSelect.append(allStates);
-//   Object.keys(states['sci']).sort((a, b) => a.localeCompare(b)).forEach((key) => {
-//     let opt = document.createElement('option');
-//     opt.innerText = key;
-//     opt.value = key;
-//     sciStateSelect.append(opt);
-//   });
-//   sciStateSelect.addEventListener('change', (ev) => {
-//     let val = ev.target.value;
-//     [...document.querySelectorAll('.number-line--focused')].forEach((el) => {
-//       el.classList.remove('number-line--focused');
-//     });
-//     if (val !== 'all') {
-//       document.getElementById(`number-line--sci-${val}`).classList.add('number-line--focused');
-//       document.getElementById(`number-line--enrollment-${val}`).classList.add('number-line--focused');
-//     }
-//   });
-// }
-
+// Maps
 mapboxgl.accessToken = config.MAPBOX_TOKEN;
-const tooltip = document.getElementById('map-tooltip');
+const maps = {};
+maps['zcta'] = MSDMap('zcta', {
+  props: config.ZCTA.INITIAL_PROPS,
+  cat: config.ZCTA.INITIAL_CAT
+}, config.ZCTA);
+
+[...document.querySelectorAll('.map-tab')].forEach((el) => {
+  el.addEventListener('click', () => {
+    document.querySelector('.map-tab.selected').classList.remove('selected');
+    document.querySelector('.map-tab-pane.active').classList.remove('active');
+
+    el.classList.add('selected');
+    document.getElementById(`${el.dataset.tab}--map-tab`).classList.add('active');
+
+    // Lazy loading of CD map
+    if (el.dataset.tab == 'cd' && !('cd' in maps)) {
+      maps['cd'] = MSDMap('cd', {
+        props: config.CD.INITIAL_PROPS,
+        cat: config.CD.INITIAL_CAT,
+      }, config.CD);
+    }
+    maps[el.dataset.tab].map.resize();
+  });
+});
+
+// Summary statistics table
 const state = {
-  props: config.INITIAL_PROPS,
-  cat: config.INITIAL_CAT,
   summary: {
     tab: 'zips',
     type: 'public',
@@ -54,156 +40,128 @@ const state = {
     }
   }
 };
+[...document.querySelectorAll('#summary-tabs--level > div')].forEach((tab) => {
+  tab.addEventListener('click', (ev) => {
+    ev.preventDefault();
+    let val = tab.dataset.value;
+    if (val !== state.summary.tab) {
+      document.querySelector('#summary-tabs--level .selected').classList.remove('selected');
+      state.summary.tab = val;
+      tab.classList.add('selected');
+      loadSummary(state);
+    }
+    return false;
+  });
+});
+[...document.querySelectorAll('#summary-tabs--school-type > div')].forEach((tab) => {
+  tab.addEventListener('click', (ev) => {
+    ev.preventDefault();
+    let val = tab.dataset.value;
+    if (val !== state.summary.type) {
+      document.querySelector('#summary-tabs--school-type .selected').classList.remove('selected');
+      state.summary.type = val;
+      tab.classList.add('selected');
+      loadSummary(state);
+    }
+    return false;
+  });
+});
 
-const zctaLayerName = 'zctas';
-const sources = {
-  'zctas': {
-    'type': 'vector',
-    'url': `mapbox://${config.MAP_ID}`
-  },
-  'schools': {
-    'type': 'geojson',
-    'data': 'assets/schools.geojson'
-  }
+const summaryEl = document.getElementById('summary-table');
+const summaryTitle = document.querySelector('#summary h2');
+const summaryNotes = document.querySelector('#summary .summary-notes');
+const rowHeads = {
+  schools: [
+    'Academic Year',
+    'Total Campuses',
+    'National Enrollment',
+    'Avg Net Price',
+    'Median Net Price',
+    'Avg Tuition & Fees',
+    'Median Tuition & Fees'
+  ],
+  zips: [
+    'Academic Year',
+    'Median Young Adult Student Debt',
+    'Median Income',
+    'Avg Net Price',
+    'Avg Tuition & Fees',
+    'Count of Education Deserts ZCTAs',
+    'Median Local School Count',
+    'Median All-School Concentration'
+  ]
 };
-const layers = [{
-  'id': 'zctas',
-  'type': 'fill',
-  'source': 'zctas',
-  'source-layer': zctaLayerName,
-  'paint': styles.defaultZCTAs
-}, {
-  'id': 'schools',
-  'type': 'circle',
-  'source': 'schools',
-  'paint': styles.defaultSchools(state.cat['Y'])
-}];
+function loadRows(state, rows) {
+  let {summary} = state;
+  summaryEl.innerHTML = '';
 
-function focusFeatures(features, ev) {
-  // If features, render
-  if (features['zctas'].length > 0) {
-    let feats = features['zctas'];
-    map.focusFeatures({
-      id: 'zctas',
-      layer: zctaLayerName
-    }, feats);
-    legend.renderFeatures(feats);
+  // Headers
+  let tr = document.createElement('tr');
+  let cols = rowHeads[summary.tab];
+  cols.forEach((name, i) => {
+    let td = document.createElement('th');
+    td.innerHTML = name;
+    tr.appendChild(td);
 
-    // If only one feature,
-    // highlight schools for that ZCTA
-    if (feats.length == 1) {
-      let feat = feats[0];
-      let zip = feat.properties['zipcode'].split(',')[0];
-      let key = util.keyForCat({'Y': state.cat['Y'], 'I': state.cat['I']});
-      db.dataForKeyZip(key, zip).then((data) => {
-        let schoolIds = data['schools'] || [];
-        let filter = ['!in', '$id'].concat(schoolIds);
-        map.setFilter({
-          id: 'schools'
-        }, filter, {mute: true}, {mute: false});
-      });
-    } else {
-      map.focusFeatures({
-        id: 'schools'
-      }, []);
-    }
-
-    if (features['schools'].length > 0) {
-      let focusedSchools = features['schools'];
-      info.explain(feats, state.cat, focusedSchools);
-      map.focusFeatures({
-        id: 'schools'
-      }, focusedSchools);
-    } else {
-      map.focusFeatures({
-        id: 'schools'
-      }, []);
-      info.explain(feats, state.cat, []);
-    }
-
-  // Otherwise, hide
-  } else {
-    if (features['composite']) {
-      if (state.schoolsOnly) {
-        info.schoolsOnly();
-      } else {
-        info.empty();
+    // Sort on click
+    td.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      if (state.summary.sort.column == i) {
+        state.summary.sort.reverse = !state.summary.sort.reverse;
       }
-    } else {
-      info.reset();
-    }
-    legend.hideFeatures();
-  }
-}
-
-const painter = new Painter(config.COLORS);
-const map = new Map({
-  container: 'map',
-  style: 'mapbox://styles/frnsys/ck36ls0sm0hus1cpi2zedg77t',
-  zoom: 3,
-  maxZoom: 12,
-  minZoom: 2,
-  center: [-98.5556199, 39.8097343]
-}, sources, layers, {'zctas': state.props}, painter, focusFeatures, (features, ev) => {
-  // Ignore at low zoom levels, gets really choppy
-  if (map.map.getZoom() <= 6) return;
-
-  if (features['schools'].length > 0) {
-    tooltip.style.left = `${ev.originalEvent.offsetX+10}px`;
-    tooltip.style.top = `${ev.originalEvent.offsetY+10}px`;
-    tooltip.style.display = 'block';
-    let ids = features['schools'].map((s) => s['id']);
-    db.schools(ids).then((schools) => {
-      schools = Object.values(schools)
-        .filter((s) => state.cat['Y'] in s)
-        .map((s) => s[state.cat['Y']]);
-      tooltip.innerHTML = schools.map((s) => {
-        return `<div class="school-info">
-          ${s['MAPNAME']}
-          <div>Zip: ${s['ZIP']}</div>
-          <div>Enrolled: ${s['ENROLLED'] || 'N/A'}</div>
-          <div>Tuition & Fees: ${s['TUFEYR3'] || 'N/A'}</div>
-          <div>Average Net Price: ${s['AVGNETPRICE'] || 'N/A'}</div>
-        </div>`;
-      }).join('<br />');
+      state.summary.sort.column = i;
+      loadRows(state, rows);
+      return false;
     });
-  } else {
-    tooltip.style.display = 'none';
-  }
-  if (!map.focusedLock) {
-    focusFeatures(features, ev);
-  }
-});
-map.map.on('dragstart', () => {
-  tooltip.style.display = 'none';
-});
+  });
+  summaryEl.appendChild(tr);
 
-function setSchoolCategory(state) {
-  let year = state.cat['Y'];
-  if (state.cat['S'] == 'allschools') {
-    map.map.setPaintProperty('schools', 'circle-opacity', styles.allSchools(year)['circle-opacity']);
-    map.map.setPaintProperty('schools', 'circle-stroke-opacity', styles.allSchools(year)['circle-stroke-opacity']);
-  } else {
-    let cond = config.CAT_PROP_EXPRS['S'][state.cat['S']];
-    let style = styles.filteredSchools(year, cond);
-    map.map.setPaintProperty('schools', 'circle-opacity', style['circle-opacity']);
-    map.map.setPaintProperty('schools', 'circle-stroke-opacity', style['circle-stroke-opacity']);
+  rows.sort((a, b) => (Object.values(a)[summary.sort.column] > Object.values(b)[summary.sort.column]) ? 1 : -1);
+  if (summary.sort.reverse) {
+    rows.reverse();
   }
+
+  rows.forEach((row) => {
+    let tr = document.createElement('tr');
+    cols.forEach((key) => {
+      let val = row[key];
+      let td = document.createElement('td');
+      td.innerText = val || 'N/A';
+      tr.appendChild(td);
+    });
+    summaryEl.appendChild(tr);
+  });
 }
-map.setSchoolCategory = setSchoolCategory;
-map.map.on('load', () => {
-  map.setSchoolCategory(state);
-});
 
-const legend = new Legend(map, {id: 'zctas', layer: 'zctas'}, state.props, {
-  'No Zip': '#520004'
-}, ['min']);
+function loadSummary(state) {
+  let url;
+  let {summary, cat} = state;
+  if (summary.tab === 'schools') {
+    url = `assets/summary/${summary.tab}-${summary.type}.json`;
+    summaryTitle.innerText = 'Year-to-year Analysis of On-Campus Higher Education Institutions in the US and US Territories';
+    summaryNotes.innerText = 'Note: All dollar amounts are nominal.';
+    document.getElementById('summary-tabs--school').style.display = 'block';
+  } else {
+    url = `assets/summary/${summary.tab}.json`;
+    summaryTitle.innerText = 'Year-to-year Analysis of Zip-Level Data in the US and US Territories';
+    summaryNotes.innerText = 'Note: All dollar amounts are inflation-adjusted to 2019. Student debt statistic is conditional on a zip having sampled 18 – 35 year-old individuals with positive student loan balances. School Prices, Concentration, and Count statistics are inclusive of all school types and available only for ZCTAs that are not education deserts.';
+    document.getElementById('summary-tabs--school').style.display = 'none';
+  }
+  return fetch(url, {
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then((json) => {
+      let rows = json;
+      loadRows(state, rows);
+    })
+    .catch(err => { console.log(err) });
+}
 
-setupUI(map, legend, info, state);
-info.reset();
-
-// For getting bounds
-// window.getbbox = () => map.map.getBounds();
 
 // Visualization lightbox
 new SimpleLightbox({elements: '.viz-gallery a'});

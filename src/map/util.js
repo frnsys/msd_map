@@ -1,4 +1,4 @@
-import config from './config';
+import config from '../config';
 
 function propForCat(prop, cat) {
   let [p, ..._] = prop.split('.');
@@ -23,8 +23,8 @@ function keyForCat(cat) {
     .join('.');
 }
 
-function bboxForZip(zip) {
-  let url = `assets/bboxes/${zip}.json`;
+function bboxForPlace(loa, place) {
+  let url = `assets/maps/${loa}/bboxes/${place}.json`;
   return fetch(url, {
     headers: {
       'Accept': 'application/json',
@@ -36,4 +36,4 @@ function bboxForZip(zip) {
     .catch(err => { console.log(err) });
 }
 
-export default {propForCat, keyForCat, bboxForZip};
+export default {propForCat, keyForCat, bboxForPlace};

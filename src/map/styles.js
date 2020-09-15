@@ -95,10 +95,10 @@ const defaultSchools = (year) => ({
   'circle-stroke-opacity': allSchools(year)['circle-stroke-opacity'],
 });
 
-const defaultZCTAs = {
+const defaultPlaces = {
   'fill-color': '#000000', // will be replaced on map initialization
 
-  // Fade-out ZCTA outlines at low zooms
+  // Fade-out feature outlines at low zooms
   'fill-outline-color': [
     'interpolate', ['linear'], ['zoom'], 5, 'rgba(0, 0, 0, 0)', 10, 'rgba(0,0,0,1)'
   ],
@@ -111,4 +111,4 @@ const defaultZCTAs = {
   ]
 };
 
-export default {defaultZCTAs, allSchools, defaultSchools, filteredSchools};
+export default {defaultPlaces, allSchools, defaultSchools, filteredSchools};
