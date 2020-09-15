@@ -15,8 +15,14 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 from itertools import product
-from shapely.geometry import shape
 from collections import defaultdict
+from shapely.geometry import shape, mapping
+
+# For plotting shapes
+# import geopandas as gpd
+# import matplotlib.pyplot as plt
+# gpd.GeoSeries(shape(f['geometry'])).plot()
+# plt.show()
 
 # loa = Level of analysis
 LOA = sys.argv[1] # 'ZCTA' OR 'CD'
@@ -398,6 +404,36 @@ for f in ref_geojson['features']:
     except KeyError:
         continue
 
+# Region bounding boxes
+countries = fiona.open('src/countries/ne_10m_admin_0_countries.shp')
+region_bboxes = {}
+MAINLAND_SHAPE = None
+for country in countries:
+    props = country['properties']
+    iso = props['ISO_A2']
+    if iso not in COUNTRIES:
+        continue
+    if iso == 'US':
+        shp = max(shape(country['geometry']), key=lambda s: s.area)
+        region_bboxes['Mainland'] = shp.bounds
+        MAINLAND_SHAPE = shp
+    else:
+        bbox = shape(country['geometry']).bounds
+        region_bboxes[props['NAME']] = bbox
+
+for state in STATES:
+    feat = json.load(open('src/states/{}.geojson'.format(state.lower())))
+    bbox = shape(feat['geometry']).bounds
+    region_bboxes[state] = bbox
+
+# Data source is incorrect about Alaska and American Samoa, set it manually
+region_bboxes['Alaska'] = [-207.4133546365765, 50.796925749084465, -104.93451956255066, 71.79270027924889]
+region_bboxes['American Samoa'] = [-171.84922996050645, -14.93534547358692, -168.25721358668446, -13.663497668009555]
+
+NON_MAINLAND_STATES = ['72', '78', '60', '66', '69', '02', '15']
+REMOVE_LAKES_FROM = ['55', '26'] # WI, MI
+LAKES = [shape(s['geometry']) for s in fiona.open('src/lakes/ne_10m_lakes.shp')]
+
 # Build geojson
 bboxes = {}
 if MAPS_BY:
@@ -419,6 +455,15 @@ for key in map_keys:
         f = {**f}
         if 'id' in f:
             del f['id']
+
+        # Trim districts to state land boundaries
+        if LOA == 'CD':
+            statefp = f['properties']['STATEFP']
+            if statefp in REMOVE_LAKES_FROM:
+                for lake in LAKES:
+                    if shape(f['geometry']).intersects(lake):
+                        f['geometry'] = mapping(shape(f['geometry']).difference(lake))
+
         loa_key = f['properties'][SHAPE_LOA_FIELD]
 
         # Only keep non-null values
@@ -428,7 +473,12 @@ for key in map_keys:
         if keys is not None:
             f['properties'] = {subKey(k, drop=cat): f['properties'][k] for k in keys}
 
+        # Keep STATEFP
+        if LOA == 'CD':
+            f['properties']['STATEFP'] = statefp
+
         f['properties']['loa_key'] = loa_key
+
         bboxes[loa_key] = shape(f['geometry']).bounds
         geojson.append(f)
 
@@ -438,12 +488,25 @@ for key in map_keys:
             loa_key = f['properties'][SHAPE_LOA_FIELD]
             if loa_key not in loa_keys: continue
 
+            # Trim districts to state land boundaries
+            if LOA == 'CD':
+                statefp = f['properties']['STATEFP']
+                if statefp in REMOVE_LAKES_FROM:
+                    for lake in LAKES:
+                        if shape(f['geometry']).intersects(lake):
+                            f['geometry'] = mapping(shape(f['geometry']).difference(lake))
+
             # Only keep non-null values
             f['properties'] = {k: v for k, v in data[loa_key].items() if v is not None}
+
+            # Keep STATEFP
+            if LOA == 'CD':
+                f['properties']['STATEFP'] = statefp
 
             if 'id' in f:
                 del f['id']
             f['properties']['loa_key'] = loa_key
+
             bboxes[loa_key] = shape(f['geometry']).bounds
             geojson.append(f)
 
@@ -453,29 +516,6 @@ for key in map_keys:
         # Write one feature per line, so tippecanoe can process in parallel
         f.write('\n'.join(json.dumps(feat) for feat in geojson))
 
-# Region bounding boxes
-countries = fiona.open('src/countries/ne_10m_admin_0_countries.shp')
-region_bboxes = {}
-for country in countries:
-    props = country['properties']
-    iso = props['ISO_A2']
-    if iso not in COUNTRIES:
-        continue
-    if iso == 'US':
-        shp = max(shape(country['geometry']), key=lambda s: s.area)
-        region_bboxes['Mainland'] = shp.bounds
-    else:
-        bbox = shape(country['geometry']).bounds
-        region_bboxes[props['NAME']] = bbox
-
-for state in STATES:
-    feat = json.load(open('src/states/{}.geojson'.format(state.lower())))
-    bbox = shape(feat['geometry']).bounds
-    region_bboxes[state] = bbox
-
-# Data source is incorrect about Alaska and American Samoa, set it manually
-region_bboxes['Alaska'] = [-207.4133546365765, 50.796925749084465, -104.93451956255066, 71.79270027924889]
-region_bboxes['American Samoa'] = [-171.84922996050645, -14.93534547358692, -168.25721358668446, -13.663497668009555]
 
 
 print('Saving files...')
