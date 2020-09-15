@@ -685,16 +685,13 @@ button {
   overflow-y: hidden;
 }
 
-.viz-gallery {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-}
 .viz-gallery a {
-  flex-basis: 24%;
+  width: 24%;
   border: 1px solid #ddd;
   padding: 0.5em;
   margin-bottom: 0.75em;
+  display: inline-block;
+  vertical-align: top;
 }
 .viz-gallery img {
   max-width: 100%;
@@ -762,7 +759,7 @@ button {
   }
 
   .viz-gallery a {
-    flex-basis: 32%;
+    width: 32%;
   }
 }
 
@@ -778,6 +775,6 @@ button {
   }
 
   .viz-gallery a {
-    flex-basis: 49%;
+    width: 49%;
   }
 }
