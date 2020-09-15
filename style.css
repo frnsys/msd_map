@@ -373,6 +373,8 @@ th:hover {
   z-index: 1;
   text-align: right;
   font-family: 'Founders Grotesk', sans-serif;
+  background: rgba(0,0,0,0.3);
+  padding: 0.5em 0.5em 0.2em 0.5em;
 }
 .legend--bivariate-wrapper {
   transform: rotate(-45deg);

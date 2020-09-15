@@ -77,7 +77,7 @@ const PROPS = {
     nick: 'Median Total Balance',
     color: {
       0.0: '#079b1d',
-      0.5: '#f4e61a',
+      0.25: '#f4e61a',
       1.0: '#f4371a'
     },
     nullColor: '#333333',
@@ -209,7 +209,7 @@ export default {
     ...CONFIG
   },
   CD: {
-    MAP_ID: 'frnsys.msd_cd__3_0',
+    MAP_ID: 'frnsys.msd_cd__3_1',
     INFO: '<p>Welcome to the Millennial Student Debt map aggregated to Congressional District level!  While some states routinely redraw district lines, this map applies the same district map to all years under analysis - this means you can see how your current district has fluctuated along the variables through time. Happy mapping!</p>',
     SHORT_NAME: 'district',
     MIN_PLACE_LENGTH: 4,
