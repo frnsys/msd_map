@@ -1,5 +1,6 @@
 import util from './util';
 import I from '../lib/info';
+import fipsToState from '../../data/fipsToState.json';
 
 const CONTROL = {
   1: 'Public',
@@ -81,8 +82,10 @@ class Info {
             groupedSchools[control][level].push(s);
           });
 
+          let label = this.config.LOA == 'zcta' ? place : `${fipsToState[place.slice(0,2)]}, District ${place.slice(2)}`;
+
           return `
-            <h2>${place}</h2>
+            <h2>${label}</h2>
             <span class="variable-name">SCI</span>: ${d['SCI'] > 0 ? d['SCI'].toFixed(2) : 'Education Desert'}<br/>
             <span class="variable-name">Average Net Price</span>: ${d['AVGNP'] ? formatter.format(d['AVGNP']) : 'N/A'}<br/>
             <span class="variable-name">Average Tuition & Fees</span>: ${d['AVGTF'] ? formatter.format(d['AVGTF']) : 'N/A'}<br/>

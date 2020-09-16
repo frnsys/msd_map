@@ -8,10 +8,12 @@ import styles from './styles';
 import SchoolDB from './db';
 
 
-function MSDMap(loa, state, config) {
+function MSDMap(config) {
+  const loa = config.LOA;
+  const state = config.INITIAL_STATE;
   const tooltip = document.getElementById(`${loa}--map-tooltip`);
 
-  const db = new SchoolDB(loa, config);
+  const db = new SchoolDB(config);
   const info = new Info(`${loa}--info`, db, config);
 
   const dataLayerName = 'data';
@@ -158,7 +160,7 @@ function MSDMap(loa, state, config) {
   otherColors[`No ${config.SHORT_NAME}`] = '#520004';
   const legend = new Legend(`${loa}--legend`, map, {id: 'main', layer: 'data'}, state.props, otherColors, ['min']);
 
-  setupUI(loa, map, legend, info, state, config);
+  setupUI(map, config, legend, info, state);
   info.reset();
 
   // For getting bounds

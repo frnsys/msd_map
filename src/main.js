@@ -6,10 +6,7 @@ import SimpleLightbox from 'simple-lightbox';
 mapboxgl.accessToken = config.MAPBOX_TOKEN;
 
 const maps = {};
-maps['zcta'] = MSDMap('zcta', {
-  props: config.ZCTA.INITIAL_PROPS,
-  cat: config.ZCTA.INITIAL_CAT
-}, config.ZCTA);
+maps['zcta'] = MSDMap(config.ZCTA);
 
 [...document.querySelectorAll('.map-tab')].forEach((el) => {
   el.addEventListener('click', () => {
@@ -21,10 +18,7 @@ maps['zcta'] = MSDMap('zcta', {
 
     // Lazy loading of CD map
     if (el.dataset.tab == 'cd' && !('cd' in maps)) {
-      maps['cd'] = MSDMap('cd', {
-        props: config.CD.INITIAL_PROPS,
-        cat: config.CD.INITIAL_CAT,
-      }, config.CD);
+      maps['cd'] = MSDMap(config.CD);
     }
     maps[el.dataset.tab].map.resize();
   });

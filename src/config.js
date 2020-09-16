@@ -196,26 +196,34 @@ const CONFIG = {
 
 export default {
   ZCTA: {
+    LOA: 'zcta',
     MAP_ID: 'frnsys.msd__3_0',
     INFO: '<p>The map displays school concentration (<span class="smallcaps">SCI</span>), net price, total student debt, and median income at the <span class="smallcaps">ZCTA</span> level, sortable by year (college category and driving distance toggles are applicable to net price and school concentration maps only). <em style="color:#fff;">All dollar amounts are 2019-inflation adjusted.</em></p>',
     SHORT_NAME: 'zip',
     MIN_PLACE_LENGTH: 5,
     NO_TERRITORIES: false,
     PROPS: PROPS_FOR_LOA['zcta'],
-    INITIAL_PROPS: ['AVGNP'].map((p) => {
-      let k = HAS_CATS.includes(p) ? `${p}.${INITIAL_CAT_KEY}` : p;
-      return PROPS_FOR_LOA['zcta'][k];
-    }),
+    INITIAL_STATE: {
+      cat: INITIAL_CAT,
+      props: ['AVGNP'].map((p) => {
+        let k = HAS_CATS.includes(p) ? `${p}.${INITIAL_CAT_KEY}` : p;
+        return PROPS_FOR_LOA['zcta'][k];
+      }),
+    },
     ...CONFIG
   },
   CD: {
+    LOA: 'cd',
     MAP_ID: 'frnsys.msd_cd__3_1',
     INFO: '<p>Welcome to the Millennial Student Debt map aggregated to Congressional District level!  While some states routinely redraw district lines, this map applies the same district map to all years under analysis - this means you can see how your current district has fluctuated along the variables through time. Happy mapping!</p>',
     SHORT_NAME: 'district',
     MIN_PLACE_LENGTH: 4,
     NO_TERRITORIES: true,
     PROPS: PROPS_FOR_LOA['cd'],
-    INITIAL_PROPS: [PROPS_FOR_LOA['cd']['STU_TOT_BAL.Y:2018']],
+    INITIAL_STATE: {
+      cat: INITIAL_CAT,
+      props: [PROPS_FOR_LOA['cd']['STU_TOT_BAL.Y:2018']]
+    },
     ...CONFIG
   },
 

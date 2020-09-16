@@ -2,8 +2,8 @@ import util from './util';
 import styles from './styles';
 import regions from '../../data/gen/regions.json';
 
-
-function setupUI(loa, map, legend, info, state, config) {
+function setupUI(map, config, legend, info, state) {
+  const loa = config.LOA;
   const mapOverlay = document.getElementById(`${loa}--map-notification`);
 
   function checkMissingData(props) {

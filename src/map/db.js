@@ -1,7 +1,6 @@
 // DB-like interface
 class SchoolDB {
-  constructor(loa, config) {
-    this.loa = loa;
+  constructor(config) {
     this.config = config;
     this._schools = {};
     this._schoolsByKeyPlace = {};
@@ -37,7 +36,7 @@ class SchoolDB {
   }
 
   _getDataForKeyPlace(key, place) {
-    let url = `assets/maps/${this.loa}/by_cat/${key}/${place}.json`;
+    let url = `assets/maps/${this.config.LOA}/by_cat/${key}/${place}.json`;
     return this._get(url);
   }
 
