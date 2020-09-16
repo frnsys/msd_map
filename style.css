@@ -251,10 +251,14 @@ th:hover {
   flex: 1;
   border: 1px solid black;
   border-bottom: none;
-  padding: 0.25em 0.5em;
+  padding: 0.25em 0.5em 0 0.5em;
   text-align: center;
   cursor: pointer;
   opacity: 0.5;
+  font-weight: bold;
+  font-size: 1.1em;
+  line-height: 1.5;
+  font-family: 'Founders Grotesk', sans-serif;
 }
 .map-tab:first-child {
   border-right: none;
@@ -359,6 +363,12 @@ th:hover {
 .control-group > * {
   align-self: flex-end;
   margin-right: 0.25em;
+}
+#cd--control {
+  justify-content: center;
+}
+#cd--control > div:first-child {
+  flex: initial;
 }
 
 #toggleZCTAs {
@@ -629,6 +639,7 @@ button {
   display: block;
   font-size: 0.9em;
   font-family: 'Founders Grotesk', sans-serif;
+  font-weight: bold;
 }
 .disabled {
   opacity: 0.5;
