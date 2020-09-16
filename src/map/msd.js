@@ -99,7 +99,7 @@ function MSDMap(loa, state, config) {
   const map = new Map({
     container: `${loa}--map`,
     style: 'mapbox://styles/frnsys/ck36ls0sm0hus1cpi2zedg77t',
-    zoom: 3,
+    zoom: 3.5,
     maxZoom: 12,
     minZoom: 2,
     center: [-98.5556199, 39.8097343]

@@ -215,10 +215,7 @@ export default {
     MIN_PLACE_LENGTH: 4,
     NO_TERRITORIES: true,
     PROPS: PROPS_FOR_LOA['cd'],
-    INITIAL_PROPS: ['AVGNP'].map((p) => {
-      let k = HAS_CATS.includes(p) ? `${p}.${INITIAL_CAT_KEY}` : p;
-      return PROPS_FOR_LOA['cd'][k];
-    }),
+    INITIAL_PROPS: [PROPS_FOR_LOA['cd']['STU_TOT_BAL.Y:2018']],
     ...CONFIG
   },
 
