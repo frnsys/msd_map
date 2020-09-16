@@ -13,6 +13,28 @@
     font-style:normal;
     font-weight:200
 }
+/* @font-face { */
+/*     font-family: 'Founders Grotesk'; */
+/*     src: url(assets/fonts/FoundersGrotesk-Bold.eot); */
+/*     src: url(assets/fonts/FoundersGrotesk-Bold.eot?#iefix) format('embedded-opentype'), */
+/*         url(assets/fonts/FoundersGrotesk-Bold.woff2) format('woff2'), */
+/*         url(assets/fonts/FoundersGrotesk-Bold.woff) format('woff'); */
+/*     font-weight: bold; */
+/*     font-style: normal; */
+/*     font-display: swap; */
+/* } */
+@font-face {
+    font-family: 'Founders Grotesk';
+    src: url(assets/fonts/FoundersGrotesk-Semibold.eot);
+    src: url(assets/fonts/FoundersGrotesk-Semibold.eot?#iefix) format('embedded-opentype'),
+        url(assets/fonts/FoundersGrotesk-Semibold.woff2) format('woff2'),
+        url(assets/fonts/FoundersGrotesk-Semibold.woff) format('woff');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+
 
 * {
   box-sizing: border-box;
@@ -255,7 +277,7 @@ th:hover {
   text-align: center;
   cursor: pointer;
   opacity: 0.5;
-  font-weight: bold;
+  font-weight: 600;
   font-size: 1.1em;
   line-height: 1.5;
   font-family: 'Founders Grotesk', sans-serif;
@@ -383,7 +405,7 @@ th:hover {
   z-index: 1;
   text-align: right;
   font-family: 'Founders Grotesk', sans-serif;
-  background: rgba(0,0,0,0.3);
+  background: rgba(0,0,0,0.8);
   padding: 0.5em 0.5em 0.2em 0.5em;
 }
 .legend--bivariate-wrapper {
@@ -639,7 +661,7 @@ button {
   display: block;
   font-size: 0.9em;
   font-family: 'Founders Grotesk', sans-serif;
-  font-weight: bold;
+  font-weight: 600;
 }
 .disabled {
   opacity: 0.5;
