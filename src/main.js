@@ -160,3 +160,16 @@ function loadSummary(state) {
 
 // Visualization lightbox
 new SimpleLightbox({elements: '.viz-gallery a'});
+
+window.hideUI = () => {
+  ['.icon-legend', '.icon-legend-show',
+    '.map-regions', '.info', '.mapboxgl-control-container',
+    'header'].forEach((sel) => {
+      [...document.querySelectorAll(sel)].forEach((el) => {
+        el.parentNode.removeChild(el);
+      });
+    });
+  [...document.querySelectorAll('.stage')].forEach((el) => el.style.height = '100vh');
+  maps['cd'].map.resize();
+  maps['zcta'].map.resize();
+}
