@@ -129,9 +129,7 @@ class Info {
 
   reset() {
     this.info.explainFeature(`<h2>Map Guide</h2>
-      ${this.config.INFO}
-      <p>Use the quick zoom buttons in the top left or type in your desired zip (try your home zip code!) to locate a particular area. Toggle different maps with the drop-downs and buttons; see the corresponding summary statistics on the gradient legend. Hover over the colorful statistical legend in the bottom left corner to highlight areas on the map that correspond to a particular statistical measurement. As you mouse over certain geographic areas, the schools within commuting distance of that zip will illuminate.</p>
-    `);
+      ${this.config.INFO}`);
   }
 
   schoolsOnly() {
