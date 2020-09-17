@@ -89,7 +89,7 @@ class Info {
             <span class="variable-name">SCI</span>: ${d['SCI'] > 0 ? d['SCI'].toFixed(2) : 'Education Desert'}<br/>
             <span class="variable-name">Average Net Price</span>: ${d['AVGNP'] ? formatter.format(d['AVGNP']) : 'N/A'}<br/>
             <span class="variable-name">Average Tuition & Fees</span>: ${d['AVGTF'] ? formatter.format(d['AVGTF']) : 'N/A'}<br/>
-            <span class="variable-name">${config.LOA == 'cd' ? 'Average Schools Local to a Resident' : 'Number of Schools'}</span>: ${d['n'] || 'N/A'}<br/>
+            <span class="variable-name">${this.config.LOA == 'cd' ? 'Average Schools Local to a Resident' : 'Number of Schools'}</span>: ${d['n'] || 'N/A'}<br/>
             ${'ENROLLED' in d ? `<span class="variable-name">Enrollment</span>: ${d['ENROLLED'] || 0}<br/>` : ''}
             ${'ZCTAZONEPOP' in placeData ? `<span class="variable-name">25mi Zone Population Estimate</span>: ${placeData['ZCTAZONEPOP'] || 'N/A'}<br/>` : ''}
             ${'CDPOP' in placeData ? `<span class="variable-name">Population</span>: ${placeData['CDPOP'] || 'N/A'}<br/>` : ''}

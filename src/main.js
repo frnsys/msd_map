@@ -173,3 +173,20 @@ window.hideUI = () => {
   maps['cd'].map.resize();
   maps['zcta'].map.resize();
 }
+
+// Add a label to the map, e.g. for creating screenshots/gifs
+window.labelMap = (label) => {
+  let div = document.getElementById('map-label');
+  if (!div) {
+    div = document.createElement('div');
+    div.id = 'map-label';
+    div.style.position = 'fixed';
+    div.style.bottom = '0em';
+    div.style.right = '0.5em';
+    div.style.fontSize = '4em';
+    div.style.fontFamily = 'Founders Grotesk';
+    div.style.fontWeight = '600';
+    document.body.appendChild(div);
+  }
+  div.innerText = label;
+}
