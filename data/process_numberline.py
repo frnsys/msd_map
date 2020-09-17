@@ -1,39 +1,57 @@
 import json
+import math
 import pandas as pd
 
-df = pd.read_csv('src/State_Number_Line_Data.csv')
+df = pd.read_csv('src/numberlines.csv')
 lines = {
     'median_income': {
-        'val': 'Median_Income',
-        'label': 'Median_Income_Label',
-        'rank': 'MedInc_rank',
+        'val': 'median_income_{}zip',
+        'label': 'median_income_{}zip_label',
+        'rank': 'median_income_{}zip_rank',
     },
     'median_debt': {
-        'val': 'TLoan_Median',
-        'label': 'TLoan_Median_Label',
-        'rank': 'TLoan_rank',
+        'val': 'debt_median_{}zip',
+        'label': 'debt_median_{}zip_label',
+        'rank': 'debt_median_{}zip_rank',
     },
     '2009_change': {
-        'val': '%Change_from2009',
-        'label': '%Change_from2009_Label',
-        'rank': '%Change_rank',
+        'val': 'debt_pct_change_{}zip',
+        'label': 'debt_pct_change_{}zip_label',
+        'rank': 'debt_pct_change_{}zip_rank',
     }
 }
-meta = {k: {} for k in lines.keys()}
-data = {k: {} for k in lines.keys()}
 
-for i, row in df.iterrows():
-    state = row['State']
-    for key, vs in lines.items():
-        data[key][state] = {k: row[v] for k, v in vs.items()}
+sets = {}
+for type in ['all', 'black', 'white', 'asian', 'hispanic']: # TODO
+    meta = {k: {} for k in lines.keys()}
+    data = {k: {} for k in lines.keys()}
 
-for k in lines.keys():
-    mn = min(v['val'] for v in data[k].values())
-    mx = max(v['val'] for v in data[k].values())
-    meta[k]['range'] = [mn, mx]
+    # Skip this for subgroups
+    if type != 'all':
+        del meta['median_income']
+        del data['median_income']
+
+    for i, row in df.iterrows():
+        state = row['STATE_ABBR']
+        for key in data.keys():
+            vs = lines[key]
+            state_data = {}
+            for k, v in vs.items():
+                val = row[v.format(type.upper())]
+                if isinstance(val, str) or not math.isnan(val):
+                    state_data[k] = val
+            if 'val' in state_data:
+                data[key][state] = state_data
+
+    for k in data.keys():
+        mn = min(v['val'] for v in data[k].values())
+        mx = max(v['val'] for v in data[k].values())
+        meta[k]['range'] = [mn, mx]
+
+    sets[type] = {
+        'meta': meta,
+        'data': data
+    }
 
 with open('gen/numberline.json', 'w') as f:
-    json.dump({
-        'data': data,
-        'meta': meta
-    }, f)
+    json.dump(sets, f)

@@ -196,7 +196,14 @@
             <p>We have compiled data on most of these issues and summarized key statistics below. Higher education institutional summary statistics look at trends in the country for schools that have physical campuses as sourced from the Integrated Postsecondary Education Data System (<span class="smallcaps">IPEDS</span>). Zip-level summary statistics look at trends across the country in income, indebtedness, and institutional choice. Student loan data is sourced from a repeated cross-sectional credit archive sample on 18–35 year-olds with student loan activity conducted by Experian Information Solutions, Inc. Income and population statistics are sourced from the American Community Survey. Concentration, enrollment, and school prices at the <span class="smallcaps">ZCTA</span>-level are calculated according to 45 minute commuting distances. All tables are reproducible with the data that’s <a href="#download">available for download</a>.</p>
             <div id="number-lines">
                 <h2>State Stack-Up - how does your state fare against others?</h2>
-                <select id="number-line-select"></select>
+                <div id="number-line-type-select">
+                    <button class="selected" data-value="all">All zips</button>
+                    <button data-value="white">Majority White zips</button>
+                    <button data-value="black">Majority Black zips</button>
+                    <button data-value="asian">Majority Asian zips</button>
+                    <button data-value="hispanic">Majority Hispanic zips</button>
+                </div>
+                <select id="number-line-state-select"></select>
                 <div id="income-number-line"></div>
                 <div id="debt-number-line"></div>
                 <div id="change-number-line"></div>

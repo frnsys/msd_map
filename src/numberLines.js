@@ -1,7 +1,15 @@
-import {data,meta} from '../data/gen/numberline.json';
+import dataset from '../data/gen/numberline.json';
+
+const state = {
+  state: 'all',
+};
 
 function createNumberLine(selector, slug, name, data, range, labels, fmtRange, linked) {
   let parent = document.querySelector(selector);
+  while (parent.firstChild) {
+    parent.removeChild(parent.firstChild);
+  }
+
   let container = document.createElement('div');
   container.style.width = '100%';
   container.style.height = '70px';
@@ -108,49 +116,74 @@ function createNumberLine(selector, slug, name, data, range, labels, fmtRange, l
   };
 }
 
+function highlightState(val) {
+  [...document.querySelectorAll('.number-line--focused')].forEach((el) => {
+    el.classList.remove('number-line--focused');
+  });
+  if (val !== 'all') {
+    [...document.querySelectorAll(`[data-key=${val}]`)].forEach((el) => {
+      el.classList.add('number-line--focused');
+    });
+  }
+}
+
 let formatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
   currency: 'USD',
 });
 
-let numberLines = [];
-let income = createNumberLine(
-  '#income-number-line',
-  'median-income',
-  'Median Income (2018)',
-  data['median_income'],
-  meta['median_income']['range'],
-  ['', ''],
-  (val) => formatter.format(val),
-  numberLines
-);
-numberLines.push(income);
-let debt = createNumberLine(
-  '#debt-number-line',
-  'median-debt',
-  'Median Student Loan Debt (2019)',
-  data['median_debt'],
-  meta['median_debt']['range'],
-  ['', ''],
-  (val) => formatter.format(val),
-  numberLines
-);
-numberLines.push(debt);
-let change = createNumberLine(
-  '#change-number-line',
-  'percent-change',
-  'Percent Change in Median Student Loan Since 2009',
-  data['2009_change'],
-  meta['2009_change']['range'],
-  ['', ''],
-  (val) => `${val}%`,
-  numberLines
-);
-numberLines.push(change);
+function createNumberLinesForKey(key) {
+  let numberLines = [];
+  let {data, meta} = dataset[key];
+
+  // Only show income for all groups
+  if (key == 'all') {
+    document.getElementById('income-number-line').style.display = 'block';
+    let income = createNumberLine(
+      '#income-number-line',
+      'median-income',
+      'Median Income (2018)',
+      data['median_income'],
+      meta['median_income']['range'],
+      ['', ''],
+      (val) => formatter.format(val),
+      numberLines
+    );
+    numberLines.push(income);
+  } else {
+    document.getElementById('income-number-line').style.display = 'none';
+  }
+  let debt = createNumberLine(
+    '#debt-number-line',
+    'median-debt',
+    'Median Student Loan Debt (2019)',
+    data['median_debt'],
+    meta['median_debt']['range'],
+    ['', ''],
+    (val) => formatter.format(val),
+    numberLines
+  );
+  numberLines.push(debt);
+  let change = createNumberLine(
+    '#change-number-line',
+    'percent-change',
+    'Percent Change in Median Student Loan Since 2009',
+    data['2009_change'],
+    meta['2009_change']['range'],
+    ['', ''],
+    (val) => `${val}%`,
+    numberLines
+  );
+  numberLines.push(change);
+
+  highlightState(state.state);
+}
+
+createNumberLinesForKey('all');
 
 // State selector for the number line
-let states = Object.keys(data['median_income']);
-let stateSelect = document.getElementById('number-line-select');
+let states = Object.keys(dataset['all']['data']['median_income']);
+let stateSelect = document.getElementById('number-line-state-select');
 let allStates = document.createElement('option');
 allStates.innerText = 'All States';
 allStates.value = 'all';
@@ -163,12 +196,16 @@ states.sort((a, b) => a.localeCompare(b)).forEach((key) => {
 });
 stateSelect.addEventListener('change', (ev) => {
   let val = ev.target.value;
-  [...document.querySelectorAll('.number-line--focused')].forEach((el) => {
-    el.classList.remove('number-line--focused');
+  state.state = val;
+  highlightState(val);
+});
+
+// Select dataset to show
+[...document.querySelectorAll('#number-line-type-select button')].forEach((el) => {
+  el.addEventListener('click', (ev) => {
+    document.querySelector('#number-line-type-select button.selected').classList.remove('selected');
+    el.classList.add('selected');
+    let key = el.dataset.value;
+    createNumberLinesForKey(key);
   });
-  if (val !== 'all') {
-    [...document.querySelectorAll(`[data-key=${val}]`)].forEach((el) => {
-      el.classList.add('number-line--focused');
-    });
-  }
 });
