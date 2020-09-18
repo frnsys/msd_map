@@ -690,6 +690,9 @@ button {
 #number-line-type-select button {
   flex-basis: 19%;
 }
+.number-line--point[data-key="National"] {
+  background: #10CD36 !important;
+}
 
 .map-only {
   display: flex;

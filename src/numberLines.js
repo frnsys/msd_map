@@ -61,7 +61,7 @@ function createNumberLine(selector, slug, name, data, range, labels, fmtRange, l
     tooltip.style.display = 'block';
     tooltip.style.left = `calc(${p*100}% + ${radius/2}px)`;
     tooltip.style.top = `${top}px`;
-    tooltip.innerText = `${key}: ${data[key]['label']} (Rank: ${data[key]['rank']})`;
+    tooltip.innerText = `${key}: ${data[key]['label']} (Rank: ${data[key]['rank'] || 'N/A'})`;
     [...document.querySelectorAll(`[data-key=${key}]`)].forEach((el) => {
       el.classList.add('number-line--hovered');
     });
