@@ -11,7 +11,7 @@ function createNumberLine(selector, slug, name, data, range, labels, fmtRange, l
   }
 
   let container = document.createElement('div');
-  container.style.width = '100%';
+  container.style.width = 'calc(100% - 12px)';
   container.style.height = '70px';
   container.classList.add('number-line');
   parent.appendChild(container);
