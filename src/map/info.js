@@ -86,7 +86,7 @@ class Info {
 
           return `
             <h2>${label}</h2>
-            <span class="variable-name">SCI</span>: ${d['SCI'] > 0 ? d['SCI'].toFixed(2) : 'Education Desert'}<br/>
+            <span class="variable-name">SCI</span>: ${d['SCI'] > 0 ? d['SCI'].toFixed(2) : (this.config.LOA == 'cd' ? 'N/A' : 'Education Desert')}<br/>
             <span class="variable-name">Average Net Price</span>: ${d['AVGNP'] ? formatter.format(d['AVGNP']) : 'N/A'}<br/>
             <span class="variable-name">Average Tuition & Fees</span>: ${d['AVGTF'] ? formatter.format(d['AVGTF']) : 'N/A'}<br/>
             <span class="variable-name">${this.config.LOA == 'cd' ? 'Average Schools Local to a Resident' : 'Number of Schools'}</span>: ${d['n'] || 'N/A'}<br/>
