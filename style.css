@@ -101,8 +101,15 @@ h1, h2 {
   font-size: 3.2em;
   font-family: 'Founders Grotesk', sans-serif;
 }
+h1.title {
+  margin-bottom: 0 !important;
+}
 h2 {
   font-size: 1.8em;
+}
+
+.release-date {
+  color: #888;
 }
 
 .stage {
