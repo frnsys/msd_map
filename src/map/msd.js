@@ -165,23 +165,24 @@ function MSDMap(config) {
   info.reset();
 
   // For district screenshots
-  // function rangeFocus(prop, statefp) {
-  //   return [
-  //     'case',
+  function rangeFocus(prop, statefp) {
+    return [
+      'case',
 
-  //     ['!=', ['get', 'STATEFP'], statefp],
-  //       '#333333',
+      ['!=', ['get', 'STATEFP'], statefp],
+        '#333333',
 
-  //     ['interpolate', ['linear'], ['get', prop.key]].concat(gradientToStyle(prop.color, prop.range))
-  //   ];
-  // }
-  // window.focusStateFP = (statefp) => {
-  //   let paint = rangeFocus(...state.props, statefp);
-  //   map.map.setPaintProperty(
-  //     'main',
-  //     'fill-color',
-  //     paint);
-  // }
+      ['interpolate', ['linear'], ['get', prop.key]].concat(gradientToStyle(prop.color, prop.range))
+    ];
+  }
+  // statefp should be a string
+  window.focusStateFP = (statefp) => {
+    let paint = rangeFocus(...state.props, statefp);
+    map.map.setPaintProperty(
+      'main',
+      'fill-color',
+      paint);
+  }
 
   // For getting bounds
   // window.getbbox = () => map.map.getBounds();
@@ -189,24 +190,24 @@ function MSDMap(config) {
 }
 
 // For district screnshots
-// function stopToValue(stop, range) {
-//   return range[0] + (range[1] - range[0]) * stop;
-// }
+function stopToValue(stop, range) {
+  return range[0] + (range[1] - range[0]) * stop;
+}
 
-// function gradientToStyle(gradient, range, idx) {
-//   return Object.keys(gradient)
-//     .map((stop) => parseFloat(stop))
-//     .sort()
-//     .reduce((acc, stop) => {
-//       acc.push(stopToValue(stop, range));
-//       if (idx !== undefined) {
-//         acc.push(color.hexToRGB(gradient[stop])[idx]);
-//       } else {
-//         acc.push(gradient[stop]);
-//       }
-//       return acc;
-//     }, []);
-// }
+function gradientToStyle(gradient, range, idx) {
+  return Object.keys(gradient)
+    .map((stop) => parseFloat(stop))
+    .sort()
+    .reduce((acc, stop) => {
+      acc.push(stopToValue(stop, range));
+      if (idx !== undefined) {
+        acc.push(color.hexToRGB(gradient[stop])[idx]);
+      } else {
+        acc.push(gradient[stop]);
+      }
+      return acc;
+    }, []);
+}
 
 
 export default MSDMap;

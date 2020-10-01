@@ -43,6 +43,9 @@ for type in ['all', 'black', 'white', 'asian', 'hispanic']: # TODO
             if 'val' in state_data:
                 data[key][state] = state_data
 
+            if key == 'median_income':
+                data[key][state]['label'] = '${:,}'.format(data[key][state]['val'])
+
     for k in data.keys():
         mn = min(v['val'] for v in data[k].values())
         mx = max(v['val'] for v in data[k].values())

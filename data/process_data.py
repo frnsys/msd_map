@@ -27,6 +27,10 @@ from shapely.geometry import shape, mapping
 # loa = Level of analysis
 LOA = sys.argv[1] # 'ZCTA' OR 'CD'
 
+# For CD, need to change the column names in CD_Level.45.min.csv:
+# %s/AVG_LOCAL_//
+# %s/MED_STU_BAL/STU_TOT_BAL
+
 if LOA == 'ZCTA':
     AREA_LEVEL_PATH = 'src/zips/ZipLevel.{I}.csv'
     ZONE_LEVEL_PATH = 'src/school_zones/{Y}.{I}.Schoolzones.SCI.csv'
