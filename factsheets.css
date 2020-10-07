@@ -33,11 +33,22 @@
 html, body {
   margin: 0;
   padding: 0;
-  font-family: 'EB Garamond', serif;
+  /* font-family: 'EB Garamond', serif; */
+  font-family: 'Founders Grotesk', sans-serif;
   /* font-smooth: never; */
   /* -webkit-font-smoothing : none; */
   background: #fff;
   word-break: break-word;
+}
+
+h1 {
+  text-align: center;
+  font-family: 'Founders Grotesk', sans-serif;
+  background: #202020;
+  color: #fff;
+  margin: 0;
+  padding: 0.5em 0 0.25em 0;
+  font-size: 1.5em;
 }
 
 .maps {
@@ -49,10 +60,10 @@ html, body {
   flex-basis: 50%;
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
 }
 .pane:first-of-type {
-  border-right: 3px solid black;
+  border-right: 3px solid #424242;
 }
 
 .map {
@@ -65,14 +76,17 @@ html, body {
   flex: 1;
 }
 .map-tooltip {
-  color: #fff;
+  color: #111;
   position: absolute;
-  padding: 0.5em;
+  padding: 0.5em 0.5em 0.25em 0.5em;
   font-size: 0.8em;
-  background: #000;
+  background: #fafafa;
   display: none;
   z-index: 100;
   min-width: 100px;
+}
+.tooltip-title {
+  text-decoration: underline;
 }
 
 .legend {
@@ -216,18 +230,30 @@ html, body {
   padding: 1em;
   flex-basis: 200px;
 }
-.info h2 {
+.info h2, .info h3 {
   margin: 0.5em 0 0.25em 0;
   font-family: 'Founders Grotesk', sans-serif;
+}
+.info h3 {
+  text-decoration: underline;
+  margin-top: 1em;
 }
 .info table {
   width: 100%;
 }
-.info table td:first-child {
+.info table:first-child td:first-child {
   font-weight: bold;
 }
+.info th {
+  text-align: left;
+  color: #F4DA1A;
+}
 .info-data {
-  max-width: 400px;
+  max-width: 420px;
   width: 100%;
   margin: 0 auto;
+}
+
+.bad {
+  color: #ff3a3a;
 }
