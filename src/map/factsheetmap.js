@@ -39,6 +39,9 @@ function FSMSDMap(config, mapId) {
   const state = config.INITIAL_STATE;
   const tooltip = document.getElementById(`${mapId}--map-tooltip`);
 
+  // If a state is focused
+  state.focused = null;
+
   const db = new SchoolDB(config);
 
   const dataLayerName = 'data';
@@ -64,9 +67,11 @@ function FSMSDMap(config, mapId) {
       focusStateFP(map, state, statefp);
       name = fipsToState[statefp];
       bbox = bboxes[statefp];
+      state.focused = statefp;
     } else {
       // Reset
       map.set('main', state.props);
+      state.focused = null;
     }
 
     map.fitBounds(bbox);
@@ -92,20 +97,24 @@ function FSMSDMap(config, mapId) {
       let key = util.keyForCat({'Y': state.cat['Y'], 'I': state.cat['I']});
       let loa_keys = feat.properties['loa_key'].split(',');
       let loa_key = loa_keys[0];
-      db.dataForKeyPlace(key, loa_key).then((data) => {
-        tooltip.style.left = `${ev.originalEvent.offsetX+10}px`;
-        tooltip.style.top = `${ev.originalEvent.offsetY+10}px`;
-        tooltip.style.display = 'block';
+      if (state.focused == null || feat.properties['STATEFP'] == state.focused) {
+        db.dataForKeyPlace(key, loa_key).then((data) => {
+          tooltip.style.left = `${ev.originalEvent.offsetX+10}px`;
+          tooltip.style.top = `${ev.originalEvent.offsetY+10}px`;
+          tooltip.style.display = 'block';
 
-        let label = `${fipsToState[loa_key.slice(0,2)]}, District ${loa_key.slice(2)}`;
-        tooltip.innerHTML = `
-          <div><b>${label}</b></div>
-          <div><b>Population</b>: ${data['CDPOP'] || 'N/A'}</div>
-          <div><b>Median Income</b>: ${formatter.format(data['MEDIANINCOME']) || 'N/A'}</div>
-          <div><b>Average Tuition & Fees</b>: ${formatter.format(data['AVGTF.S:allschools']) || 'N/A'}</div>
-          ${loa_keys.length > 1 ? `<div>${loa_keys.length - 1} other districts here (zoom in to see).</div>` : ''}
-        `;
-      });
+          let label = `${fipsToState[loa_key.slice(0,2)]}, District ${loa_key.slice(2)}`;
+          tooltip.innerHTML = `
+            <div class="tooltip-title"><b>${label}</b></div>
+            <div><b>Population</b>: ${data['CDPOP'] || 'N/A'}</div>
+            <div><b>Median Income</b>: ${formatter.format(data['MEDIANINCOME']) || 'N/A'}</div>
+            <div><b>Average Tuition & Fees</b>: ${formatter.format(data['AVGTF.S:allschools']) || 'N/A'}</div>
+            ${loa_keys.length > 1 ? `<div>${loa_keys.length - 1} other districts here (zoom in to see).</div>` : ''}
+          `;
+        });
+      } else {
+        tooltip.style.display = 'none';
+      }
     } else {
       tooltip.style.display = 'none';
     }

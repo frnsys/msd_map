@@ -2,6 +2,7 @@ import os
 import json
 from shapely.geometry import shape
 
+padding = [-0.2, -0.2, 0.2, 0.2]
 mapping = {
     "01": "Alabama",
     "02": "Alaska",
@@ -69,7 +70,7 @@ for f in os.listdir('src/states'):
     state = f.split('.')[0]
     fips = revmapping[state]
     bbox = shape(feat['geometry']).bounds
-    region_bboxes[fips] = bbox
+    region_bboxes[fips] = [a + b for a, b in zip(bbox, padding)]
 
 # Data source is incorrect about Alaska
 region_bboxes['02'] = [-207.4133546365765, 50.796925749084465, -104.93451956255066, 71.79270027924889]
