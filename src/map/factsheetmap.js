@@ -34,6 +34,28 @@ function focusStateFP(map, state, statefp) {
     paint);
 }
 
+function rangeFocusDistrict(prop, statefp, loakey) {
+  return [
+    'case',
+
+    ['!=', ['get', 'STATEFP'], statefp],
+      '#333333',
+
+    ['in', loakey, ['get', 'loa_key']],
+      ['interpolate', ['linear'], ['get', prop.key]].concat(gradientToStyle(prop.color, prop.range)),
+
+    ['interpolate', ['linear'], ['get', prop.key]].concat(gradientToStyle(prop.color, prop.range, 0.5))
+  ];
+}
+
+function focusStateDistrictFP(map, state, statefp, loakey) {
+  let paint = rangeFocusDistrict(...state.props, statefp, loakey);
+  map.map.setPaintProperty(
+    'main',
+    'fill-color',
+    paint);
+}
+
 function FSMSDMap(config, mapId) {
   const loa = config.LOA;
   const state = config.INITIAL_STATE;
@@ -63,10 +85,19 @@ function FSMSDMap(config, mapId) {
     let name = 'National';
     let bbox = regions['Mainland'];
     if (features['main'].length > 0) {
-      let statefp = features['main'][0].properties['STATEFP']
-      focusStateFP(map, state, statefp);
+      let feature = features['main'][0];
+      let statefp = feature.properties['STATEFP']
       name = fipsToState[statefp];
       bbox = bboxes[statefp];
+      if (statefp == state.focused) {
+        // Already focused on state, focus on district
+        let loa_keys = feature.properties['loa_key'].split(',');
+        let loa_key = loa_keys[0];
+        name = `${name}, District ${loa_key.slice(2)}`;
+        focusStateDistrictFP(map, state, statefp, loa_key);
+      } else {
+        focusStateFP(map, state, statefp);
+      }
       state.focused = statefp;
     } else {
       // Reset
@@ -137,20 +168,16 @@ function stopToValue(stop, range) {
   return range[0] + (range[1] - range[0]) * stop;
 }
 
-function gradientToStyle(gradient, range, idx) {
+function gradientToStyle(gradient, range, opacity) {
   return Object.keys(gradient)
     .map((stop) => parseFloat(stop))
     .sort()
     .reduce((acc, stop) => {
       acc.push(stopToValue(stop, range));
-      if (idx !== undefined) {
-        acc.push(color.hexToRGB(gradient[stop])[idx]);
-      } else {
-        acc.push(gradient[stop]);
-      }
+      let rgb = color.hexToRGB(gradient[stop]).map((v) => v*255);
+      acc.push(['rgba'].concat(...rgb.concat(opacity ? opacity : 1.0)));
       return acc;
     }, []);
 }
-
 
 export default FSMSDMap;
