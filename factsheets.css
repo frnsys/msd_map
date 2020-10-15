@@ -257,3 +257,15 @@ h1 {
 .bad {
   color: #ff3a3a;
 }
+
+.footnote {
+  color: #999;
+  font-size: 0.85em;
+}
+.footnotes {
+  list-style-type: none;
+  padding: 0;
+  margin: 1em 0 0 0;
+  font-size: 0.85em;
+  color: #999;
+}
