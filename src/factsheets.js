@@ -15,6 +15,12 @@ document.getElementById('b--map').addEventListener('mouseleave', () => {
   document.getElementById('b--map-tooltip').style.display = 'none';
 });
 
-
 maps['a'].map.resize();
 maps['b'].map.resize();
+
+[...document.querySelectorAll('h1 a')].forEach((a) => {
+  a.addEventListener('click', () => {
+    document.querySelector('h1 a.selected').classList.remove('selected');
+    a.classList.add('selected');
+  });
+});
