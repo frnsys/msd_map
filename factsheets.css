@@ -249,9 +249,12 @@ h1 {
   color: #F4DA1A;
 }
 .info-data {
-  max-width: 420px;
+  max-width: 500px;
   width: 100%;
   margin: 0 auto;
+}
+.info-summary td:last-child {
+  text-align: right;
 }
 
 .bad {
@@ -268,4 +271,8 @@ h1 {
   margin: 1em 0 0 0;
   font-size: 0.85em;
   color: #999;
+}
+
+.district {
+  display: none;
 }
