@@ -56,7 +56,7 @@ function focusStateDistrictFP(map, state, statefp, loakey) {
     paint);
 }
 
-function FSMSDMap(config, mapId) {
+function FSMSDMap(config, mapId, showData) {
   const loa = config.LOA;
   const state = config.INITIAL_STATE;
   const tooltip = document.getElementById(`${mapId}--map-tooltip`);
@@ -97,12 +97,14 @@ function FSMSDMap(config, mapId) {
         focusStateDistrictFP(map, state, statefp, loa_key);
       } else {
         focusStateFP(map, state, statefp);
+        showData(name);
       }
       state.focused = statefp;
     } else {
       // Reset
       map.set('main', state.props);
       state.focused = null;
+      showData(name);
     }
 
     map.fitBounds(bbox);
