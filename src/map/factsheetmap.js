@@ -56,7 +56,11 @@ function focusStateDistrictFP(map, state, statefp, loakey) {
     paint);
 }
 
+<<<<<<< HEAD
 function FSMSDMap(config, mapId, showData) {
+=======
+function FSMSDMap(config, mapId) {
+>>>>>>> f1c70c3c5688a119c49a0d5cb55207150537644c
   const loa = config.LOA;
   const state = config.INITIAL_STATE;
   const tooltip = document.getElementById(`${mapId}--map-tooltip`);
