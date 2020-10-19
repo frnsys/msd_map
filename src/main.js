@@ -1,6 +1,8 @@
 import config from './config';
 import MSDMap from './map/msd';
 import SimpleLightbox from 'simple-lightbox';
+import dataset from '../data/gen/numberline.json';
+import numberline from './map/numberline';
 
 // Maps
 mapboxgl.accessToken = config.MAPBOX_TOKEN;
@@ -190,3 +192,106 @@ window.labelMap = (label) => {
   }
   div.innerText = label;
 }
+
+
+// Number line
+const nlState = {
+  group: 'median',
+  type: 'all',
+  state: 'all'
+};
+
+let formatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+});
+
+function createNumberLinesForKey(group, key) {
+  let numberLines = [];
+  let {data, meta} = dataset[group][key];
+
+  document.getElementById('income-number-line').style.display = 'block';
+  let income = numberline.createNumberLine(
+    '#income-number-line',
+    'income',
+    meta['income'].title,
+    meta['income'].note,
+    data['income'],
+    meta['income']['range'],
+    ['', ''],
+    (val) => formatter.format(val),
+    numberLines
+  );
+  numberLines.push(income);
+
+  let debt = numberline.createNumberLine(
+    '#debt-number-line',
+    'debt',
+    meta['debt'].title,
+    meta['debt'].note,
+    data['debt'],
+    meta['debt']['range'],
+    ['', ''],
+    (val) => formatter.format(val),
+    numberLines
+  );
+  numberLines.push(debt);
+
+  let change = numberline.createNumberLine(
+    '#change-number-line',
+    'change',
+    meta['change'].title,
+    meta['change'].note,
+    data['change'],
+    meta['change']['range'],
+    ['', ''],
+    (val) => `${val}%`,
+    numberLines
+  );
+  numberLines.push(change);
+
+  numberline.highlightState(nlState.state);
+}
+
+createNumberLinesForKey(nlState.group, nlState.type);
+
+// State selector for the number line
+let states = Object.keys(dataset['median']['all']['data']['income']);
+let stateSelect = document.getElementById('number-line-state-select');
+let allStates = document.createElement('option');
+allStates.innerText = 'All States';
+allStates.value = 'all';
+stateSelect.append(allStates);
+states.sort((a, b) => a.localeCompare(b)).forEach((key) => {
+  let opt = document.createElement('option');
+  opt.innerText = key;
+  opt.value = key;
+  stateSelect.append(opt);
+});
+stateSelect.addEventListener('change', (ev) => {
+  let val = ev.target.value;
+  nlState.state = val;
+  numberline.highlightState(val);
+});
+
+// Select dataset to show
+[...document.querySelectorAll('#number-line-type-select button')].forEach((el) => {
+  el.addEventListener('click', (ev) => {
+    document.querySelector('#number-line-type-select button.selected').classList.remove('selected');
+    el.classList.add('selected');
+    let key = el.dataset.value;
+    nlState.type = key;
+    createNumberLinesForKey(nlState.group, nlState.type);
+  });
+});
+
+// Select group to show
+[...document.querySelectorAll('#number-line-group-select button')].forEach((el) => {
+  el.addEventListener('click', (ev) => {
+    document.querySelector('#number-line-group-select button.selected').classList.remove('selected');
+    el.classList.add('selected');
+    let key = el.dataset.value;
+    nlState.group = key;
+    createNumberLinesForKey(nlState.group, nlState.type);
+  });
+});

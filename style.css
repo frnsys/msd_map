@@ -701,6 +701,31 @@ button {
   background: #10CD36 !important;
   z-index: 8;
 }
+#number-line-group-select {
+  padding-right: 0.5em;
+  margin-right: 0.5em;
+  border-right: 2px solid #777;
+}
+#number-line-group-select button {
+  display: block;
+  width: 100%;
+}
+#number-line-group-select button:first-child {
+  margin-bottom: 0.3em;
+}
+#number-lines h2 {
+  margin-bottom: 0;
+}
+.number-lines-controls {
+  display: flex;
+}
+.number-lines-controls > div:last-child {
+  flex: 1;
+}
+.details {
+  font-size: 0.85em;
+  margin: 0 0 1.5em 0;
+}
 
 .map-only {
   display: flex;
@@ -749,6 +774,7 @@ button {
 .viz-gallery img {
   max-width: 100%;
 }
+
 
 @media only screen and (max-width: 1080px) {
   .icon-legend {
