@@ -91,9 +91,9 @@ function renderTables(tableState) {
           if (!val) {
             return 'N/A';
           } else if (parseFloat(val) > 0) {
-            return `<span class="bad">${val}⇧</span><br />since 2009`;
+            return `<span class="bad">${val}↑</span><br />since 2009`;
           } else {
-            return `<span class="good">${val}⇩</span><br />since 2009`;
+            return `<span class="good">${val}↓</span><br />since 2009`;
           }
         } else if (i == 3) {
           return `<span class="in-title">% Change Rank:</span> ${val || 'N/A'}`;
@@ -128,9 +128,9 @@ function renderTables(tableState) {
           if (!val) {
             return 'N/A';
           } else if (parseFloat(val) > 0) {
-            return `<span class="good">${val}⇧</span><br />since 2009`;
+            return `<span class="good">${val}↑</span><br />since 2009`;
           } else {
-            return `<span class="bad">${val}⇩</span><br />since 2009`;
+            return `<span class="bad">${val}↓</span><br />since 2009`;
           }
         } else if (i == 3) {
           return `<span class="in-title">% Change Rank</span>: ${val || 'N/A'}`;
