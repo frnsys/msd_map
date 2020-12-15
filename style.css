@@ -694,9 +694,6 @@ button {
   display: flex;
   justify-content: space-between;
 }
-#number-line-type-select button {
-  flex-basis: 19%;
-}
 .number-line--point[data-key="National"] {
   background: #10CD36 !important;
   z-index: 8;

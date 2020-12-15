@@ -1,0 +1,319 @@
+@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Mono:400');
+
+@font-face{
+    font-family:'EB Garamond';
+    src:url(assets/fonts/EBGaramond-Regular.ttf);
+    font-style:normal;
+    font-weight:400
+}
+@font-face{
+    font-family:'Founders Grotesk';
+    src:url(assets/fonts/FoundersGrotesk-Light.eot);
+    src:url(assets/fonts/FoundersGrotesk-Light.eot?#iefix) format('embedded-opentype'),url(assets/fonts/FoundersGrotesk-Light.woff) format('woff'),url(assets/fonts/FoundersGrotesk-Light.ttf) format('truetype'),url(assets/fonts/FoundersGrotesk-Light.svg#dc544f9d1e4c18e86a46bd108e04a26d) format('svg');
+    font-style:normal;
+    font-weight:200
+}
+@font-face {
+    font-family: 'Founders Grotesk';
+    src: url(assets/fonts/FoundersGrotesk-Semibold.eot);
+    src: url(assets/fonts/FoundersGrotesk-Semibold.eot?#iefix) format('embedded-opentype'),
+        url(assets/fonts/FoundersGrotesk-Semibold.woff2) format('woff2'),
+        url(assets/fonts/FoundersGrotesk-Semibold.woff) format('woff');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  /* font-family: 'EB Garamond', serif; */
+  font-family: 'Founders Grotesk', sans-serif;
+  /* font-smooth: never; */
+  /* -webkit-font-smoothing : none; */
+  background: #fff;
+  word-break: break-word;
+}
+
+h1 {
+  text-align: center;
+  font-family: 'Founders Grotesk', sans-serif;
+  background: #202020;
+  color: #fff;
+  margin: 0;
+  padding: 0.5em 0 0.25em 0;
+  font-size: 1.5em;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+h3 a {
+  color: #383838;
+  cursor: pointer;
+  text-decoration: underline #383838;
+}
+h3 a:hover {
+  color: #fff;
+}
+h3 a.selected {
+  color: #fff;
+  text-decoration: underline #F4DA1A;
+}
+
+.maps {
+  display: flex;
+  overflow-x: hidden;
+}
+
+.pane {
+  flex-basis: 50%;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+.pane:first-of-type {
+  border-right: 3px solid #424242;
+}
+
+.map {
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+}
+
+.map-wrapper {
+  position: relative;
+  flex: 1;
+}
+.map-tooltip {
+  color: #111;
+  position: absolute;
+  padding: 0.5em 0.5em 0.25em 0.5em;
+  font-size: 0.8em;
+  background: #fafafa;
+  display: none;
+  z-index: 100;
+  min-width: 100px;
+}
+.tooltip-title {
+  text-decoration: underline;
+}
+
+.legend {
+  position: absolute;
+  bottom: 2em;
+  left: 1em;
+  color: #fff;
+  z-index: 1;
+  text-align: right;
+  font-family: 'Founders Grotesk', sans-serif;
+  background: rgba(0,0,0,0.8);
+  padding: 0.5em 0.5em 0.2em 0.5em;
+}
+.legend--bivariate-wrapper {
+  transform: rotate(-45deg);
+  bottom: 4em;
+  right: calc(100% - 14em);
+  display: block;
+}
+.legend--title {
+  text-align: left;
+  padding-left: 15px;
+  font-size: 0.75em;
+}
+.legend--range {
+  display: flex;
+}
+.legend--bivariate-label {
+  position: absolute;
+  text-align: center;
+  font-size: 10px;
+  padding: 0 1.2em;
+  top: 100%;
+  right: 0;
+  left: 0;
+  color: rgba(255,255,255,1);
+  font-weight: bold;
+}
+.legend--bivariate-label-a {
+  top: 0;
+  transform: rotate(90deg);
+  transform-origin: 0 0;
+}
+.legend--bivariate-container {
+  display: flex;
+}
+.legend--bar {
+  height: 120px;
+  width: 12px;
+  position: relative;
+  border: 1px solid black;
+}
+.legend--bar-bin {
+  position: absolute;
+  width: 100%;
+  height: 30px; /* four bins */
+  border-bottom: 1px solid black;
+}
+.legend--labels {
+  margin-left: 0.25em;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: 0.8em;
+  text-align: left;
+}
+.legend--labels_x {
+  text-align: left;
+  transform: rotate(90deg);
+  height: 100%;
+  margin-bottom: -2em;
+  padding-left: 0.25em;
+  margin-right: 0;
+}
+.legend--bivariate .legend--labels {
+  text-align: right;
+  margin-left: 0;
+  margin-right: 0.25em;
+}
+.legend--bivariate .legend--labels_x {
+  text-align: left;
+  margin-right: 0;
+}
+.legend--cell {
+  width: 16px;
+  height: 16px;
+  cursor: help;
+}
+.legend--grid {
+  display: flex;
+  position: relative;
+  border: 1px solid #000;
+}
+.legend--grid-container {
+  position: relative;
+}
+.legend--bivariate .legend--special {
+  margin-top: 2.5em;
+}
+
+.focus-point {
+  background: #05A1FF;
+  position: absolute;
+}
+.stat-point {
+  background: #5D5DB6;
+  position: absolute;
+}
+
+.focus-point.legend--bivariate-point,
+.stat-point.legend--bivariate-point {
+  width: 12px;
+  height: 12px;
+  border-radius: 100em;
+}
+.focus-point.legend--point,
+.stat-point.legend--point {
+  height: 2px;
+  width: 24px;
+  right: 0;
+}
+
+.legend--single {
+  margin: 0.5em 0;
+  font-size: 0.75em;
+  display: flex;
+}
+.legend--single-color {
+  width: 12px;
+  height: 12px;
+  border: 1px solid black;
+}
+.legend--single span {
+  line-height: 1;
+  margin-left: 0.3em;
+}
+
+.info {
+  color: #fff;
+  background: #202020;
+  padding: 1em;
+  flex-basis: 200px;
+}
+.info h2, .info h3 {
+  margin: 0.5em 0 0.25em 0;
+  font-family: 'Founders Grotesk', sans-serif;
+}
+.info h3 {
+  text-decoration: underline;
+  margin-top: 1em;
+}
+.info table {
+  width: 100%;
+}
+.info table:first-child td:first-child {
+  font-weight: bold;
+}
+.info th {
+  text-align: left;
+  color: #F4DA1A;
+}
+.info-data {
+  max-width: 500px;
+  width: 100%;
+  margin: 0 auto;
+}
+.info-summary td:last-child {
+  text-align: right;
+}
+
+.bad {
+  color: #ff3a3a;
+}
+.good {
+  color: #3DAF63;
+}
+.in-title {
+  color: #bbb;
+  font-size: 0.75em;
+}
+
+.footnote {
+  color: #999;
+  font-size: 0.85em;
+}
+.footnotes {
+  list-style-type: none;
+  padding: 0;
+  margin: 1em 0 0 0;
+  font-size: 0.85em;
+  color: #999;
+}
+
+.district {
+  display: none;
+}
+
+.inst-select {
+  margin-top: 1em !important;
+  border-top: 1px solid #F4DA1A;
+  padding-top: 1em;
+}
+.inst-select a {
+  color: #383838;
+  cursor: pointer;
+  margin-right: 0.25em;
+}
+.inst-select a:hover {
+  color: #fff;
+}
+.inst-select a.selected {
+  color: #fff;
+  border-bottom: 2px solid #F4DA1A;
+}

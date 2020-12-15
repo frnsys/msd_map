@@ -2,57 +2,46 @@ import json
 import math
 import pandas as pd
 
-# df = pd.read_csv('src/numberlines.csv')
-df = pd.read_csv('src/MSD_State_Lvl_10.17.2020.csv')
+df = pd.read_csv('src/factsheets/MSD_State_Lvl_12.14.2020.csv')
 groups = {
     'median': {
         'income': {
-            'title': 'Median Income (2018)',
-            'val': 'MED_INC_18{}',
-            'label': 'MED_INC_18{}_Label',
-            'rank': 'MED_INC_18{}_Rank',
+            'title': 'Median Income (2019)',
+            'val': 'MED_INC_19{}',
+            'label': 'MED_INC_19{}_Label',
+            'rank': 'MED_INC_19{}_NatRank',
         },
         'debt': {
             'title': 'Median Student Loan Debt (2019)',
-            'note': 'Racial majority debt data is for 2018',
-            'val': 'MED_BAL_18{}',
-            'label': 'MED_BAL_18{}_Label',
-            'rank': 'MED_BAL_18{}_Rank',
+            'val': 'MED_BAL_19{}',
+            'label': 'MED_BAL_19{}_Label',
+            'rank': 'MED_BAL_19{}_NatRank',
         },
         'change': {
             'title': 'Percent Change in Median Student Loan 2009 - 2019',
-            'note': 'Racial majority debt percent changes is for 2009 - 2018',
-            'val': 'MED_BAL_pch_0918{}',
-            'label': 'MED_BAL_pch_0918{}_Label',
-            'rank': 'MED_BAL_pch_0918{}_Rank',
+            'val': 'MED_BAL_pch_0919{}',
+            'label': 'MED_BAL_pch_0919{}_Label',
+            'rank': 'MED_BAL_pch_0919{}_NatRank',
         }
     },
     'average': {
-        'income': {
-            'title': 'Average Income (2018)',
-            'val': 'AVG_INC_18{}',
-            'label': 'AVG_INC_18{}_Label',
-            'rank': 'AVG_INC_18{}_Rank',
-        },
         'debt': {
             'title': 'Average Student Loan Debt (2019)',
-            'note': 'Racial majority debt data is for 2018',
-            'val': 'AVG_BAL_18{}',
-            'label': 'AVG_BAL_18{}_Label',
-            'rank': 'AVG_BAL_18{}_Rank',
+            'val': 'AVG_BAL_19{}',
+            'label': 'AVG_BAL_19{}_Label',
+            'rank': 'AVG_BAL_19{}_NatRank',
         },
         'change': {
             'title': 'Percent Change in Average Student Loan 2009 - 2019',
-            'note': 'Racial majority debt percent changes is for 2009 - 2018',
-            'val': 'AVG_BAL_pch_0918{}',
-            'label': 'AVG_BAL_pch_0918{}_Label',
-            'rank': 'AVG_BAL_pch_0918{}_Rank',
+            'val': 'AVG_BAL_pch_0919{}',
+            'label': 'AVG_BAL_pch_0919{}_Label',
+            'rank': 'AVG_BAL_pch_0919{}_NatRank',
         }
     }
 }
 
 sets = {k: {} for k in groups.keys()}
-for type in ['all', 'black', 'white', 'asian', 'hispanic']:
+for type in ['all', 'black', 'white', 'asian', 'hispanic', 'minority']:
     for group, lines in groups.items():
         meta = {k: {} for k in lines.keys()}
         data = {k: {} for k in lines.keys()}

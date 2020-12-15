@@ -210,19 +210,23 @@ function createNumberLinesForKey(group, key) {
   let numberLines = [];
   let {data, meta} = dataset[group][key];
 
-  document.getElementById('income-number-line').style.display = 'block';
-  let income = numberline.createNumberLine(
-    '#income-number-line',
-    'income',
-    meta['income'].title,
-    meta['income'].note,
-    data['income'],
-    meta['income']['range'],
-    ['', ''],
-    (val) => formatter.format(val),
-    numberLines
-  );
-  numberLines.push(income);
+  if (meta['income']) {
+    document.getElementById('income-number-line').style.display = 'block';
+    let income = numberline.createNumberLine(
+      '#income-number-line',
+      'income',
+      meta['income'].title,
+      meta['income'].note,
+      data['income'],
+      meta['income']['range'],
+      ['', ''],
+      (val) => formatter.format(val),
+      numberLines
+    );
+    numberLines.push(income);
+  } else {
+    document.getElementById('income-number-line').style.display = 'none';
+  }
 
   let debt = numberline.createNumberLine(
     '#debt-number-line',
