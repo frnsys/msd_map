@@ -301,7 +301,9 @@ h3 a.selected {
 }
 
 .inst-select {
-  margin-top: 2em;
+  margin-top: 1em !important;
+  border-top: 1px solid #F4DA1A;
+  padding-top: 1em;
 }
 .inst-select a {
   color: #383838;
