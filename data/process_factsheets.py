@@ -42,6 +42,22 @@ schema = {
                 'MED_BAL_pch_0919_{}_Label',
                 'MED_BAL_pch_0919_{}_NatRank'
             ],
+            'debtincome': {
+                'name': 'Median Student Debt to Income Ratio',
+                'label': 'MED_DEBT_INC_19_Label',
+                'rank': 'MED_DEBT_INC_19_NatRank'
+            },
+            'debtincome_change': {
+                'name': 'Percent Change in Median Student Debt to Income Ratio',
+                'label': 'MED_DEBT_INC_pch_0919_Label',
+                'rank': 'MED_DEBT_INC_pch_0919_NatRank'
+            },
+            'debtincome_demographics': [
+                'MED_DEBT_INC_19_{}_Label',
+                'MED_DEBT_INC_19_{}_NatRank',
+                'MED_DEBT_INC_pch_0919_{}_Label',
+                'MED_DEBT_INC_pch_0919_{}_NatRank'
+            ],
             'income': {
                 'name': 'Median Income of Borrowers',
                 'label': 'MED_INC_19_Label',
@@ -195,7 +211,7 @@ for i, row in df.iterrows():
                         for col_tmpl in columns:
                             column = col_tmpl.format(demo.upper())
                             val = row[column]
-                            if not isinstance(val, str) or (isinstance(val, (int, float)) and math.isnan(val)):
+                            if not isinstance(val, str) and (isinstance(val, (int, float)) and math.isnan(val)):
                                 val = None
                             data[state][category][group][key][demo].append(val)
                 else:

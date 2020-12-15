@@ -65,6 +65,7 @@ function renderTables(tableState) {
   }
   let debtStat = tableState.groups.debt;
   debtStat = debtStat.charAt(0).toUpperCase() + debtStat.slice(1);
+  const demos = ['asian', 'black', 'hispanic', 'white', 'minority'];
 
   renderTable(
     parent,
@@ -77,16 +78,15 @@ function renderTables(tableState) {
     []
   );
 
-  const demos = ['asian', 'black', 'hispanic', 'white', 'minority'];
   renderTable(
     parent,
-    `2018 ${debtStat} Student Debt by Census Tract Demographics`,
+    `2019 ${debtStat} Student Debt by Census Tract Demographics`,
     ['Maj. Asian', 'Maj. Black', 'Maj. Hispanic', 'Maj. White', 'Maj. Minority'],
     [...Array(4).keys()].map((i) => {
       return demos.map((demo) => {
         let val = debtData['debt_demographics'][demo][i];
         if (i == 1) {
-          return `<span class="in-title">Debt Rank:</span> ${val || 'N/A'}`;
+          return `<span class="in-title">Rank:</span> ${val || 'N/A'}`;
         } else if (i == 2) {
           if (!val) {
             return 'N/A';
@@ -134,6 +134,43 @@ function renderTables(tableState) {
           }
         } else if (i == 3) {
           return `<span class="in-title">% Change Rank</span>: ${val || 'N/A'}`;
+        }
+        return val;
+      });
+    }),
+    []
+  );
+
+  renderTable(
+    parent,
+    `2019 ${debtStat} Student Debt-to-Income Ratios`,
+    ['', 'Value', 'Rank'],
+    [
+      [debtData['debtincome']['name'], debtData['debtincome']['label'], debtData['debtincome']['rank']],
+      [debtData['debtincome_change']['name'], debtData['debtincome_change']['label'], debtData['debtincome_change']['rank']]
+    ],
+    []
+  );
+
+  renderTable(
+    parent,
+    `2019 ${debtStat} Student Debt-to-Income by Census Tract Demographics`,
+    ['Maj. Asian', 'Maj. Black', 'Maj. Hispanic', 'Maj. White', 'Maj. Minority'],
+    [...Array(4).keys()].map((i) => {
+      return demos.map((demo) => {
+        let val = debtData['debtincome_demographics'][demo][i];
+        if (i == 1) {
+          return `<span class="in-title">Rank:</span> ${val || 'N/A'}`;
+        } else if (i == 2) {
+          if (!val) {
+            return 'N/A';
+          } else if (parseFloat(val) > 0) {
+            return `<span class="bad">${val}↑</span><br />since 2009`;
+          } else {
+            return `<span class="good">${val}↓</span><br />since 2009`;
+          }
+        } else if (i == 3) {
+          return `<span class="in-title">% Change Rank:</span> ${val || 'N/A'}`;
         }
         return val;
       });
