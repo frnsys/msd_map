@@ -57,8 +57,10 @@ function renderTables(tableState) {
   debtStat = debtStat.charAt(0).toUpperCase() + debtStat.slice(1);
   const demos = ['asian', 'black', 'hispanic', 'white', 'minority'];
 
+  let section = document.createElement('section');
+  parent.appendChild(section);
   renderTable(
-    parent,
+    section,
     `2019 <a data-value="median" class="${debtStat == 'Median' ? 'selected' : ''}">Median</a> <a data-value="average" class="${debtStat == 'Average' ? 'selected' : ''}">Average</a> Student Debt`,
     ['', 'Value', 'Rank'],
     [
@@ -67,7 +69,6 @@ function renderTables(tableState) {
     ],
     []
   );
-
   [...document.querySelectorAll('h3 a')].forEach((a) => {
     a.addEventListener('click', () => {
       document.querySelector('h3 a.selected').classList.remove('selected');
@@ -78,9 +79,8 @@ function renderTables(tableState) {
       renderTables(tableStates.b);
     });
   });
-
   renderTable(
-    parent,
+    section,
     `2019 ${debtStat} Student Debt by Census Tract Demographics`,
     ['Maj. Asian', 'Maj. Black', 'Maj. Hispanic', 'Maj. White', 'Maj. Minority'],
     [...Array(4).keys()].map((i) => {
@@ -105,8 +105,10 @@ function renderTables(tableState) {
     []
   );
 
+  section = document.createElement('section');
+  parent.appendChild(section);
   renderTable(
-    parent,
+    section,
     // `2019 ${debtStat} Census Tract Level Median Income of Borrowers`,
     `2019 US Median Income across Census Tracts`,
     ['', 'Value', 'Rank'],
@@ -118,9 +120,8 @@ function renderTables(tableState) {
     ],
     []
   );
-
   renderTable(
-    parent,
+    section,
     // `2019 ${debtStat} Income of Borrowers by Census Tract Demographics`,
     `2019 Median Income by Census Tract Demographics`,
     ['Maj. Asian', 'Maj. Black', 'Maj. Hispanic', 'Maj. White', 'Maj. Minority'],
@@ -147,8 +148,10 @@ function renderTables(tableState) {
     []
   );
 
+  section = document.createElement('section');
+  parent.appendChild(section);
   renderTable(
-    parent,
+    section,
     // `2019 ${debtStat} Student Debt-to-Income Ratios`,
     `2019 Median Student Debt-to-Income Ratios`,
     ['', 'Value', 'Rank'],
@@ -160,9 +163,8 @@ function renderTables(tableState) {
     ],
     []
   );
-
   renderTable(
-    parent,
+    section,
     // `2019 ${debtStat} Student Debt-to-Income by Census Tract Demographics`,
     `2019 Median Student Debt-to-Income by Census Tract Demographics`,
     ['Maj. Asian', 'Maj. Black', 'Maj. Hispanic', 'Maj. White', 'Maj. Minority'],
@@ -189,6 +191,8 @@ function renderTables(tableState) {
     []
   );
 
+  section = document.createElement('section');
+  parent.appendChild(section);
   let h = document.createElement('h2');
   h.classList.add('inst-select');
   const instGroups = {
@@ -210,10 +214,10 @@ function renderTables(tableState) {
     });
     h.appendChild(a);
   });
-  parent.appendChild(h);
+  section.appendChild(h);
 
   renderTable(
-    parent,
+    section,
     `2017-2018 ${instGroups[tableState.groups.institutions]} Institutions, Undergraduate Enrollment, and Prices`,
     ['', 'Value', 'Rank', '% Change*'],
     [
