@@ -108,7 +108,7 @@ function renderTables(tableState) {
   renderTable(
     parent,
     // `2019 ${debtStat} Census Tract Level Median Income of Borrowers`,
-    `2019 Median Census Tract Level Median Income of Borrowers`,
+    `2019 US Median Income across Census Tracts`,
     ['', 'Value', 'Rank'],
     [
       // [debtData['income']['name'], debtData['income']['label'], debtData['income']['rank']],
@@ -122,7 +122,7 @@ function renderTables(tableState) {
   renderTable(
     parent,
     // `2019 ${debtStat} Income of Borrowers by Census Tract Demographics`,
-    `2019 Median Income of Borrowers by Census Tract Demographics`,
+    `2019 Median Income by Census Tract Demographics`,
     ['Maj. Asian', 'Maj. Black', 'Maj. Hispanic', 'Maj. White', 'Maj. Minority'],
     [...Array(4).keys()].map((i) => {
       return demos.map((demo) => {
