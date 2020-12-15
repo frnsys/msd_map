@@ -87,17 +87,17 @@ function renderTables(tableState) {
       return demos.map((demo) => {
         let val = debtData['debt_demographics'][demo][i];
         if (i == 1) {
-          return `<span class="in-title">Rank:</span> ${val || 'N/A'}`;
+          return `<span class="in-title">Rank:</span> ${val || '<span class="na">N/A</span>'}`;
         } else if (i == 2) {
           if (!val) {
-            return 'N/A';
+            return '<span class="na">N/A</span>';
           } else if (parseFloat(val) > 0) {
             return `<span class="bad">${val}↑</span><br />since 2009`;
           } else {
             return `<span class="good">${val}↓</span><br />since 2009`;
           }
         } else if (i == 3) {
-          return `<span class="in-title">% Change Rank:</span> ${val || 'N/A'}`;
+          return `<span class="in-title">% Change Rank:</span> ${val || '<span class="na">N/A</span>'}`;
         }
         return val;
       });
@@ -129,17 +129,17 @@ function renderTables(tableState) {
         // let val = debtData['income_demographics'][demo][i];
         let val = medianDebtData['income_demographics'][demo][i];
         if (i == 1) {
-          return `<span class="in-title">Income Rank:</span> ${val || 'N/A'}`;
+          return `<span class="in-title">Rank:</span> ${val || '<span class="na">N/A</span>'}`;
         } else if (i == 2) {
           if (!val) {
-            return 'N/A';
+            return '<span class="na">N/A</span>';
           } else if (parseFloat(val) > 0) {
             return `<span class="good">${val}↑</span><br />since 2009`;
           } else {
             return `<span class="bad">${val}↓</span><br />since 2009`;
           }
         } else if (i == 3) {
-          return `<span class="in-title">% Change Rank</span>: ${val || 'N/A'}`;
+          return `<span class="in-title">% Change Rank:</span> ${val || '<span class="na">N/A</span>'}`;
         }
         return val;
       });
@@ -171,17 +171,17 @@ function renderTables(tableState) {
         // let val = debtData['debtincome_demographics'][demo][i];
         let val = medianDebtData['debtincome_demographics'][demo][i];
         if (i == 1) {
-          return `<span class="in-title">Rank:</span> ${val || 'N/A'}`;
+          return `<span class="in-title">Rank:</span> ${val || '<span class="na">N/A</span>'}`;
         } else if (i == 2) {
           if (!val) {
-            return 'N/A';
+            return '<span class="na">N/A</span>';
           } else if (parseFloat(val) > 0) {
             return `<span class="bad">${val}↑</span><br />since 2009`;
           } else {
             return `<span class="good">${val}↓</span><br />since 2009`;
           }
         } else if (i == 3) {
-          return `<span class="in-title">% Change Rank:</span> ${val || 'N/A'}`;
+          return `<span class="in-title">% Change Rank:</span> ${val || '<span class="na">N/A</span>'}`;
         }
         return val;
       });
@@ -255,7 +255,7 @@ function renderTable(parent, title, columns, rows, footnotes) {
     let tr = document.createElement('tr');
     row.forEach((col) => {
       let td = document.createElement('td');
-      td.innerHTML = col || 'N/A';
+      td.innerHTML = col || '<span class="na">N/A</span>';
       tr.appendChild(td);
     });
     t.appendChild(tr);

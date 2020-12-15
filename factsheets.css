@@ -279,6 +279,9 @@ h3 a.selected {
 .good {
   color: #3DAF63;
 }
+.na {
+  color: #555;
+}
 .in-title {
   color: #bbb;
   font-size: 0.75em;
