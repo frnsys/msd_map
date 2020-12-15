@@ -4,6 +4,7 @@ import dataset from '../data/gen/factsheets.json';
 
 // Maps
 mapboxgl.accessToken = config.MAPBOX_TOKEN;
+config.CD.INITIAL_CAT.Y = '2019';
 
 const maps = {};
 maps['a'] = FSMSDMap(config.CD, 'a', (stateName) => {

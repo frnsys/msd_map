@@ -222,7 +222,7 @@ export default {
     PROPS: PROPS_FOR_LOA['cd'],
     INITIAL_STATE: {
       cat: INITIAL_CAT,
-      props: [PROPS_FOR_LOA['cd']['STU_TOT_BAL.Y:2018']]
+      props: [PROPS_FOR_LOA['cd']['STU_TOT_BAL.Y:2019']]
     },
     ...CONFIG
   },
