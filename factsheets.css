@@ -53,16 +53,17 @@ h1 {
   top: 0;
   z-index: 1000;
 }
-h1 a {
+h3 a {
   color: #383838;
   cursor: pointer;
+  text-decoration: underline #383838;
 }
-h1 a:hover {
+h3 a:hover {
   color: #fff;
 }
-h1 a.selected {
+h3 a.selected {
   color: #fff;
-  border-bottom: 2px solid #F4DA1A;
+  text-decoration: underline #F4DA1A;
 }
 
 .maps {

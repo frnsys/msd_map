@@ -7,12 +7,12 @@ mapboxgl.accessToken = config.MAPBOX_TOKEN;
 
 const maps = {};
 maps['a'] = FSMSDMap(config.CD, 'a', (state) => {
-  tableState.a.state = state;
-  renderTables(tableState.a);
+  tableStates.a.state = state;
+  renderTables(tableStates.a);
 });
 maps['b'] = FSMSDMap(config.CD, 'b', (state) => {
-  tableState.b.state = state;
-  renderTables(tableState.b);
+  tableStates.b.state = state;
+  renderTables(tableStates.b);
 });
 
 document.getElementById('a--map').addEventListener('mouseleave', () => {
@@ -25,19 +25,8 @@ document.getElementById('b--map').addEventListener('mouseleave', () => {
 maps['a'].map.resize();
 maps['b'].map.resize();
 
-[...document.querySelectorAll('h1 a')].forEach((a) => {
-  a.addEventListener('click', () => {
-    document.querySelector('h1 a.selected').classList.remove('selected');
-    a.classList.add('selected');
-    tableState.a.groups.debt = a.dataset.value;
-    tableState.b.groups.debt = a.dataset.value;
-    renderTables(tableState.a);
-    renderTables(tableState.b);
-  });
-});
-
 // Tables
-const tableState = {
+const tableStates = {
   a: {
     id: 'a--info',
     state: 'National',
@@ -58,6 +47,7 @@ const tableState = {
 function renderTables(tableState) {
   let data = dataset[tableState.state];
   let debtData = data['debt'][tableState.groups.debt];
+  let medianDebtData = data['debt']['median']; // some data only has median now
   let instData = data['institutions'][tableState.groups.institutions];
   let parent = document.querySelector(`#${tableState.id} .info-tables`);
   while (parent.hasChildNodes()) {
@@ -69,7 +59,7 @@ function renderTables(tableState) {
 
   renderTable(
     parent,
-    `2019 ${debtStat} Student Debt`,
+    `2019 <a data-value="median" class="${debtStat == 'Median' ? 'selected' : ''}">Median</a> <a data-value="average" class="${debtStat == 'Average' ? 'selected' : ''}">Average</a> Student Debt`,
     ['', 'Value', 'Rank'],
     [
       [debtData['debt']['name'], debtData['debt']['label'], debtData['debt']['rank']],
@@ -77,6 +67,17 @@ function renderTables(tableState) {
     ],
     []
   );
+
+  [...document.querySelectorAll('h3 a')].forEach((a) => {
+    a.addEventListener('click', () => {
+      document.querySelector('h3 a.selected').classList.remove('selected');
+      a.classList.add('selected');
+      tableStates.a.groups.debt = a.dataset.value;
+      tableStates.b.groups.debt = a.dataset.value;
+      renderTables(tableStates.a);
+      renderTables(tableStates.b);
+    });
+  });
 
   renderTable(
     parent,
@@ -106,22 +107,27 @@ function renderTables(tableState) {
 
   renderTable(
     parent,
-    `2018 ${debtStat} Census Tract Level Median Income of Borrowers`,
+    // `2019 ${debtStat} Census Tract Level Median Income of Borrowers`,
+    `2019 Median Census Tract Level Median Income of Borrowers`,
     ['', 'Value', 'Rank'],
     [
-      [debtData['income']['name'], debtData['income']['label'], debtData['income']['rank']],
-      [debtData['income_change']['name'], debtData['income_change']['label'], debtData['income']['rank']]
+      // [debtData['income']['name'], debtData['income']['label'], debtData['income']['rank']],
+      // [debtData['income_change']['name'], debtData['income_change']['label'], debtData['income']['rank']]
+      [medianDebtData['income']['name'], medianDebtData['income']['label'], medianDebtData['income']['rank']],
+      [medianDebtData['income_change']['name'], medianDebtData['income_change']['label'], medianDebtData['income']['rank']]
     ],
     []
   );
 
   renderTable(
     parent,
-    `2018 ${debtStat} Income of Borrowers by Census Tract Demographics`,
+    // `2019 ${debtStat} Income of Borrowers by Census Tract Demographics`,
+    `2019 Median Income of Borrowers by Census Tract Demographics`,
     ['Maj. Asian', 'Maj. Black', 'Maj. Hispanic', 'Maj. White', 'Maj. Minority'],
     [...Array(4).keys()].map((i) => {
       return demos.map((demo) => {
-        let val = debtData['income_demographics'][demo][i];
+        // let val = debtData['income_demographics'][demo][i];
+        let val = medianDebtData['income_demographics'][demo][i];
         if (i == 1) {
           return `<span class="in-title">Income Rank:</span> ${val || 'N/A'}`;
         } else if (i == 2) {
@@ -143,22 +149,27 @@ function renderTables(tableState) {
 
   renderTable(
     parent,
-    `2019 ${debtStat} Student Debt-to-Income Ratios`,
+    // `2019 ${debtStat} Student Debt-to-Income Ratios`,
+    `2019 Median Student Debt-to-Income Ratios`,
     ['', 'Value', 'Rank'],
     [
-      [debtData['debtincome']['name'], debtData['debtincome']['label'], debtData['debtincome']['rank']],
-      [debtData['debtincome_change']['name'], debtData['debtincome_change']['label'], debtData['debtincome_change']['rank']]
+      // [debtData['debtincome']['name'], debtData['debtincome']['label'], debtData['debtincome']['rank']],
+      // [debtData['debtincome_change']['name'], debtData['debtincome_change']['label'], debtData['debtincome_change']['rank']]
+      [medianDebtData['debtincome']['name'], medianDebtData['debtincome']['label'], medianDebtData['debtincome']['rank']],
+      [medianDebtData['debtincome_change']['name'], medianDebtData['debtincome_change']['label'], medianDebtData['debtincome_change']['rank']]
     ],
     []
   );
 
   renderTable(
     parent,
-    `2019 ${debtStat} Student Debt-to-Income by Census Tract Demographics`,
+    // `2019 ${debtStat} Student Debt-to-Income by Census Tract Demographics`,
+    `2019 Median Student Debt-to-Income by Census Tract Demographics`,
     ['Maj. Asian', 'Maj. Black', 'Maj. Hispanic', 'Maj. White', 'Maj. Minority'],
     [...Array(4).keys()].map((i) => {
       return demos.map((demo) => {
-        let val = debtData['debtincome_demographics'][demo][i];
+        // let val = debtData['debtincome_demographics'][demo][i];
+        let val = medianDebtData['debtincome_demographics'][demo][i];
         if (i == 1) {
           return `<span class="in-title">Rank:</span> ${val || 'N/A'}`;
         } else if (i == 2) {
@@ -226,7 +237,7 @@ function renderTable(parent, title, columns, rows, footnotes) {
   let c = document.createElement('div');
 
   let h = document.createElement('h3');
-  h.innerText = title;
+  h.innerHTML = title;
 
   let t = document.createElement('table');
   c.appendChild(h);
@@ -263,5 +274,5 @@ function renderTable(parent, title, columns, rows, footnotes) {
   parent.appendChild(c);
 }
 
-renderTables(tableState.a);
-renderTables(tableState.b);
+renderTables(tableStates.a);
+renderTables(tableStates.b);
