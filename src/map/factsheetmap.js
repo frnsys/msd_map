@@ -97,8 +97,8 @@ function FSMSDMap(config, mapId, showData) {
         focusStateDistrictFP(map, state, statefp, loa_key);
       } else {
         focusStateFP(map, state, statefp);
-        showData(name);
       }
+      showData(name);
       state.focused = statefp;
     } else {
       // Reset

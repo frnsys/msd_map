@@ -6,12 +6,12 @@ import dataset from '../data/gen/factsheets.json';
 mapboxgl.accessToken = config.MAPBOX_TOKEN;
 
 const maps = {};
-maps['a'] = FSMSDMap(config.CD, 'a', (state) => {
-  tableStates.a.state = state;
+maps['a'] = FSMSDMap(config.CD, 'a', (stateName) => {
+  tableStates.a.state = stateName;
   renderTables(tableStates.a);
 });
-maps['b'] = FSMSDMap(config.CD, 'b', (state) => {
-  tableStates.b.state = state;
+maps['b'] = FSMSDMap(config.CD, 'b', (stateName) => {
+  tableStates.b.state = stateName;
   renderTables(tableStates.b);
 });
 

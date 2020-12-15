@@ -2,7 +2,10 @@ import json
 import math
 import pandas as pd
 
-df = pd.read_csv('src/factsheets/MSD_State_Lvl_12.14.2020.csv')
+dfs = [pd.read_csv(f) for f in [
+    'src/factsheets/MSD_State_Lvl_12.14.2020.csv',
+    'src/factsheets/MSD_CD_Lvl_12.14.2020.csv',
+]]
 
 demographics = ['asian', 'black', 'hispanic', 'white', 'minority']
 schema = {
@@ -195,40 +198,43 @@ schema = {
 }
 
 data = {}
-for i, row in df.iterrows():
-    # state = row['State']
-    state = row['State_Name']
-    data[state] = {}
-    for category, scheme in schema.items():
-        data[state][category] = {}
-        for group, keys in scheme.items():
-            data[state][category][group] = {}
-            for key, columns in keys.items():
-                if 'demographics' in key:
-                    data[state][category][group][key] = {}
-                    for demo in demographics:
-                        data[state][category][group][key][demo] = []
-                        for col_tmpl in columns:
-                            column = col_tmpl.format(demo.upper())
-                            val = row[column]
-                            if not isinstance(val, str) and (isinstance(val, (int, float)) and math.isnan(val)):
-                                val = None
-                            data[state][category][group][key][demo].append(val)
-                else:
-                    data[state][category][group][key] = {}
-                    for colkey in ['label', 'rank', 'change']:
-                        if colkey not in columns: continue
-                        column = columns[colkey]
+for df in dfs:
+    for i, row in df.iterrows():
+        # state = row['State']
+        state = row['State_Name']
+        if 'CONG_DIST' in row:
+            state = '{}, District {}'.format(state, str(row['CONG_DIST'])[-2:])
+        data[state] = {}
+        for category, scheme in schema.items():
+            data[state][category] = {}
+            for group, keys in scheme.items():
+                data[state][category][group] = {}
+                for key, columns in keys.items():
+                    if 'demographics' in key:
+                        data[state][category][group][key] = {}
+                        for demo in demographics:
+                            data[state][category][group][key][demo] = []
+                            for col_tmpl in columns:
+                                column = col_tmpl.format(demo.upper())
+                                val = row[column]
+                                if not isinstance(val, str) and (isinstance(val, (int, float)) and math.isnan(val)):
+                                    val = None
+                                data[state][category][group][key][demo].append(val)
+                    else:
+                        data[state][category][group][key] = {}
+                        for colkey in ['label', 'rank', 'change']:
+                            if colkey not in columns: continue
+                            column = columns[colkey]
 
-                        if column is None:
-                            val = None
-                        else:
-                            val = row[column]
-                        if val is None or isinstance(val, str) or not math.isnan(val):
-                            data[state][category][group][key][colkey] = val
-                        else:
-                            data[state][category][group][key][colkey] = None
-                    data[state][category][group][key]['name'] = columns['name']
+                            if column is None:
+                                val = None
+                            else:
+                                val = row[column]
+                            if val is None or isinstance(val, str) or not math.isnan(val):
+                                data[state][category][group][key][colkey] = val
+                            else:
+                                data[state][category][group][key][colkey] = None
+                        data[state][category][group][key]['name'] = columns['name']
 
 with open('gen/factsheets.json', 'w') as f:
     json.dump(data, f)
