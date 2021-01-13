@@ -197,7 +197,7 @@ const CONFIG = {
 export default {
   ZCTA: {
     LOA: 'zcta',
-    MAP_ID: 'frnsys.msd__3_0',
+    MAP_ID: 'jfift.msd__3_0',
     INFO: '<p>Welcome to the Millennial Student Debt map visualized at the <span class="smallcaps">ZCTA</span>-level. This map displays institutional, demographic, and financial variables sortable by academic year and in some cases, commuting distances and school type. Don’t forget to check out this map at the Congressional District level! <em style="color:#fff;">All dollar amounts are 2019-inflation adjusted.</em></p><p>Use the quick zoom buttons in the top left or type in your desired zip (try your home zip code!) to locate a particular area. Toggle different maps with the drop-downs and buttons; see the corresponding summary statistics on the gradient legend. Hover over the colorful statistical legend in the bottom left corner to highlight areas on the map that correspond to a particular statistical measurement. As you mouse over certain geographic areas, the schools within commuting distance of that zip will illuminate.</p>',
     SHORT_NAME: 'zip',
     MIN_PLACE_LENGTH: 5,
@@ -214,7 +214,7 @@ export default {
   },
   CD: {
     LOA: 'cd',
-    MAP_ID: 'frnsys.msd_cd__3_4',
+    MAP_ID: 'jfift.msd_cd__3_4',
     INFO: '<p>Welcome to the Millennial Student Debt map aggregated to Congressional District level!  While some states routinely redraw district lines, this map applies the same district map to all years under analysis - this means you can see how your current district has fluctuated along the variables through time. <em style="color:#fff;">All dollar amounts are 2019-inflation adjusted.</em></p><p>Use the quick zoom buttons in the top left or zoom in a state or congressional district to see more detail. Toggle different maps with the drop-downs and buttons; see the corresponding summary statistics on the gradient legend. Hover over the colorful statistical legend in the bottom left corner to highlight areas on the map that correspond to a particular statistical measurement. As you mouse over certain geographic areas, the schools within commuting distance of that area.</p>',
     SHORT_NAME: 'district',
     MIN_PLACE_LENGTH: 4,
