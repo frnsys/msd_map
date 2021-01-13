@@ -260,8 +260,15 @@ h3 a.selected {
   font-family: 'Founders Grotesk', sans-serif;
 }
 .info h3 {
-  text-decoration: underline;
   margin-top: 1em;
+  font-weight: normal;
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+}
+.info h3 > span:first-child {
+  font-weight: bold;
+  text-decoration: underline;
 }
 .info table {
   width: 100%;
@@ -269,9 +276,15 @@ h3 a.selected {
 .info table:first-child td:first-child {
   font-weight: bold;
 }
+.info h3 .toggle-open {
+  font-size:  0.8em;
+}
 .info th {
   text-align: left;
   color: #F4DA1A;
+}
+.info section table {
+  display: none;
 }
 .info-data {
   max-width: 500px;

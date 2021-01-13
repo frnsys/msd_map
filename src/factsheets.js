@@ -16,6 +16,8 @@ maps['b'] = FSMSDMap(config.CD, 'b', (stateName) => {
   renderTables(tableStates.b);
 });
 
+const tableOpenStates = {};
+
 document.getElementById('a--map').addEventListener('mouseleave', () => {
   document.getElementById('a--map-tooltip').style.display = 'none';
 });
@@ -61,6 +63,7 @@ function renderTables(tableState) {
   let section = document.createElement('section');
   parent.appendChild(section);
   renderTable(
+    'avg_student_debt',
     section,
     `2019 <a data-value="median" class="${debtStat == 'Median' ? 'selected' : ''}">Median</a> <a data-value="average" class="${debtStat == 'Average' ? 'selected' : ''}">Average</a> Student Debt`,
     ['', 'Value', 'Rank'],
@@ -71,16 +74,18 @@ function renderTables(tableState) {
     []
   );
   [...document.querySelectorAll('h3 a')].forEach((a) => {
-    a.addEventListener('click', () => {
+    a.addEventListener('click', (ev) => {
       document.querySelector('h3 a.selected').classList.remove('selected');
       a.classList.add('selected');
       tableStates.a.groups.debt = a.dataset.value;
       tableStates.b.groups.debt = a.dataset.value;
       renderTables(tableStates.a);
       renderTables(tableStates.b);
+      ev.stopPropagation();
     });
   });
   renderTable(
+    'avg_student_debt_by_tract_demo',
     section,
     `2019 ${debtStat} Student Debt by Census Tract Demographics`,
     ['Maj. Asian', 'Maj. Black', 'Maj. Hispanic', 'Maj. White', 'Maj. Minority'],
@@ -109,6 +114,7 @@ function renderTables(tableState) {
   section = document.createElement('section');
   parent.appendChild(section);
   renderTable(
+    'avg_income_by_tract',
     section,
     // `2019 ${debtStat} Census Tract Level Median Income of Borrowers`,
     `2019 US Median Income across Census Tracts`,
@@ -122,6 +128,7 @@ function renderTables(tableState) {
     []
   );
   renderTable(
+    'avg_income_by_tract_demo',
     section,
     // `2019 ${debtStat} Income of Borrowers by Census Tract Demographics`,
     `2019 Median Income by Census Tract Demographics`,
@@ -152,6 +159,7 @@ function renderTables(tableState) {
   section = document.createElement('section');
   parent.appendChild(section);
   renderTable(
+    'avg_debt_income_ratio',
     section,
     // `2019 ${debtStat} Student Debt-to-Income Ratios`,
     `2019 Median Student Debt-to-Income Ratios`,
@@ -165,6 +173,7 @@ function renderTables(tableState) {
     []
   );
   renderTable(
+    'avg_debt_income_ratio_by_tract_demo',
     section,
     // `2019 ${debtStat} Student Debt-to-Income by Census Tract Demographics`,
     `2019 Median Student Debt-to-Income by Census Tract Demographics`,
@@ -218,6 +227,7 @@ function renderTables(tableState) {
   section.appendChild(h);
 
   renderTable(
+    'inst_stats',
     section,
     `2017-2018 ${instGroups[tableState.groups.institutions]} Institutions, Undergraduate Enrollment, and Prices`,
     ['', 'Value', 'Rank', '% Change*'],
@@ -238,15 +248,34 @@ function renderTables(tableState) {
   );
 }
 
-function renderTable(parent, title, columns, rows, footnotes) {
+function renderTable(id, parent, title, columns, rows, footnotes) {
   let c = document.createElement('div');
 
   let h = document.createElement('h3');
-  h.innerHTML = title;
+  h.dataset.tableId = id;
+  let openIcon = tableOpenStates[id] ? 'ᐯ' : 'ᐳ';
+  h.innerHTML = `<span>${title}</span><span class="toggle-open">${openIcon}</span>`;
 
   let t = document.createElement('table');
+  t.dataset.tableId = id;
   c.appendChild(h);
   c.appendChild(t);
+  t.style.display = tableOpenStates[id] ? 'block' : 'none';
+
+  h.addEventListener('click', () => {
+    // Synchronize tables
+    let tables = [...document.querySelectorAll(`table[data-table-id="${id}"]`)];
+    let headings = [...document.querySelectorAll(`h3[data-table-id="${id}"]`)];
+    if (t.style.display == 'block') {
+      tableOpenStates[id] = false;
+      tables.forEach((t) => t.style.display = 'none');
+      headings.forEach((h) => h.querySelector('.toggle-open').innerText = 'ᐳ');
+    } else {
+      tableOpenStates[id] = true;
+      tables.forEach((t) => t.style.display = 'block');
+      headings.forEach((h) => h.querySelector('.toggle-open').innerText = 'ᐯ');
+    }
+  });
 
   let tr = document.createElement('tr');
   columns.forEach((col) => {
