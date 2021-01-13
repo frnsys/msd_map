@@ -62,15 +62,15 @@ h1 {
   font-size: 1.5em;
   flex: 1;
 }
-h3 a {
+h4 a {
   color: #383838;
   cursor: pointer;
   text-decoration: underline #383838;
 }
-h3 a:hover {
+h4 a:hover {
   color: #fff;
 }
-h3 a.selected {
+h4 a.selected {
   color: #fff;
   text-decoration: underline #F4DA1A;
 }
@@ -255,18 +255,27 @@ h3 a.selected {
   padding: 1em;
   flex-basis: 200px;
 }
-.info h2, .info h3 {
-  margin: 0.5em 0 0.25em 0;
-  font-family: 'Founders Grotesk', sans-serif;
-}
 .info h3 {
-  margin-top: 1em;
+  border-top: 1px solid #F4DA1A;
+  margin-top: 0.5em;
+  padding-top: 1em;
+  font-size: 1.3em;
+  margin-bottom: 0;
   font-weight: normal;
   display: flex;
   justify-content: space-between;
   cursor: pointer;
 }
 .info h3 > span:first-child {
+  font-weight: bold;
+  line-height: 1.5;
+}
+.info h2, .info h4 {
+  margin: 0.5em 0 0.25em 0;
+  font-family: 'Founders Grotesk', sans-serif;
+}
+.info h4 {
+  margin-top: 1em;
   font-weight: bold;
   text-decoration: underline;
 }
@@ -276,15 +285,12 @@ h3 a.selected {
 .info table:first-child td:first-child {
   font-weight: bold;
 }
-.info h3 .toggle-open {
+.info h4 .toggle-open {
   font-size:  0.8em;
 }
 .info th {
   text-align: left;
   color: #F4DA1A;
-}
-.info section table {
-  display: none;
 }
 .info-data {
   max-width: 500px;
@@ -325,11 +331,6 @@ h3 a.selected {
   display: none;
 }
 
-section {
-  margin-top: 1em;
-  border-top: 1px solid #F4DA1A;
-  padding-top: 1em;
-}
 .inst-select a {
   color: #383838;
   cursor: pointer;

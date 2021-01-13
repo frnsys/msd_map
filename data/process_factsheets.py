@@ -88,7 +88,7 @@ schema = {
                 'change': 'rawcount_allschools_pch_Label'
             },
             'students': {
-                'name': 'Unduplicated Students',
+                'name': 'Unduplicated Undergraduate Students',
                 'label': 'enrolled_allschools_Label',
                 'rank': 'enrolled_allschools_NatRank',
                 'change': 'enrolled_allschools_pch_Label'
@@ -126,7 +126,7 @@ schema = {
                 'change': 'rawcount_con_1_pch_Label'
             },
             'students': {
-                'name': 'Unduplicated Students',
+                'name': 'Unduplicated Undergraduate Students',
                 'label': 'enrolled_con_1_Label',
                 'rank': 'enrolled_con_1_NatRank',
                 'change': 'enrolled_con_1_pch_Label'
@@ -164,7 +164,7 @@ schema = {
                 'change': 'rawcount_con_3_pch_Label'
             },
             'students': {
-                'name': 'Unduplicated Students',
+                'name': 'Unduplicated Undergraduate Students',
                 'label': 'enrolled_con_3_Label',
                 'rank': 'enrolled_con_3_NatRank',
                 'change': 'enrolled_con_3_pch_Label'

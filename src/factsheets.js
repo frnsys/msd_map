@@ -16,7 +16,7 @@ maps['b'] = FSMSDMap(config.CD, 'b', (stateName) => {
   renderTables(tableStates.b);
 });
 
-const tableOpenStates = {};
+const sectionOpenStates = {};
 
 document.getElementById('a--map').addEventListener('mouseleave', () => {
   document.getElementById('a--map-tooltip').style.display = 'none';
@@ -47,6 +47,36 @@ const tableStates = {
     }
   }
 }
+
+function renderCollapsibleSection(id, title, parent) {
+  let sectionHeading = document.createElement('h3');
+  let openIcon = sectionOpenStates[id] ? 'ᐯ' : 'ᐳ';
+  sectionHeading.innerHTML = `<span>${title}</span><span class="toggle-open">${openIcon}</span>`;
+  sectionHeading.dataset.sectionId = id;
+
+  let section = document.createElement('section');
+  section.dataset.sectionId = id;
+  section.style.display = sectionOpenStates[id] ? 'block' : 'none';
+
+  sectionHeading.addEventListener('click', () => {
+    // Synchronize tables
+    let tables = [...document.querySelectorAll(`section[data-section-id="${id}"]`)];
+    let headings = [...document.querySelectorAll(`h3[data-section-id="${id}"]`)];
+    if (tables[0].style.display == 'block') {
+      sectionOpenStates[id] = false;
+      tables.forEach((t) => t.style.display = 'none');
+      headings.forEach((h) => h.querySelector('.toggle-open').innerText = 'ᐳ');
+    } else {
+      sectionOpenStates[id] = true;
+      tables.forEach((t) => t.style.display = 'block');
+      headings.forEach((h) => h.querySelector('.toggle-open').innerText = 'ᐯ');
+    }
+  });
+  parent.appendChild(sectionHeading);
+  parent.appendChild(section);
+  return section;
+}
+
 function renderTables(tableState) {
   let data = dataset[tableState.state];
   let debtData = data['debt'][tableState.groups.debt];
@@ -60,12 +90,11 @@ function renderTables(tableState) {
   debtStat = debtStat.charAt(0).toUpperCase() + debtStat.slice(1);
   const demos = ['asian', 'black', 'hispanic', 'white', 'minority'];
 
-  let section = document.createElement('section');
-  parent.appendChild(section);
+  let section = renderCollapsibleSection('student_debt', '2019 Student Debt', parent);
   renderTable(
     'avg_student_debt',
     section,
-    `2019 <a data-value="median" class="${debtStat == 'Median' ? 'selected' : ''}">Median</a> <a data-value="average" class="${debtStat == 'Average' ? 'selected' : ''}">Average</a> Student Debt`,
+    `<a data-value="median" class="${debtStat == 'Median' ? 'selected' : ''}">Median</a> <a data-value="average" class="${debtStat == 'Average' ? 'selected' : ''}">Average</a> Student Debt`,
     ['', 'Value', 'Rank'],
     [
       [debtData['debt']['name'], debtData['debt']['label'], debtData['debt']['rank']],
@@ -73,9 +102,9 @@ function renderTables(tableState) {
     ],
     []
   );
-  [...document.querySelectorAll('h3 a')].forEach((a) => {
+  [...document.querySelectorAll('h4 a')].forEach((a) => {
     a.addEventListener('click', (ev) => {
-      document.querySelector('h3 a.selected').classList.remove('selected');
+      document.querySelector('h4 a.selected').classList.remove('selected');
       a.classList.add('selected');
       tableStates.a.groups.debt = a.dataset.value;
       tableStates.b.groups.debt = a.dataset.value;
@@ -87,7 +116,7 @@ function renderTables(tableState) {
   renderTable(
     'avg_student_debt_by_tract_demo',
     section,
-    `2019 ${debtStat} Student Debt by Census Tract Demographics`,
+    `${debtStat} Student Debt by Census Tract Demographics`,
     ['Maj. Asian', 'Maj. Black', 'Maj. Hispanic', 'Maj. White', 'Maj. Minority'],
     [...Array(4).keys()].map((i) => {
       return demos.map((demo) => {
@@ -111,13 +140,12 @@ function renderTables(tableState) {
     []
   );
 
-  section = document.createElement('section');
-  parent.appendChild(section);
+  section = renderCollapsibleSection('income', '2019 Median Income', parent);
   renderTable(
     'avg_income_by_tract',
     section,
-    // `2019 ${debtStat} Census Tract Level Median Income of Borrowers`,
-    `2019 US Median Income across Census Tracts`,
+    // `${debtStat} Census Tract Level Median Income of Borrowers`,
+    `US Median Income across Census Tracts`,
     ['', 'Value', 'Rank'],
     [
       // [debtData['income']['name'], debtData['income']['label'], debtData['income']['rank']],
@@ -130,8 +158,8 @@ function renderTables(tableState) {
   renderTable(
     'avg_income_by_tract_demo',
     section,
-    // `2019 ${debtStat} Income of Borrowers by Census Tract Demographics`,
-    `2019 Median Income by Census Tract Demographics`,
+    // `${debtStat} Income of Borrowers by Census Tract Demographics`,
+    `Median Income by Census Tract Demographics`,
     ['Maj. Asian', 'Maj. Black', 'Maj. Hispanic', 'Maj. White', 'Maj. Minority'],
     [...Array(4).keys()].map((i) => {
       return demos.map((demo) => {
@@ -156,13 +184,12 @@ function renderTables(tableState) {
     []
   );
 
-  section = document.createElement('section');
-  parent.appendChild(section);
+  section = renderCollapsibleSection('debt_income', '2019 Debt-to-Income Ratio', parent);
   renderTable(
     'avg_debt_income_ratio',
     section,
-    // `2019 ${debtStat} Student Debt-to-Income Ratios`,
-    `2019 Median Student Debt-to-Income Ratios`,
+    // `${debtStat} Student Debt-to-Income Ratios`,
+    `Median Student Debt-to-Income Ratios`,
     ['', 'Value', 'Rank'],
     [
       // [debtData['debtincome']['name'], debtData['debtincome']['label'], debtData['debtincome']['rank']],
@@ -175,8 +202,8 @@ function renderTables(tableState) {
   renderTable(
     'avg_debt_income_ratio_by_tract_demo',
     section,
-    // `2019 ${debtStat} Student Debt-to-Income by Census Tract Demographics`,
-    `2019 Median Student Debt-to-Income by Census Tract Demographics`,
+    // `${debtStat} Student Debt-to-Income by Census Tract Demographics`,
+    `Median Student Debt-to-Income by Census Tract Demographics`,
     ['Maj. Asian', 'Maj. Black', 'Maj. Hispanic', 'Maj. White', 'Maj. Minority'],
     [...Array(4).keys()].map((i) => {
       return demos.map((demo) => {
@@ -201,8 +228,7 @@ function renderTables(tableState) {
     []
   );
 
-  section = document.createElement('section');
-  parent.appendChild(section);
+  section = renderCollapsibleSection('institutions', '2017-2018 Higher Education Market', parent);
   let h = document.createElement('h2');
   h.classList.add('inst-select');
   const instGroups = {
@@ -229,7 +255,7 @@ function renderTables(tableState) {
   renderTable(
     'inst_stats',
     section,
-    `2017-2018 ${instGroups[tableState.groups.institutions]} Institutions, Undergraduate Enrollment, and Prices`,
+    `${instGroups[tableState.groups.institutions]} Institutions`,
     ['', 'Value', 'Rank', '% Change*'],
     [
       [instData['count']['name'], instData['count']['label'], instData['count']['rank'], instData['count']['change']],
@@ -250,32 +276,12 @@ function renderTables(tableState) {
 
 function renderTable(id, parent, title, columns, rows, footnotes) {
   let c = document.createElement('div');
-
-  let h = document.createElement('h3');
-  h.dataset.tableId = id;
-  let openIcon = tableOpenStates[id] ? 'ᐯ' : 'ᐳ';
-  h.innerHTML = `<span>${title}</span><span class="toggle-open">${openIcon}</span>`;
+  let h = document.createElement('h4');
+  h.innerHTML = title;
 
   let t = document.createElement('table');
-  t.dataset.tableId = id;
   c.appendChild(h);
   c.appendChild(t);
-  t.style.display = tableOpenStates[id] ? 'block' : 'none';
-
-  h.addEventListener('click', () => {
-    // Synchronize tables
-    let tables = [...document.querySelectorAll(`table[data-table-id="${id}"]`)];
-    let headings = [...document.querySelectorAll(`h3[data-table-id="${id}"]`)];
-    if (t.style.display == 'block') {
-      tableOpenStates[id] = false;
-      tables.forEach((t) => t.style.display = 'none');
-      headings.forEach((h) => h.querySelector('.toggle-open').innerText = 'ᐳ');
-    } else {
-      tableOpenStates[id] = true;
-      tables.forEach((t) => t.style.display = 'block');
-      headings.forEach((h) => h.querySelector('.toggle-open').innerText = 'ᐯ');
-    }
-  });
 
   let tr = document.createElement('tr');
   columns.forEach((col) => {
