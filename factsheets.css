@@ -285,8 +285,9 @@ h4 a.selected {
 .info table:first-child td:first-child {
   font-weight: bold;
 }
-.info h4 .toggle-open {
-  font-size:  0.8em;
+.info .toggle-open {
+  font-size: 1.3em;
+  line-height: 1.2;
 }
 .info th {
   text-align: left;

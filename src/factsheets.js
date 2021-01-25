@@ -50,7 +50,7 @@ const tableStates = {
 
 function renderCollapsibleSection(id, title, parent) {
   let sectionHeading = document.createElement('h3');
-  let openIcon = sectionOpenStates[id] ? 'ᐯ' : 'ᐳ';
+  let openIcon = sectionOpenStates[id] ? '–' : '+';
   sectionHeading.innerHTML = `<span>${title}</span><span class="toggle-open">${openIcon}</span>`;
   sectionHeading.dataset.sectionId = id;
 
@@ -65,11 +65,11 @@ function renderCollapsibleSection(id, title, parent) {
     if (tables[0].style.display == 'block') {
       sectionOpenStates[id] = false;
       tables.forEach((t) => t.style.display = 'none');
-      headings.forEach((h) => h.querySelector('.toggle-open').innerText = 'ᐳ');
+      headings.forEach((h) => h.querySelector('.toggle-open').innerText = '+');
     } else {
       sectionOpenStates[id] = true;
       tables.forEach((t) => t.style.display = 'block');
-      headings.forEach((h) => h.querySelector('.toggle-open').innerText = 'ᐯ');
+      headings.forEach((h) => h.querySelector('.toggle-open').innerText = '–');
     }
   });
   parent.appendChild(sectionHeading);
