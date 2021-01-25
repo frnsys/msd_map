@@ -128,6 +128,11 @@ function FSMSDMap(config, mapId, showData) {
 
     map.fitBounds(bbox);
     let infoEl = document.getElementById(`${mapId}--info`);
+    if (name == 'National') {
+      infoEl.classList.add('info-national');
+    } else {
+      infoEl.classList.remove('info-national');
+    }
     let title = infoEl.querySelector('h2');
     title.innerText = name;
     let metaEl = infoEl.querySelector('.info-meta');

@@ -290,6 +290,10 @@ function renderTable(id, parent, title, columns, rows, footnotes) {
   let tr = document.createElement('tr');
   columns.forEach((col) => {
     let th = document.createElement('th');
+    let slug = col.toLowerCase()
+      .replace('\n', '_')
+      .replace(/[^\w\-]+/g, '');
+    th.classList.add(`column-${slug}`);
     th.innerText = col;
     tr.appendChild(th);
   });
@@ -300,6 +304,12 @@ function renderTable(id, parent, title, columns, rows, footnotes) {
     row.forEach((col) => {
       let td = document.createElement('td');
       td.innerHTML = col || '<span class="na">N/A</span>';
+
+      // hacky but ok
+      if (typeof col == 'string' && col.includes('Rank')) {
+        td.classList.add('column-rank');
+      }
+
       tr.appendChild(td);
     });
     t.appendChild(tr);

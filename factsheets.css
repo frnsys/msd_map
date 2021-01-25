@@ -322,6 +322,9 @@ h4 a.selected {
 .info-summary td:last-child {
   text-align: right;
 }
+.info-national .column-rank {
+  color: #333;
+}
 
 .bad {
   color: #ff3a3a;
@@ -330,7 +333,7 @@ h4 a.selected {
   color: #3DAF63;
 }
 .na {
-  color: #555;
+  color: #333;
 }
 .in-title {
   color: #bbb;
