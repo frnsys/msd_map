@@ -72,6 +72,10 @@ function FSMSDMap(config, mapId, showData) {
     'main': {
       'type': 'vector',
       'url': `mapbox://${config.MAP_ID}`
+    },
+    'states': {
+      'type': 'vector',
+      'url': 'mapbox://mapbox.mapbox-streets-v8'
     }
   };
   const layers = [{
@@ -80,6 +84,16 @@ function FSMSDMap(config, mapId, showData) {
     'source': 'main',
     'source-layer': dataLayerName,
     'paint': styles.defaultPlaces
+  }, {
+    'id': 'states',
+    'type': 'line',
+    'source': 'states',
+    'source-layer': 'admin',
+    'filter': ["all", ["==", "admin_level", 1], ["==", "iso_3166_1", "US"]],
+    'paint': {
+      'line-color': '#333333',
+      'line-width': 0.5
+    }
   }];
 
   function focusFeatures(features, ev) {
