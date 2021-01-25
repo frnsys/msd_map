@@ -7,12 +7,22 @@ mapboxgl.accessToken = config.MAPBOX_TOKEN;
 config.CD.INITIAL_CAT.Y = '2019';
 
 const maps = {};
-maps['a'] = FSMSDMap(config.CD, 'a', (stateName) => {
+maps['a'] = FSMSDMap(config.CD, 'a', (stateName, meta) => {
+  tableStates.a.meta = meta;
   tableStates.a.state = stateName;
+  tableStates.a.district = stateName.includes(', District');
+  if (!tableStates.a.district) {
+    tableStates.a.rankVariable = 'nationalRank';
+  }
   renderTables(tableStates.a);
 });
-maps['b'] = FSMSDMap(config.CD, 'b', (stateName) => {
+maps['b'] = FSMSDMap(config.CD, 'b', (stateName, meta) => {
+  tableStates.b.meta = meta;
   tableStates.b.state = stateName;
+  tableStates.b.district = stateName.includes(', District');
+  if (!tableStates.b.district) {
+    tableStates.b.rankVariable = 'nationalRank';
+  }
   renderTables(tableStates.b);
 });
 
@@ -31,16 +41,24 @@ maps['b'].map.resize();
 // Tables
 const tableStates = {
   a: {
+    mapId: 'a',
     id: 'a--info',
     state: 'National',
+    meta: '',
+    district: false,
+    rankVariable: 'nationalRank',
     groups: {
       debt: 'median',
       institutions: 'all'
     }
   },
   b: {
+    mapId: 'b',
     id: 'b--info',
     state: 'National',
+    meta: '',
+    district: false,
+    rankVariable: 'nationalRank',
     groups: {
       debt: 'median',
       institutions: 'all'
@@ -78,6 +96,36 @@ function renderCollapsibleSection(id, title, parent) {
 }
 
 function renderTables(tableState) {
+  let infoEl = document.getElementById(`${tableState.mapId}--info`);
+  if (tableState.state == 'National') {
+    infoEl.classList.add('info-national');
+  } else {
+    infoEl.classList.remove('info-national');
+  }
+  let title = infoEl.querySelector('h2');
+  title.innerText = tableState.state;
+
+  let metaEl = infoEl.querySelector('.info-meta');
+  if (tableState.district) {
+    metaEl.innerHTML = `${tableState.meta} <span class="rank-selector">
+      Show:
+      <a class="${tableState.rankVariable == 'nationalRank' ? 'selected' : ''}" data-value="nationalRank">National Ranks</a>
+      <a class="${tableState.rankVariable == 'stateRank' ? 'selected' : ''}" data-value="stateRank">In-State Ranks</a>
+    </span>`;
+    [...metaEl.querySelectorAll('a')].forEach((el) => {
+      el.addEventListener('click', (ev) => {
+        tableState.rankVariable = el.dataset.value;
+        renderTables(tableState);
+        return false;
+      });
+    });
+  } else {
+    metaEl.innerHTML = tableState.meta;
+  }
+
+  let rankVariable = tableState.rankVariable;
+  let demoCols = rankVariable == 'nationalRank' ? [0,1,3,4] : [0,2,3,5];
+
   let data = dataset[tableState.state];
   let debtData = data['debt'][tableState.groups.debt];
   let medianDebtData = data['debt']['median']; // some data only has median now
@@ -97,8 +145,8 @@ function renderTables(tableState) {
     `<a data-value="median" class="${debtStat == 'Median' ? 'selected' : ''}">Median</a> <a data-value="average" class="${debtStat == 'Average' ? 'selected' : ''}">Average</a> Student Debt`,
     ['', 'Value', 'Rank'],
     [
-      [debtData['debt']['name'], debtData['debt']['label'], debtData['debt']['rank']],
-      [debtData['debt_change']['name'], debtData['debt_change']['label'], debtData['debt_change']['rank']]
+      [debtData['debt']['name'], debtData['debt']['label'], debtData['debt'][rankVariable]],
+      [debtData['debt_change']['name'], debtData['debt_change']['label'], debtData['debt_change'][rankVariable]]
     ],
     []
   );
@@ -114,18 +162,18 @@ function renderTables(tableState) {
     });
   });
 
-  let rows = [`${debtStat} Student Debt`, 'Rank', '% Change since 2009', 'Rank: % Change'];
+  let rows = [`${debtStat} Student Debt`, 'National Rank', 'State Rank', '% Change since 2009', 'National Rank: % Change', 'State Rank: % Change'];
   renderTable(
     'avg_student_debt_by_tract_demo',
     section,
     `${debtStat} Student Debt by Census Tract Demographics`,
     ['', 'Maj.\nAsian', 'Maj.\nBlack', 'Maj.\nHispanic', 'Maj.\nWhite', 'Maj.\nMinority'],
-    [...Array(4).keys()].map((i) => {
+    demoCols.map((i) => {
       return [rows[i]].concat(demos.map((demo) => {
         let val = debtData['debt_demographics'][demo][i];
-        if (i == 1) {
+        if (i == 1 || i == 2 || i == 4 || i == 5) {
           return `${val || '<span class="na">N/A</span>'}`;
-        } else if (i == 2) {
+        } else if (i == 3) {
           if (!val) {
             return '<span class="na">N/A</span>';
           } else if (parseFloat(val) > 0) {
@@ -133,8 +181,6 @@ function renderTables(tableState) {
           } else {
             return `<span class="good">${val}↓</span>`;
           }
-        } else if (i == 3) {
-          return `${val || '<span class="na">N/A</span>'}`;
         }
         return val;
       }));
@@ -152,25 +198,25 @@ function renderTables(tableState) {
     [
       // [debtData['income']['name'], debtData['income']['label'], debtData['income']['rank']],
       // [debtData['income_change']['name'], debtData['income_change']['label'], debtData['income']['rank']]
-      [medianDebtData['income']['name'], medianDebtData['income']['label'], medianDebtData['income']['rank']],
-      [medianDebtData['income_change']['name'], medianDebtData['income_change']['label'], medianDebtData['income']['rank']]
+      [medianDebtData['income']['name'], medianDebtData['income']['label'], medianDebtData['income'][rankVariable]],
+      [medianDebtData['income_change']['name'], medianDebtData['income_change']['label'], medianDebtData['income'][rankVariable]]
     ],
     []
   );
-  rows = [`Median Income`, 'Rank', '% Change since 2009', 'Rank: % Change'];
+  rows = [`Median Income`, 'National Rank', 'State Rank', '% Change since 2009', 'National Rank: % Change', 'State Rank: % Change'];
   renderTable(
     'avg_income_by_tract_demo',
     section,
     // `${debtStat} Income of Borrowers by Census Tract Demographics`,
     `Median Income by Census Tract Demographics`,
     ['', 'Maj.\nAsian', 'Maj.\nBlack', 'Maj.\nHispanic', 'Maj.\nWhite', 'Maj.\nMinority'],
-    [...Array(4).keys()].map((i) => {
+    demoCols.map((i) => {
       return [rows[i]].concat(demos.map((demo) => {
         // let val = debtData['income_demographics'][demo][i];
         let val = medianDebtData['income_demographics'][demo][i];
-        if (i == 1) {
+        if (i == 1 || i == 2 || i == 4 || i == 5) {
           return `${val || '<span class="na">N/A</span>'}`;
-        } else if (i == 2) {
+        } else if (i == 3) {
           if (!val) {
             return '<span class="na">N/A</span>';
           } else if (parseFloat(val) > 0) {
@@ -178,8 +224,6 @@ function renderTables(tableState) {
           } else {
             return `<span class="bad">${val}↓</span>`;
           }
-        } else if (i == 3) {
-          return `${val || '<span class="na">N/A</span>'}`;
         }
         return val;
       }));
@@ -197,25 +241,25 @@ function renderTables(tableState) {
     [
       // [debtData['debtincome']['name'], debtData['debtincome']['label'], debtData['debtincome']['rank']],
       // [debtData['debtincome_change']['name'], debtData['debtincome_change']['label'], debtData['debtincome_change']['rank']]
-      [medianDebtData['debtincome']['name'], medianDebtData['debtincome']['label'], medianDebtData['debtincome']['rank']],
-      [medianDebtData['debtincome_change']['name'], medianDebtData['debtincome_change']['label'], medianDebtData['debtincome_change']['rank']]
+      [medianDebtData['debtincome']['name'], medianDebtData['debtincome']['label'], medianDebtData['debtincome'][rankVariable]],
+      [medianDebtData['debtincome_change']['name'], medianDebtData['debtincome_change']['label'], medianDebtData['debtincome_change'][rankVariable]]
     ],
     []
   );
-  rows = [`Median Student<br />Debt-to-Income`, 'Rank', '% Change since 2009', 'Rank: % Change'];
+  rows = [`Median Student<br />Debt-to-Income`, 'National Rank', 'State Rank', '% Change since 2009', 'National Rank: % Change', 'State Rank: % Change'];
   renderTable(
     'avg_debt_income_ratio_by_tract_demo',
     section,
     // `${debtStat} Student Debt-to-Income by Census Tract Demographics`,
     `Median Student Debt-to-Income by Census Tract Demographics`,
     ['', 'Maj.\nAsian', 'Maj.\nBlack', 'Maj.\nHispanic', 'Maj.\nWhite', 'Maj.\nMinority'],
-    [...Array(4).keys()].map((i) => {
+    demoCols.map((i) => {
       return [rows[i]].concat(demos.map((demo) => {
         // let val = debtData['debtincome_demographics'][demo][i];
         let val = medianDebtData['debtincome_demographics'][demo][i];
-        if (i == 1) {
+        if (i == 1 || i == 2 || i == 4 || i == 5) {
           return `${val || '<span class="na">N/A</span>'}`;
-        } else if (i == 2) {
+        } else if (i == 3) {
           if (!val) {
             return '<span class="na">N/A</span>';
           } else if (parseFloat(val) > 0) {
@@ -223,8 +267,6 @@ function renderTables(tableState) {
           } else {
             return `<span class="good">${val}↓</span>`;
           }
-        } else if (i == 3) {
-          return `${val || '<span class="na">N/A</span>'}`;
         }
         return val;
       }));

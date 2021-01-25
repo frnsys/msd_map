@@ -326,6 +326,24 @@ h4 a.selected {
   color: #333;
 }
 
+.rank-selector {
+  margin-left: 0.5em;
+  padding-left: 0.5em;
+}
+.rank-selector a {
+  color: #383838;
+  text-decoration: none;
+  cursor: pointer;
+}
+.rank-selector a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+.rank-selector a.selected {
+  color: #fff;
+  text-decoration: underline #F4DA1A;
+}
+
 .bad {
   color: #ff3a3a;
 }

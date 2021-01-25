@@ -14,68 +14,84 @@ schema = {
             'debt': {
                 'name': 'Average Student Debt Burden (Ages 18-35)',
                 'label': 'AVG_BAL_19_Label',
-                'rank': 'AVG_BAL_19_NatRank'
+                'nationalRank': 'AVG_BAL_19_NatRank',
+                'stateRank': 'AVG_BAL_19_StateRank'
             },
             'debt_change': {
                 'name': 'Percent Change of Average Student Debt since 2009',
                 'label': 'AVG_BAL_pch_0919_Label',
-                'rank': 'AVG_BAL_pch_0919_NatRank'
+                'nationalRank': 'AVG_BAL_pch_0919_NatRank',
+                'stateRank': 'AVG_BAL_pch_0919_StateRank'
             },
             'debt_demographics': [
                 'AVG_BAL_19_{}_Label',
                 'AVG_BAL_19_{}_NatRank',
+                'AVG_BAL_19_{}_StateRank',
                 'AVG_BAL_pch_0919_{}_Label',
-                'AVG_BAL_pch_0919_{}_NatRank'
+                'AVG_BAL_pch_0919_{}_NatRank',
+                'AVG_BAL_pch_0919_{}_StateRank'
             ],
         },
         'median': {
             'debt': {
                 'name': 'Median Student Debt Burden (Ages 18-35)',
                 'label': 'MED_BAL_19_Label',
-                'rank': 'MED_BAL_19_NatRank'
+                'nationalRank': 'MED_BAL_19_NatRank',
+                'stateRank': 'MED_BAL_19_StateRank',
             },
             'debt_change': {
                 'name': 'Percent Change of Median Student Debt since 2009',
                 'label': 'MED_BAL_pch_0919_Label',
-                'rank': 'MED_BAL_pch_0919_NatRank'
+                'nationalRank': 'MED_BAL_pch_0919_NatRank',
+                'stateRank': 'MED_BAL_pch_0919_StateRank'
             },
             'debt_demographics': [
                 'MED_BAL_19_{}_Label',
                 'MED_BAL_19_{}_NatRank',
+                'MED_BAL_19_{}_StateRank',
                 'MED_BAL_pch_0919_{}_Label',
-                'MED_BAL_pch_0919_{}_NatRank'
+                'MED_BAL_pch_0919_{}_NatRank',
+                'MED_BAL_pch_0919_{}_StateRank'
             ],
             'debtincome': {
                 'name': 'Median Student Debt to Income Ratio',
                 'label': 'MED_DEBT_INC_19_Label',
-                'rank': 'MED_DEBT_INC_19_NatRank'
+                'nationalRank': 'MED_DEBT_INC_19_NatRank',
+                'stateRank': 'MED_DEBT_INC_19_StateRank'
             },
             'debtincome_change': {
                 'name': 'Percent Change in Median Student Debt to Income Ratio',
                 'label': 'MED_DEBT_INC_pch_0919_Label',
-                'rank': 'MED_DEBT_INC_pch_0919_NatRank'
+                'nationalRank': 'MED_DEBT_INC_pch_0919_NatRank',
+                'stateRank': 'MED_DEBT_INC_pch_0919_StateRank'
             },
             'debtincome_demographics': [
                 'MED_DEBT_INC_19_{}_Label',
                 'MED_DEBT_INC_19_{}_NatRank',
+                'MED_DEBT_INC_19_{}_StateRank',
                 'MED_DEBT_INC_pch_0919_{}_Label',
-                'MED_DEBT_INC_pch_0919_{}_NatRank'
+                'MED_DEBT_INC_pch_0919_{}_NatRank',
+                'MED_DEBT_INC_pch_0919_{}_StateRank'
             ],
             'income': {
                 'name': 'Median Income of Borrowers',
                 'label': 'MED_INC_19_Label',
-                'rank': 'MED_INC_19_NatRank'
+                'nationalRank': 'MED_INC_19_NatRank',
+                'stateRank': 'MED_INC_19_StateRank'
             },
             'income_change': {
                 'name': 'Percent Change of Median Income since 2009',
                 'label': 'MED_INC_pch_0919_Label',
-                'rank': 'MED_INC_pch_0919_NatRank'
+                'nationalRank': 'MED_INC_pch_0919_NatRank',
+                'stateRank': 'MED_INC_pch_0919_StateRank'
             },
             'income_demographics': [
                 'MED_INC_19_{}_Label',
                 'MED_INC_19_{}_NatRank',
+                'MED_INC_19_{}_StateRank',
                 'MED_INC_pch_0919_{}_Label',
-                'MED_INC_pch_0919_{}_NatRank'
+                'MED_INC_pch_0919_{}_NatRank',
+                'MED_INC_pch_0919_{}_StateRank'
             ]
         }
     },
@@ -216,20 +232,26 @@ for df in dfs:
                             data[state][category][group][key][demo] = []
                             for col_tmpl in columns:
                                 column = col_tmpl.format(demo.upper())
-                                val = row[column]
+                                try:
+                                    val = row[column]
+                                except KeyError:
+                                    val = None
                                 if not isinstance(val, str) and (isinstance(val, (int, float)) and math.isnan(val)):
                                     val = None
                                 data[state][category][group][key][demo].append(val)
                     else:
                         data[state][category][group][key] = {}
-                        for colkey in ['label', 'rank', 'change']:
+                        for colkey in ['label', 'rank', 'change', 'nationalRank', 'stateRank']:
                             if colkey not in columns: continue
                             column = columns[colkey]
 
                             if column is None:
                                 val = None
                             else:
-                                val = row[column]
+                                try:
+                                    val = row[column]
+                                except KeyError:
+                                    val = None
                             if val is None or isinstance(val, str) or not math.isnan(val):
                                 data[state][category][group][key][colkey] = val
                             else:

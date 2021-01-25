@@ -117,26 +117,16 @@ function FSMSDMap(config, mapId, showData) {
       } else {
         focusStateFP(map, state, statefp);
       }
-      showData(name);
+      showData(name, meta);
       state.focused = statefp;
     } else {
       // Reset
       map.set('main', state.props);
       state.focused = null;
-      showData(name);
+      showData(name, meta);
     }
 
     map.fitBounds(bbox);
-    let infoEl = document.getElementById(`${mapId}--info`);
-    if (name == 'National') {
-      infoEl.classList.add('info-national');
-    } else {
-      infoEl.classList.remove('info-national');
-    }
-    let title = infoEl.querySelector('h2');
-    title.innerText = name;
-    let metaEl = infoEl.querySelector('.info-meta');
-    metaEl.innerHTML = meta;
   }
 
   const painter = new Painter(config.COLORS);
