@@ -8,6 +8,7 @@ import color from '../lib/color';
 import fipsToState from '../../data/fipsToState.json';
 import bboxes from '../../data/gen/fipsToBbox.json';
 import regions from '../../data/gen/regions.json';
+import districtCounts from '../../data/districtCounts.json';
 
 const formatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -83,12 +84,16 @@ function FSMSDMap(config, mapId, showData) {
 
   function focusFeatures(features, ev) {
     let name = 'National';
+    let meta = '&nbsp;';
     let bbox = regions['Mainland'];
     if (features['main'].length > 0) {
       let feature = features['main'][0];
       let statefp = feature.properties['STATEFP']
-      name = fipsToState[statefp];
+      let stateName = fipsToState[statefp];
+      name = stateName;
       bbox = bboxes[statefp];
+      let nDistricts = districtCounts[stateName];
+      meta = `Congressional Districts: ${nDistricts}`;
       if (statefp == state.focused) {
         // Already focused on state, focus on district
         let loa_keys = feature.properties['loa_key'].split(',');
@@ -111,6 +116,8 @@ function FSMSDMap(config, mapId, showData) {
     let infoEl = document.getElementById(`${mapId}--info`);
     let title = infoEl.querySelector('h2');
     title.innerText = name;
+    let metaEl = infoEl.querySelector('.info-meta');
+    metaEl.innerHTML = meta;
   }
 
   const painter = new Painter(config.COLORS);

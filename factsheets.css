@@ -287,6 +287,10 @@ h4 a.selected {
   margin: 0.5em 0 0.25em 0;
   font-family: 'Founders Grotesk', sans-serif;
 }
+.info h2 {
+  text-align: center;
+  margin-bottom: 0;
+}
 .info h4 {
   margin-top: 1em;
   font-weight: bold;
@@ -305,6 +309,10 @@ h4 a.selected {
 .info th {
   text-align: left;
   color: #F4DA1A;
+}
+.info-meta {
+  text-align: center;
+  font-size: 0.9em;
 }
 .info-data {
   max-width: 500px;
