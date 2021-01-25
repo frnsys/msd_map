@@ -2,23 +2,23 @@
 
 @font-face{
     font-family:'EB Garamond';
-    src:url(assets/fonts/EBGaramond-Regular.ttf);
+    src:url(../assets/fonts/EBGaramond-Regular.ttf);
     font-style:normal;
     font-weight:400
 }
 @font-face{
     font-family:'Founders Grotesk';
-    src:url(assets/fonts/FoundersGrotesk-Light.eot);
-    src:url(assets/fonts/FoundersGrotesk-Light.eot?#iefix) format('embedded-opentype'),url(assets/fonts/FoundersGrotesk-Light.woff) format('woff'),url(assets/fonts/FoundersGrotesk-Light.ttf) format('truetype'),url(assets/fonts/FoundersGrotesk-Light.svg#dc544f9d1e4c18e86a46bd108e04a26d) format('svg');
+    src:url(../assets/fonts/FoundersGrotesk-Light.eot);
+    src:url(../assets/fonts/FoundersGrotesk-Light.eot?#iefix) format('embedded-opentype'),url(../assets/fonts/FoundersGrotesk-Light.woff) format('woff'),url(../assets/fonts/FoundersGrotesk-Light.ttf) format('truetype'),url(../assets/fonts/FoundersGrotesk-Light.svg#dc544f9d1e4c18e86a46bd108e04a26d) format('svg');
     font-style:normal;
     font-weight:200
 }
 @font-face {
     font-family: 'Founders Grotesk';
-    src: url(assets/fonts/FoundersGrotesk-Semibold.eot);
-    src: url(assets/fonts/FoundersGrotesk-Semibold.eot?#iefix) format('embedded-opentype'),
-        url(assets/fonts/FoundersGrotesk-Semibold.woff2) format('woff2'),
-        url(assets/fonts/FoundersGrotesk-Semibold.woff) format('woff');
+    src: url(../assets/fonts/FoundersGrotesk-Semibold.eot);
+    src: url(../assets/fonts/FoundersGrotesk-Semibold.eot?#iefix) format('embedded-opentype'),
+        url(../assets/fonts/FoundersGrotesk-Semibold.woff2) format('woff2'),
+        url(../assets/fonts/FoundersGrotesk-Semibold.woff) format('woff');
     font-weight: 600;
     font-style: normal;
     font-display: swap;

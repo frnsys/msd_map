@@ -2,6 +2,7 @@
 class SchoolDB {
   constructor(config) {
     this.config = config;
+    this.prefix = config.prefix || '.';
     this._schools = {};
     this._schoolsByKeyPlace = {};
   }
@@ -31,12 +32,12 @@ class SchoolDB {
   }
 
   _getSchool(id) {
-    let url = `assets/schools/${id}.json`;
+    let url = `${this.prefix}/assets/schools/${id}.json`;
     return this._get(url);
   }
 
   _getDataForKeyPlace(key, place) {
-    let url = `assets/maps/${this.config.LOA}/by_cat/${key}/${place}.json`;
+    let url = `${this.prefix}/assets/maps/${this.config.LOA}/by_cat/${key}/${place}.json`;
     return this._get(url);
   }
 

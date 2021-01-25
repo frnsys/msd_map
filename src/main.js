@@ -12,17 +12,20 @@ maps['zcta'] = MSDMap(config.ZCTA);
 
 [...document.querySelectorAll('.map-tab')].forEach((el) => {
   el.addEventListener('click', () => {
-    document.querySelector('.map-tab.selected').classList.remove('selected');
-    document.querySelector('.map-tab-pane.active').classList.remove('active');
+    if (el.dataset.tab == 'comparisons') {
+      window.open('./factsheets', '_blank');
+    } else {
+      document.querySelector('.map-tab.selected').classList.remove('selected');
+      document.querySelector('.map-tab-pane.active').classList.remove('active');
+      el.classList.add('selected');
+      document.getElementById(`${el.dataset.tab}--map-tab`).classList.add('active');
 
-    el.classList.add('selected');
-    document.getElementById(`${el.dataset.tab}--map-tab`).classList.add('active');
-
-    // Lazy loading of CD map
-    if (el.dataset.tab == 'cd' && !('cd' in maps)) {
-      maps['cd'] = MSDMap(config.CD);
+      // Lazy loading of CD map
+      if (el.dataset.tab == 'cd' && !('cd' in maps)) {
+        maps['cd'] = MSDMap(config.CD);
+      }
+      maps[el.dataset.tab].map.resize();
     }
-    maps[el.dataset.tab].map.resize();
   });
 });
 

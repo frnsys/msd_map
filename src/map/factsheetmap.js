@@ -65,6 +65,7 @@ function FSMSDMap(config, mapId, showData) {
   // If a state is focused
   state.focused = null;
 
+  config.prefix = '..';
   const db = new SchoolDB(config);
 
   const dataLayerName = 'data';
