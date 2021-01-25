@@ -113,29 +113,31 @@ function renderTables(tableState) {
       ev.stopPropagation();
     });
   });
+
+  let rows = [`${debtStat} Student Debt`, 'Rank', '% Change since 2009', 'Rank: % Change'];
   renderTable(
     'avg_student_debt_by_tract_demo',
     section,
     `${debtStat} Student Debt by Census Tract Demographics`,
-    ['Maj. Asian', 'Maj. Black', 'Maj. Hispanic', 'Maj. White', 'Maj. Minority'],
+    ['', 'Maj.\nAsian', 'Maj.\nBlack', 'Maj.\nHispanic', 'Maj.\nWhite', 'Maj.\nMinority'],
     [...Array(4).keys()].map((i) => {
-      return demos.map((demo) => {
+      return [rows[i]].concat(demos.map((demo) => {
         let val = debtData['debt_demographics'][demo][i];
         if (i == 1) {
-          return `<span class="in-title">Rank:</span> ${val || '<span class="na">N/A</span>'}`;
+          return `${val || '<span class="na">N/A</span>'}`;
         } else if (i == 2) {
           if (!val) {
             return '<span class="na">N/A</span>';
           } else if (parseFloat(val) > 0) {
-            return `<span class="bad">${val}↑</span><br />since 2009`;
+            return `<span class="bad">${val}↑</span>`;
           } else {
-            return `<span class="good">${val}↓</span><br />since 2009`;
+            return `<span class="good">${val}↓</span>`;
           }
         } else if (i == 3) {
-          return `<span class="in-title">Rank: % Change:</span> ${val || '<span class="na">N/A</span>'}`;
+          return `${val || '<span class="na">N/A</span>'}`;
         }
         return val;
-      });
+      }));
     }),
     []
   );
@@ -155,31 +157,32 @@ function renderTables(tableState) {
     ],
     []
   );
+  rows = [`Median Income`, 'Rank', '% Change since 2009', 'Rank: % Change'];
   renderTable(
     'avg_income_by_tract_demo',
     section,
     // `${debtStat} Income of Borrowers by Census Tract Demographics`,
     `Median Income by Census Tract Demographics`,
-    ['Maj. Asian', 'Maj. Black', 'Maj. Hispanic', 'Maj. White', 'Maj. Minority'],
+    ['', 'Maj.\nAsian', 'Maj.\nBlack', 'Maj.\nHispanic', 'Maj.\nWhite', 'Maj.\nMinority'],
     [...Array(4).keys()].map((i) => {
-      return demos.map((demo) => {
+      return [rows[i]].concat(demos.map((demo) => {
         // let val = debtData['income_demographics'][demo][i];
         let val = medianDebtData['income_demographics'][demo][i];
         if (i == 1) {
-          return `<span class="in-title">Rank:</span> ${val || '<span class="na">N/A</span>'}`;
+          return `${val || '<span class="na">N/A</span>'}`;
         } else if (i == 2) {
           if (!val) {
             return '<span class="na">N/A</span>';
           } else if (parseFloat(val) > 0) {
-            return `<span class="good">${val}↑</span><br />since 2009`;
+            return `<span class="good">${val}↑</span>`;
           } else {
-            return `<span class="bad">${val}↓</span><br />since 2009`;
+            return `<span class="bad">${val}↓</span>`;
           }
         } else if (i == 3) {
-          return `<span class="in-title">Rank: % Change:</span> ${val || '<span class="na">N/A</span>'}`;
+          return `${val || '<span class="na">N/A</span>'}`;
         }
         return val;
-      });
+      }));
     }),
     []
   );
@@ -199,31 +202,32 @@ function renderTables(tableState) {
     ],
     []
   );
+  rows = [`Median Student<br />Debt-to-Income`, 'Rank', '% Change since 2009', 'Rank: % Change'];
   renderTable(
     'avg_debt_income_ratio_by_tract_demo',
     section,
     // `${debtStat} Student Debt-to-Income by Census Tract Demographics`,
     `Median Student Debt-to-Income by Census Tract Demographics`,
-    ['Maj. Asian', 'Maj. Black', 'Maj. Hispanic', 'Maj. White', 'Maj. Minority'],
+    ['', 'Maj.\nAsian', 'Maj.\nBlack', 'Maj.\nHispanic', 'Maj.\nWhite', 'Maj.\nMinority'],
     [...Array(4).keys()].map((i) => {
-      return demos.map((demo) => {
+      return [rows[i]].concat(demos.map((demo) => {
         // let val = debtData['debtincome_demographics'][demo][i];
         let val = medianDebtData['debtincome_demographics'][demo][i];
         if (i == 1) {
-          return `<span class="in-title">Rank:</span> ${val || '<span class="na">N/A</span>'}`;
+          return `${val || '<span class="na">N/A</span>'}`;
         } else if (i == 2) {
           if (!val) {
             return '<span class="na">N/A</span>';
           } else if (parseFloat(val) > 0) {
-            return `<span class="bad">${val}↑</span><br />since 2009`;
+            return `<span class="bad">${val}↑</span>`;
           } else {
-            return `<span class="good">${val}↓</span><br />since 2009`;
+            return `<span class="good">${val}↓</span>`;
           }
         } else if (i == 3) {
-          return `<span class="in-title">Rank: % Change:</span> ${val || '<span class="na">N/A</span>'}`;
+          return `${val || '<span class="na">N/A</span>'}`;
         }
         return val;
-      });
+      }));
     }),
     []
   );

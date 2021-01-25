@@ -148,7 +148,6 @@ function FSMSDMap(config, mapId, showData) {
             <div class="tooltip-title"><b>${label}</b></div>
             <div><b>Population</b>: ${data['CDPOP'] || 'N/A'}</div>
             <div><b>Median Income</b>: ${formatter.format(data['MEDIANINCOME']) || 'N/A'}</div>
-            <div><b>Average Tuition & Fees</b>: ${formatter.format(data['AVGTF.S:allschools']) || 'N/A'}</div>
             ${loa_keys.length > 1 ? `<div>${loa_keys.length - 1} other districts here (zoom in to see).</div>` : ''}
           `;
         });
