@@ -111,7 +111,6 @@ h4 a.selected {
 
 .map-wrapper {
   position: relative;
-  flex: 1;
 }
 .map-tooltip {
   color: #111;
