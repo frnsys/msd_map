@@ -132,7 +132,7 @@ function renderTables(tableState) {
             return `<span class="good">${val}↓</span><br />since 2009`;
           }
         } else if (i == 3) {
-          return `<span class="in-title">% Change Rank:</span> ${val || '<span class="na">N/A</span>'}`;
+          return `<span class="in-title">Rank: % Change:</span> ${val || '<span class="na">N/A</span>'}`;
         }
         return val;
       });
@@ -176,7 +176,7 @@ function renderTables(tableState) {
             return `<span class="bad">${val}↓</span><br />since 2009`;
           }
         } else if (i == 3) {
-          return `<span class="in-title">% Change Rank:</span> ${val || '<span class="na">N/A</span>'}`;
+          return `<span class="in-title">Rank: % Change:</span> ${val || '<span class="na">N/A</span>'}`;
         }
         return val;
       });
@@ -220,7 +220,7 @@ function renderTables(tableState) {
             return `<span class="good">${val}↓</span><br />since 2009`;
           }
         } else if (i == 3) {
-          return `<span class="in-title">% Change Rank:</span> ${val || '<span class="na">N/A</span>'}`;
+          return `<span class="in-title">Rank: % Change:</span> ${val || '<span class="na">N/A</span>'}`;
         }
         return val;
       });
