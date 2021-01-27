@@ -162,7 +162,7 @@ function renderTables(tableState) {
     });
   });
 
-  let rows = [`${debtStat} Student Debt`, 'National Rank', 'State Rank', '% Change since 2009', 'National Rank: % Change', 'State Rank: % Change'];
+  let rows = [`${debtStat} Student Debt`, 'National Rank', 'In-State Rank', '% Change since 2009', 'National Rank: % Change', 'In-State Rank: % Change'];
   renderTable(
     'avg_student_debt_by_tract_demo',
     section,
@@ -203,7 +203,7 @@ function renderTables(tableState) {
     ],
     []
   );
-  rows = [`Median Income`, 'National Rank', 'State Rank', '% Change since 2009', 'National Rank: % Change', 'State Rank: % Change'];
+  rows = [`Median Income`, 'National Rank', 'In-State Rank', '% Change since 2009', 'National Rank: % Change', 'In-State Rank: % Change'];
   renderTable(
     'avg_income_by_tract_demo',
     section,
@@ -246,7 +246,7 @@ function renderTables(tableState) {
     ],
     []
   );
-  rows = [`Median Student<br />Debt-to-Income`, 'National Rank', 'State Rank', '% Change since 2009', 'National Rank: % Change', 'State Rank: % Change'];
+  rows = [`Median Student<br />Debt-to-Income`, 'National Rank', 'In-State Rank', '% Change since 2009', 'National Rank: % Change', 'In-State Rank: % Change'];
   renderTable(
     'avg_debt_income_ratio_by_tract_demo',
     section,
