@@ -174,13 +174,7 @@ function renderTables(tableState) {
         if (i == 1 || i == 2 || i == 4 || i == 5) {
           return `${val || '<span class="na">N/A</span>'}`;
         } else if (i == 3) {
-          if (!val) {
-            return '<span class="na">N/A</span>';
-          } else if (parseFloat(val) > 0) {
-            return `<span class="bad">${val}↑</span>`;
-          } else {
-            return `<span class="good">${val}↓</span>`;
-          }
+          return renderPercent(val, true);
         }
         return val;
       }));
@@ -217,13 +211,7 @@ function renderTables(tableState) {
         if (i == 1 || i == 2 || i == 4 || i == 5) {
           return `${val || '<span class="na">N/A</span>'}`;
         } else if (i == 3) {
-          if (!val) {
-            return '<span class="na">N/A</span>';
-          } else if (parseFloat(val) > 0) {
-            return `<span class="good">${val}↑</span>`;
-          } else {
-            return `<span class="bad">${val}↓</span>`;
-          }
+          return renderPercent(val, false);
         }
         return val;
       }));
@@ -260,13 +248,7 @@ function renderTables(tableState) {
         if (i == 1 || i == 2 || i == 4 || i == 5) {
           return `${val || '<span class="na">N/A</span>'}`;
         } else if (i == 3) {
-          if (!val) {
-            return '<span class="na">N/A</span>';
-          } else if (parseFloat(val) > 0) {
-            return `<span class="bad">${val}↑</span>`;
-          } else {
-            return `<span class="good">${val}↓</span>`;
-          }
+          return renderPercent(val, true);
         }
         return val;
       }));
@@ -304,12 +286,42 @@ function renderTables(tableState) {
     `${instGroups[tableState.groups.institutions]} Institutions`,
     ['', 'Value', 'Rank', '% Change*'],
     [
-      [instData['count']['name'], instData['count']['label'], instData['count']['rank'], instData['count']['change']],
-      [instData['students']['name'], instData['students']['label'], instData['students']['rank'], instData['students']['change']],
-      [instData['tuition_fees']['name'], instData['tuition_fees']['label'], instData['tuition_fees']['rank'], instData['tuition_fees']['change']],
-      [instData['sticker_price']['name'], instData['sticker_price']['label'], instData['sticker_price']['rank'], instData['sticker_price']['change']],
-      [instData['real_cost']['name'], instData['real_cost']['label'], instData['real_cost']['rank'], instData['real_cost']['change']],
-      [instData['sci']['name'], instData['sci']['label'], instData['sci']['rank'], instData['sci']['change']]
+      [
+        instData['count']['name'],
+        instData['count']['label'],
+        instData['count']['rank'],
+        renderPercent(instData['count']['change'] , false)
+      ],
+      [
+        instData['students']['name'],
+        instData['students']['label'],
+        instData['students']['rank'],
+        renderPercent(instData['students']['change'] , false)
+      ],
+      [
+        instData['tuition_fees']['name'],
+        instData['tuition_fees']['label'],
+        instData['tuition_fees']['rank'],
+        renderPercent(instData['tuition_fees']['change'] , true)
+      ],
+      [
+        instData['sticker_price']['name'],
+        instData['sticker_price']['label'],
+        instData['sticker_price']['rank'],
+        renderPercent(instData['sticker_price']['change'] , true)
+      ],
+      [
+        instData['real_cost']['name'],
+        instData['real_cost']['label'],
+        instData['real_cost']['rank'],
+        renderPercent(instData['real_cost']['change'] , true)
+      ],
+      [
+        instData['sci']['name'],
+        instData['sci']['label'],
+        instData['sci']['rank'],
+        renderPercent(instData['sci']['change'] , true)
+      ]
     ],
     [
       '*Since 2008-2009 AY',
@@ -368,6 +380,16 @@ function renderTable(id, parent, title, columns, rows, footnotes) {
     c.appendChild(fns);
   }
   parent.appendChild(c);
+}
+
+function renderPercent(val, flip) {
+  if (!val) {
+    return '<span class="na">N/A</span>';
+  } else if (parseFloat(val) > 0) {
+    return `<span class="${flip ? 'bad' : 'good'}">${val}↑</span>`;
+  } else {
+    return `<span class="${flip ? 'good' : 'bad'}">${val}↓</span>`;
+  }
 }
 
 renderTables(tableStates.a);
