@@ -10,6 +10,8 @@ import bboxes from '../../data/gen/fipsToBbox.json';
 import regions from '../../data/gen/regions.json';
 import districtCounts from '../../data/districtCounts.json';
 
+const EMPTY_COLOR = '#E2E0E6';
+
 const formatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
   currency: 'USD',
@@ -22,6 +24,10 @@ function rangeFocus(prop, statefp) {
 
     ['!=', ['get', 'STATEFP'], statefp],
       '#333333',
+
+    // Hide bodies of water "districts" (with the district code ZZ)
+    ['==', ['slice', ['get', 'loa_key'], 2], 'ZZ'],
+      EMPTY_COLOR,
 
     ['interpolate', ['linear'], ['get', prop.key]].concat(gradientToStyle(prop.color, prop.range))
   ];
@@ -41,6 +47,10 @@ function rangeFocusDistrict(prop, statefp, loakey) {
 
     ['!=', ['get', 'STATEFP'], statefp],
       '#333333',
+
+    // Hide bodies of water "districts" (with the district code ZZ)
+    ['==', ['slice', ['get', 'loa_key'], 2], 'ZZ'],
+      EMPTY_COLOR,
 
     ['in', loakey, ['get', 'loa_key']],
       ['interpolate', ['linear'], ['get', prop.key]].concat(gradientToStyle(prop.color, prop.range)),
@@ -67,6 +77,14 @@ function FSMSDMap(config, mapId, showData) {
 
   config.prefix = '..';
   const db = new SchoolDB(config);
+
+  // Hack to "hide" parts of states
+  // that encompass bodies of water
+  Object.keys(config.PROPS).forEach((k) => {
+    if (k.startsWith('STU_TOT_BAL')) {
+      config.PROPS[k].nullColor = EMPTY_COLOR;
+    }
+  });
 
   const dataLayerName = 'data';
   const sources = {
@@ -113,8 +131,13 @@ function FSMSDMap(config, mapId, showData) {
         // Already focused on state, focus on district
         let loa_keys = feature.properties['loa_key'].split(',');
         let loa_key = loa_keys[0];
-        name = `${name}, District ${loa_key.slice(2)}`;
-        focusStateDistrictFP(map, state, statefp, loa_key);
+        let district_code = loa_key.slice(2);
+        if (district_code != 'ZZ') {
+          name = `${name}, District ${district_code}`;
+          focusStateDistrictFP(map, state, statefp, loa_key);
+        } else {
+          focusStateFP(map, state, statefp);
+        }
       } else {
         focusStateFP(map, state, statefp);
       }
