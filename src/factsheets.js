@@ -284,42 +284,42 @@ function renderTables(tableState) {
     'inst_stats',
     section,
     `${instGroups[tableState.groups.institutions]} Institutions`,
-    ['', 'Value', 'Rank', '% Change*'],
+    ['', 'Value', `${rankVariable == 'nationalRank' ? 'National' : 'In-State'} Rank`, '% Change*'],
     [
       [
         instData['count']['name'],
         instData['count']['label'],
-        instData['count']['rank'],
+        instData['count'][rankVariable],
         renderPercent(instData['count']['change'] , false)
       ],
       [
         instData['students']['name'],
         instData['students']['label'],
-        instData['students']['rank'],
+        instData['students'][rankVariable],
         renderPercent(instData['students']['change'] , false)
       ],
       [
         instData['tuition_fees']['name'],
         instData['tuition_fees']['label'],
-        instData['tuition_fees']['rank'],
+        instData['tuition_fees'][rankVariable],
         renderPercent(instData['tuition_fees']['change'] , true)
       ],
       [
         instData['sticker_price']['name'],
         instData['sticker_price']['label'],
-        instData['sticker_price']['rank'],
+        instData['sticker_price'][rankVariable],
         renderPercent(instData['sticker_price']['change'] , true)
       ],
       [
         instData['real_cost']['name'],
         instData['real_cost']['label'],
-        instData['real_cost']['rank'],
+        instData['real_cost'][rankVariable],
         renderPercent(instData['real_cost']['change'] , true)
       ],
       [
         instData['sci']['name'],
         instData['sci']['label'],
-        instData['sci']['rank'],
+        instData['sci'][rankVariable],
         renderPercent(instData['sci']['change'] , true)
       ]
     ],
