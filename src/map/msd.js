@@ -101,7 +101,7 @@ function MSDMap(config) {
   const painter = new Painter(config.COLORS);
   const map = new Map({
     container: `${loa}--map`,
-    style: 'mapbox://styles/frnsys/ck36ls0sm0hus1cpi2zedg77t',
+    style: 'mapbox://styles/jfift/ckkfrwny700zc17pdajfucczo',
     zoom: 3.5,
     maxZoom: 12,
     minZoom: 2,
