@@ -160,6 +160,7 @@ function FSMSDMap(config, mapId, showData) {
     zoom: 3.5,
     maxZoom: 12,
     minZoom: 2,
+    preserveDrawingBuffer: true,
     center: [-98.5556199, 39.8097343]
   }, sources, layers, {'main': state.props}, painter, focusFeatures, (features, ev) => {
     // if (map.map.getZoom() <= 6) return;

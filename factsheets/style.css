@@ -175,6 +175,8 @@ h4 a.selected {
   width: 12px;
   position: relative;
   border: 1px solid black;
+  -webkit-print-color-adjust: exact;
+  color-adjust: exact;
 }
 .legend--bar-bin {
   position: absolute;
@@ -255,6 +257,8 @@ h4 a.selected {
   width: 12px;
   height: 12px;
   border: 1px solid black;
+  -webkit-print-color-adjust: exact;
+  color-adjust: exact;
 }
 .legend--single span {
   line-height: 1;
@@ -393,4 +397,24 @@ h4 a.selected {
 .inst-select a.selected {
   color: #fff;
   border-bottom: 2px solid #F4DA1A;
+}
+
+@media print {
+  header, #intro, .info {
+    color: #000;
+    background: #fff;
+  }
+  header > div {
+    display: none;
+  }
+  header h1 {
+    margin-left: 0;
+  }
+  h4 a.selected,
+  .inst-select a.selected {
+    color: #000;
+  }
+  h4 a, .inst-select a {
+    color: #ddd;
+  }
 }
