@@ -262,7 +262,11 @@ function renderTables(tableState) {
   const instGroups = {
     'all': 'All',
     'public': 'Public',
-    'private_for_profit': 'Private-for-Profit'
+    'private_for_profit': 'Private-for-Profit',
+    'private_not_for_profit': 'Private-non-Profit',
+    'bachelors': '\nBachelors',
+    'associates': 'Associates',
+    'below_associates': 'Below Associates'
   };
   Object.keys(instGroups).forEach((value) => {
     let a = document.createElement('a');

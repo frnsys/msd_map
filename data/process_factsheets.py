@@ -227,6 +227,182 @@ schema = {
                 'stateRank': 'SCI_con_3_StateRank',
                 'change': 'SCI_con_3_pch_Label'
             }
+        },
+        'private_not_for_profit': {
+            'count': {
+                'name': 'Number of Higher Ed Institutions',
+                'label': 'rawcount_con_2_Label',
+                'nationalRank': 'rawcount_con_2_NatRank',
+                'stateRank': 'rawcount_con_2_StateRank',
+                'change': 'rawcount_con_2_pch_Label'
+            },
+            'students': {
+                'name': 'Unduplicated Undergraduate Students',
+                'label': 'enrolled_con_2_Label',
+                'nationalRank': 'enrolled_con_2_NatRank',
+                'stateRank': 'enrolled_con_2_StateRank',
+                'change': 'enrolled_con_2_pch_Label'
+            },
+            'tuition_fees': {
+                'name': 'Average Tuition & Fees',
+                'label': 'AVGTF_con_2_Label',
+                'nationalRank': 'AVGTF_con_2_NatRank',
+                'stateRank': 'AVGTF_con_2_StateRank',
+                'change': 'AVGTF_con_2_pch_Label'
+            },
+            'sticker_price': {
+                'name': 'Average Sticker Price of College**',
+                'label': 'AVGCINSOFF_con_2_Label',
+                'nationalRank': 'AVGCINSOFF_con_2_NatRank',
+                'stateRank': 'AVGCINSOFF_con_2_StateRank',
+                'change': 'AVGCINSOFF_con_2_pch_Label'
+            },
+            'real_cost': {
+                'name': 'Average Real Cost of College***',
+                'label': 'AVGNP_con_2_Label',
+                'nationalRank': 'AVGNP_con_2_NatRank',
+                'stateRank': 'AVGNP_con_2_StateRank',
+                'change': 'AVGNP_con_2_pch_Label'
+            },
+            'sci': {
+                'name': 'Average School Concentration Index****',
+                'label': 'SCI_con_2',
+                'nationalRank': 'SCI_con_2_NatRank',
+                'stateRank': 'SCI_con_2_StateRank',
+                'change': 'SCI_con_2_pch_Label'
+            }
+        },
+        'bachelors': {
+            'count': {
+                'name': 'Number of Higher Ed Institutions',
+                'label': 'rawcount_lev_1_Label',
+                'nationalRank': 'rawcount_lev_1_NatRank',
+                'stateRank': 'rawcount_lev_1_StateRank',
+                'change': 'rawcount_lev_1_pch_Label'
+            },
+            'students': {
+                'name': 'Unduplicated Undergraduate Students',
+                'label': 'enrolled_lev_1_Label',
+                'nationalRank': 'enrolled_lev_1_NatRank',
+                'stateRank': 'enrolled_lev_1_StateRank',
+                'change': 'enrolled_lev_1_pch_Label'
+            },
+            'tuition_fees': {
+                'name': 'Average Tuition & Fees',
+                'label': 'AVGTF_lev_1_Label',
+                'nationalRank': 'AVGTF_lev_1_NatRank',
+                'stateRank': 'AVGTF_lev_1_StateRank',
+                'change': 'AVGTF_lev_1_pch_Label'
+            },
+            'sticker_price': {
+                'name': 'Average Sticker Price of College**',
+                'label': 'AVGCINSOFF_lev_1_Label',
+                'nationalRank': 'AVGCINSOFF_lev_1_NatRank',
+                'stateRank': 'AVGCINSOFF_lev_1_StateRank',
+                'change': 'AVGCINSOFF_lev_1_pch_Label'
+            },
+            'real_cost': {
+                'name': 'Average Real Cost of College***',
+                'label': 'AVGNP_lev_1_Label',
+                'nationalRank': 'AVGNP_lev_1_NatRank',
+                'stateRank': 'AVGNP_lev_1_StateRank',
+                'change': 'AVGNP_lev_1_pch_Label'
+            },
+            'sci': {
+                'name': 'Average School Concentration Index****',
+                'label': 'SCI_lev_1',
+                'nationalRank': 'SCI_lev_1_NatRank',
+                'stateRank': 'SCI_lev_1_StateRank',
+                'change': 'SCI_lev_1_pch_Label'
+            }
+        },
+        'associates': {
+            'count': {
+                'name': 'Number of Higher Ed Institutions',
+                'label': 'rawcount_lev_2_Label',
+                'nationalRank': 'rawcount_lev_2_NatRank',
+                'stateRank': 'rawcount_lev_2_StateRank',
+                'change': 'rawcount_lev_2_pch_Label'
+            },
+            'students': {
+                'name': 'Unduplicated Undergraduate Students',
+                'label': 'enrolled_lev_2_Label',
+                'nationalRank': 'enrolled_lev_2_NatRank',
+                'stateRank': 'enrolled_lev_2_StateRank',
+                'change': 'enrolled_lev_2_pch_Label'
+            },
+            'tuition_fees': {
+                'name': 'Average Tuition & Fees',
+                'label': 'AVGTF_lev_2_Label',
+                'nationalRank': 'AVGTF_lev_2_NatRank',
+                'stateRank': 'AVGTF_lev_2_StateRank',
+                'change': 'AVGTF_lev_2_pch_Label'
+            },
+            'sticker_price': {
+                'name': 'Average Sticker Price of College**',
+                'label': 'AVGCINSOFF_lev_2_Label',
+                'nationalRank': 'AVGCINSOFF_lev_2_NatRank',
+                'stateRank': 'AVGCINSOFF_lev_2_StateRank',
+                'change': 'AVGCINSOFF_lev_2_pch_Label'
+            },
+            'real_cost': {
+                'name': 'Average Real Cost of College***',
+                'label': 'AVGNP_lev_2_Label',
+                'nationalRank': 'AVGNP_lev_2_NatRank',
+                'stateRank': 'AVGNP_lev_2_StateRank',
+                'change': 'AVGNP_lev_2_pch_Label'
+            },
+            'sci': {
+                'name': 'Average School Concentration Index****',
+                'label': 'SCI_lev_2',
+                'nationalRank': 'SCI_lev_2_NatRank',
+                'stateRank': 'SCI_lev_2_StateRank',
+                'change': 'SCI_lev_2_pch_Label'
+            }
+        },
+        'below_associates': {
+            'count': {
+                'name': 'Number of Higher Ed Institutions',
+                'label': 'rawcount_lev_3_Label',
+                'nationalRank': 'rawcount_lev_3_NatRank',
+                'stateRank': 'rawcount_lev_3_StateRank',
+                'change': 'rawcount_lev_3_pch_Label'
+            },
+            'students': {
+                'name': 'Unduplicated Undergraduate Students',
+                'label': 'enrolled_lev_3_Label',
+                'nationalRank': 'enrolled_lev_3_NatRank',
+                'stateRank': 'enrolled_lev_3_StateRank',
+                'change': 'enrolled_lev_3_pch_Label'
+            },
+            'tuition_fees': {
+                'name': 'Average Tuition & Fees',
+                'label': 'AVGTF_lev_3_Label',
+                'nationalRank': 'AVGTF_lev_3_NatRank',
+                'stateRank': 'AVGTF_lev_3_StateRank',
+                'change': 'AVGTF_lev_3_pch_Label'
+            },
+            'sticker_price': {
+                'name': 'Average Sticker Price of College**',
+                'label': 'AVGCINSOFF_lev_3_Label',
+                'nationalRank': 'AVGCINSOFF_lev_3_NatRank',
+                'stateRank': 'AVGCINSOFF_lev_3_StateRank',
+                'change': 'AVGCINSOFF_lev_3_pch_Label'
+            },
+            'real_cost': {
+                'name': 'Average Real Cost of College***',
+                'label': 'AVGNP_lev_3_Label',
+                'nationalRank': 'AVGNP_lev_3_NatRank',
+                'stateRank': 'AVGNP_lev_3_StateRank',
+                'change': 'AVGNP_lev_3_pch_Label'
+            },
+            'sci': {
+                'name': 'Average School Concentration Index****',
+                'label': 'SCI_lev_3',
+                'nationalRank': 'SCI_lev_3_NatRank',
+                'stateRank': 'SCI_lev_3_StateRank',
+                'change': 'SCI_lev_3_pch_Label'
+            }
         }
     }
 }
