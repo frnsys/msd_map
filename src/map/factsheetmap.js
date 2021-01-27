@@ -92,7 +92,7 @@ function FSMSDMap(config, mapId, showData) {
     'source-layer': 'admin',
     'filter': ["all", ["==", "admin_level", 1], ["==", "iso_3166_1", "US"]],
     'paint': {
-      'line-color': '#333333',
+      'line-color': '#111111',
       'line-width': 0.5
     }
   }];
