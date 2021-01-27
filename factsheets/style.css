@@ -308,6 +308,7 @@ h4 a.selected {
 .info th {
   text-align: left;
   color: #F4DA1A;
+  vertical-align: bottom;
 }
 .info-meta {
   text-align: center;
@@ -325,9 +326,13 @@ h4 a.selected {
   color: #333;
 }
 
-[data-section-id="institutions"] table td:nth-child(3) {
+[data-section-id="institutions"] table td:nth-child(3),
+[data-section-id="student_debt"] table td:nth-child(3),
+[data-section-id="income"] table td:nth-child(3),
+[data-section-id="debt_income"] table td:nth-child(3) {
   text-align: center;
 }
+
 
 .rank-selector {
   margin-left: 0.5em;

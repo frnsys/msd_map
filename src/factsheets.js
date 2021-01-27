@@ -143,9 +143,9 @@ function renderTables(tableState) {
     'avg_student_debt',
     section,
     `<a data-value="median" class="${debtStat == 'Median' ? 'selected' : ''}">Median</a> <a data-value="average" class="${debtStat == 'Average' ? 'selected' : ''}">Average</a> Student Debt`,
-    ['', 'Value', 'Rank'],
+    ['', 'Value', `${rankVariable == 'nationalRank' ? 'Nat\'l' : 'In-State'} Rank<sup>✝</sup>`],
     [
-      [debtData['debt']['name'], debtData['debt']['label'], debtData['debt'][rankVariable]],
+      [`${debtData['debt']['name']}*`, debtData['debt']['label'], debtData['debt'][rankVariable]],
       [debtData['debt_change']['name'], debtData['debt_change']['label'], debtData['debt_change'][rankVariable]]
     ],
     []
@@ -166,7 +166,7 @@ function renderTables(tableState) {
   renderTable(
     'avg_student_debt_by_tract_demo',
     section,
-    `${debtStat} Student Debt by Census Tract Demographics`,
+    `${debtStat} Student Debt by Census Tract Demographics**`,
     ['', 'Maj.\nAsian', 'Maj.\nBlack', 'Maj.\nHispanic', 'Maj.\nWhite', 'Maj.\nMinority'],
     demoCols.map((i) => {
       return [rows[i]].concat(demos.map((demo) => {
@@ -179,7 +179,11 @@ function renderTables(tableState) {
         return val;
       }));
     }),
-    []
+    [
+      '<sup>✝</sup>1st place = highest value',
+      '*Median/average of total student debt per person.',
+      '**Individuals are sorted into racial categories based on the racial majority of the sampled individual’s census tract. The median/average for each racial category is reported for the geographical area you’ve selected.'
+    ]
   );
 
   section = renderCollapsibleSection('income', '2019 Median Income', parent);
@@ -188,11 +192,11 @@ function renderTables(tableState) {
     section,
     // `${debtStat} Census Tract Level Median Income of Borrowers`,
     `US Median Income across Census Tracts`,
-    ['', 'Value', 'Rank'],
+    ['', 'Value', `${rankVariable == 'nationalRank' ? 'Nat\'l' : 'In-State'} Rank<sup>✝</sup>`],
     [
       // [debtData['income']['name'], debtData['income']['label'], debtData['income']['rank']],
       // [debtData['income_change']['name'], debtData['income_change']['label'], debtData['income']['rank']]
-      [medianDebtData['income']['name'], medianDebtData['income']['label'], medianDebtData['income'][rankVariable]],
+      [`${medianDebtData['income']['name']}*`, medianDebtData['income']['label'], medianDebtData['income'][rankVariable]],
       [medianDebtData['income_change']['name'], medianDebtData['income_change']['label'], medianDebtData['income'][rankVariable]]
     ],
     []
@@ -202,7 +206,7 @@ function renderTables(tableState) {
     'avg_income_by_tract_demo',
     section,
     // `${debtStat} Income of Borrowers by Census Tract Demographics`,
-    `Median Income by Census Tract Demographics`,
+    `Median Income by Census Tract Demographics**`,
     ['', 'Maj.\nAsian', 'Maj.\nBlack', 'Maj.\nHispanic', 'Maj.\nWhite', 'Maj.\nMinority'],
     demoCols.map((i) => {
       return [rows[i]].concat(demos.map((demo) => {
@@ -216,7 +220,11 @@ function renderTables(tableState) {
         return val;
       }));
     }),
-    []
+    [
+      '<sup>✝</sup>1st place = highest value',
+      '*From the 5-year American Community Survey (ACS) census-tract median income values, which are aggregated at the national, state, and congressional district level.',
+      '**Individual census tracts are sorted into groups based on the racial majority of their total population.'
+    ]
   );
 
   section = renderCollapsibleSection('debt_income', '2019 Debt-to-Income Ratio', parent);
@@ -225,11 +233,11 @@ function renderTables(tableState) {
     section,
     // `${debtStat} Student Debt-to-Income Ratios`,
     `Median Student Debt-to-Income Ratios`,
-    ['', 'Value', 'Rank'],
+    ['', 'Value', `${rankVariable == 'nationalRank' ? 'Nat\'l' : 'In-State'} Rank<sup>✝</sup>`],
     [
       // [debtData['debtincome']['name'], debtData['debtincome']['label'], debtData['debtincome']['rank']],
       // [debtData['debtincome_change']['name'], debtData['debtincome_change']['label'], debtData['debtincome_change']['rank']]
-      [medianDebtData['debtincome']['name'], medianDebtData['debtincome']['label'], medianDebtData['debtincome'][rankVariable]],
+      [`${medianDebtData['debtincome']['name']}*`, medianDebtData['debtincome']['label'], medianDebtData['debtincome'][rankVariable]],
       [medianDebtData['debtincome_change']['name'], medianDebtData['debtincome_change']['label'], medianDebtData['debtincome_change'][rankVariable]]
     ],
     []
@@ -239,7 +247,7 @@ function renderTables(tableState) {
     'avg_debt_income_ratio_by_tract_demo',
     section,
     // `${debtStat} Student Debt-to-Income by Census Tract Demographics`,
-    `Median Student Debt-to-Income by Census Tract Demographics`,
+    `Median Student Debt-to-Income by Census Tract Demographics**`,
     ['', 'Maj.\nAsian', 'Maj.\nBlack', 'Maj.\nHispanic', 'Maj.\nWhite', 'Maj.\nMinority'],
     demoCols.map((i) => {
       return [rows[i]].concat(demos.map((demo) => {
@@ -253,7 +261,11 @@ function renderTables(tableState) {
         return val;
       }));
     }),
-    []
+    [
+      '<sup>✝</sup>1st place = highest value',
+      '*As we do not have individual income levels, we aggregate our individual total student debt to the census-tract level to calculate the tract’s median student debt and then divided by the tract’s reported median income to calculate a ratio. Then take the median ratio among all tracts within your selected geographic area.',
+      '**Individual census tracts were sorted into groups based on the racial majority of their total population.'
+    ]
   );
 
   section = renderCollapsibleSection('institutions', '2017-2018 Higher Education Market', parent);
@@ -288,7 +300,7 @@ function renderTables(tableState) {
     'inst_stats',
     section,
     `${instGroups[tableState.groups.institutions]} Institutions`,
-    ['', 'Value', `${rankVariable == 'nationalRank' ? 'National' : 'In-State'} Rank`, '% Change*'],
+    ['', 'Value', `${rankVariable == 'nationalRank' ? 'Nat\'l' : 'In-State'} Rank<sup>✝</sup>`, '% Change*'],
     [
       [
         instData['count']['name'],
@@ -328,6 +340,7 @@ function renderTables(tableState) {
       ]
     ],
     [
+      '<sup>✝</sup>1st place = highest value',
       '*Since 2008-2009 AY',
       '**Sticker price = tuition, fees, ancillary costs, living expenses, and transportation',
       '***Real cost of college = sticker price minus scholarships/grants',
@@ -352,7 +365,7 @@ function renderTable(id, parent, title, columns, rows, footnotes) {
       .replace('\n', '_')
       .replace(/[^\w\-]+/g, '');
     th.classList.add(`column-${slug}`);
-    th.innerText = col;
+    th.innerHTML = col;
     tr.appendChild(th);
   });
   t.appendChild(tr);
@@ -378,7 +391,7 @@ function renderTable(id, parent, title, columns, rows, footnotes) {
     fns.classList.add('footnotes');
     footnotes.forEach((note) => {
       let fn = document.createElement('li')
-      fn.innerText = note;
+      fn.innerHTML = note;
       fns.appendChild(fn)
     });
     c.appendChild(fns);
