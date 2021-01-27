@@ -149,8 +149,8 @@ function FSMSDMap(config, mapId, showData) {
       let loa_key = loa_keys[0];
       if (state.focused == null || feat.properties['STATEFP'] == state.focused) {
         db.dataForKeyPlace(key, loa_key).then((data) => {
-          tooltip.style.left = `${ev.originalEvent.offsetX+10}px`;
-          tooltip.style.top = `${ev.originalEvent.offsetY+10}px`;
+          tooltip.style.left = `${ev.point.x+10}px`;
+          tooltip.style.top = `${ev.point.y+10}px`;
           tooltip.style.display = 'block';
 
           let label = `${fipsToState[loa_key.slice(0,2)]}, District ${loa_key.slice(2)}`;
