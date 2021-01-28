@@ -38,6 +38,11 @@ document.getElementById('b--map').addEventListener('mouseleave', () => {
 maps['a'].map.resize();
 maps['b'].map.resize();
 
+window.addEventListener('resize', () => {
+  maps['a'].map.resize();
+  maps['b'].map.resize();
+});
+
 // Tables
 const tableStates = {
   a: {
