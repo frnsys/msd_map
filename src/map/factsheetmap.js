@@ -119,6 +119,7 @@ function FSMSDMap(config, mapId, showData) {
     let name = 'National';
     let meta = '&nbsp;';
     let bbox = regions['Mainland'];
+    let fit = true;
     if (features['main'].length > 0) {
       let feature = features['main'][0];
       let statefp = feature.properties['STATEFP']
@@ -132,6 +133,7 @@ function FSMSDMap(config, mapId, showData) {
         let loa_keys = feature.properties['loa_key'].split(',');
         let loa_key = loa_keys[0];
         let district_code = loa_key.slice(2);
+        fit = false;
         if (district_code != 'ZZ') {
           name = `${name}, District ${district_code}`;
           focusStateDistrictFP(map, state, statefp, loa_key);
@@ -150,7 +152,9 @@ function FSMSDMap(config, mapId, showData) {
       showData(name, meta);
     }
 
-    map.fitBounds(bbox);
+    if (fit) {
+      map.fitBounds(bbox);
+    }
   }
 
   const painter = new Painter(config.COLORS);
