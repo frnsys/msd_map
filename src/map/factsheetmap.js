@@ -200,6 +200,10 @@ function FSMSDMap(config, mapId, showData) {
   map.map.on('dragstart', () => {
     tooltip.style.display = 'none';
   });
+  map.map.on('load', () => {
+    let bbox = regions['Mainland'];
+    map.fitBounds(bbox);
+  });
 
   const otherColors = {};
   otherColors[`No ${config.SHORT_NAME}`] = '#520004';
