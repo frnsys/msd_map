@@ -314,6 +314,9 @@ h4 a.selected {
   color: #F4DA1A;
   vertical-align: bottom;
 }
+.info table td:first-child {
+  max-width: 300px;
+}
 .info-meta {
   text-align: center;
   font-size: 0.9em;
@@ -335,6 +338,11 @@ h4 a.selected {
 [data-section-id="income"] table td:nth-child(3),
 [data-section-id="debt_income"] table td:nth-child(3) {
   text-align: center;
+}
+[data-section-id="student_debt"] div:last-child table td:first-child,
+[data-section-id="income"] div:last-child table td:first-child,
+[data-section-id="debt_income"] div:last-child table td:first-child {
+  max-width: 150px;
 }
 
 
@@ -397,6 +405,17 @@ h4 a.selected {
 .inst-select a.selected {
   color: #fff;
   border-bottom: 2px solid #F4DA1A;
+}
+
+footer {
+  background: #202020;
+  text-align: center;
+  padding: 1em 1em 0.5em 1em;
+  border-top: 2px solid #424242;
+  font-size: 0.9em;
+}
+footer a {
+  color: #fff;
 }
 
 @media print {
