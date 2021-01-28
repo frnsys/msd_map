@@ -439,4 +439,8 @@ footer a {
   h4 a, .inst-select a {
     color: #ddd;
   }
+  @page {
+      size: A3 landscape;
+      margin: 0mm;
+  }
 }
