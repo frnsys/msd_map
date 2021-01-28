@@ -131,6 +131,15 @@ function renderTables(tableState) {
   let rankVariable = tableState.rankVariable;
   let demoCols = rankVariable == 'nationalRank' ? [0,1,3,4] : [0,2,3,5];
 
+  let crossFootnote = '';
+  if (tableState.state == 'National') {
+    crossFootnote = '<sup>✝</sup>1st place = highest value. National Rank indicates how the state ranks against all 50 states plus Washington, DC, thus varies from 1 to 51.';
+  } else if (tableState.rankVariable == 'nationalRank') {
+    crossFootnote = '<sup>✝</sup>1st place = highest value. National Rank indicates how the congressional district ranks against all 435 congressional districts across the country plus Washington, DC, thus varies from 1 to 436.';
+  } else {
+    crossFootnote = '<sup>✝</sup>1st place = highest value. In-State Rank indicates how the selected congressional district ranks against other congressional districts in the same state, thus varies from 1 to the total number of districts in the state.';
+  }
+
   let data = dataset[tableState.state];
   let debtData = data['debt'][tableState.groups.debt];
   let medianDebtData = data['debt']['median']; // some data only has median now
@@ -185,7 +194,7 @@ function renderTables(tableState) {
       }));
     }),
     [
-      '<sup>✝</sup>1st place = highest value',
+      crossFootnote,
       '*Median/average of total student debt per person.',
       '**Individuals are sorted into racial categories based on the racial majority of the sampled individual’s census tract. The median/average for each racial category is reported for the geographical area you’ve selected.'
     ]
@@ -226,7 +235,7 @@ function renderTables(tableState) {
       }));
     }),
     [
-      '<sup>✝</sup>1st place = highest value',
+      crossFootnote,
       '*From the 5-year American Community Survey (ACS) census-tract median income values, which are aggregated at the national, state, and congressional district level.',
       '**Individual census tracts are sorted into groups based on the racial majority of their total population.'
     ]
@@ -267,7 +276,7 @@ function renderTables(tableState) {
       }));
     }),
     [
-      '<sup>✝</sup>1st place = highest value',
+      crossFootnote,
       '*As we do not have individual income levels, we aggregate our individual total student debt to the census-tract level to calculate the tract’s median student debt and then divided by the tract’s reported median income to calculate a ratio. Then take the median ratio among all tracts within your selected geographic area.',
       '**Individual census tracts were sorted into groups based on the racial majority of their total population.'
     ]
@@ -345,7 +354,7 @@ function renderTables(tableState) {
       ]
     ],
     [
-      '<sup>✝</sup>1st place = highest value',
+      crossFootnote,
       '*Since 2008-2009 AY',
       '**Sticker price = tuition, fees, ancillary costs, living expenses, and transportation',
       '***Real cost of college = sticker price minus scholarships/grants',
