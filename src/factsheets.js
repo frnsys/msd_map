@@ -157,7 +157,7 @@ function renderTables(tableState) {
     'avg_student_debt',
     section,
     `<a data-value="median" class="${debtStat == 'Median' ? 'selected' : ''}">Median</a> <a data-value="average" class="${debtStat == 'Average' ? 'selected' : ''}">Average</a> Student Debt`,
-    ['', 'Value', `${rankVariable == 'nationalRank' ? 'Nat\'l' : 'In-State'} Rank<sup>✝</sup>`],
+    ['', '', `${rankVariable == 'nationalRank' ? 'Nat\'l' : 'In-State'} Rank<sup>✝</sup>`],
     [
       [`${debtData['debt']['name']}*`, debtData['debt']['label'], debtData['debt'][rankVariable]],
       [debtData['debt_change']['name'], debtData['debt_change']['label'], debtData['debt_change'][rankVariable]]
@@ -206,7 +206,7 @@ function renderTables(tableState) {
     section,
     // `${debtStat} Census Tract Level Median Income of Borrowers`,
     `US Median Income across Census Tracts`,
-    ['', 'Value', `${rankVariable == 'nationalRank' ? 'Nat\'l' : 'In-State'} Rank<sup>✝</sup>`],
+    ['', '', `${rankVariable == 'nationalRank' ? 'Nat\'l' : 'In-State'} Rank<sup>✝</sup>`],
     [
       // [debtData['income']['name'], debtData['income']['label'], debtData['income']['rank']],
       // [debtData['income_change']['name'], debtData['income_change']['label'], debtData['income']['rank']]
@@ -247,7 +247,7 @@ function renderTables(tableState) {
     section,
     // `${debtStat} Student Debt-to-Income Ratios`,
     `Median Student Debt-to-Income Ratios`,
-    ['', 'Value', `${rankVariable == 'nationalRank' ? 'Nat\'l' : 'In-State'} Rank<sup>✝</sup>`],
+    ['', '', `${rankVariable == 'nationalRank' ? 'Nat\'l' : 'In-State'} Rank<sup>✝</sup>`],
     [
       // [debtData['debtincome']['name'], debtData['debtincome']['label'], debtData['debtincome']['rank']],
       // [debtData['debtincome_change']['name'], debtData['debtincome_change']['label'], debtData['debtincome_change']['rank']]
@@ -314,7 +314,7 @@ function renderTables(tableState) {
     'inst_stats',
     section,
     `${instGroups[tableState.groups.institutions]} Institutions`,
-    ['', 'Value', `${rankVariable == 'nationalRank' ? 'Nat\'l' : 'In-State'} Rank<sup>✝</sup>`, '% Change*'],
+    ['', '', `${rankVariable == 'nationalRank' ? 'Nat\'l' : 'In-State'} Rank<sup>✝</sup>`, '% Change*'],
     [
       [
         instData['count']['name'],
