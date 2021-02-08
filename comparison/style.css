@@ -231,6 +231,10 @@ h4 a.selected {
 .legend--special {
   display: none;
 }
+.legend select {
+  font-size: 0.6em;
+  margin-top: 0.25em;
+}
 
 .focus-point {
   background: #05A1FF;

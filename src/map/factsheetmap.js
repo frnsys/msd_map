@@ -230,7 +230,33 @@ function FSMSDMap(config, mapId, showData) {
     map.fitBounds(bbox);
   });
 
+  const PROP_NAMES = {
+    'STU_TOT_BAL': 'Median Total Balance',
+    'MEDIANINCOME': 'Median Income'
+  }
+  function createLegendVariableDropdown(selected) {
+    let varDropdown = document.createElement('select');
+    ['STU_TOT_BAL', 'MEDIANINCOME'].forEach((k) => {
+      let opt = document.createElement('option');
+      opt.value = k;
+      opt.innerText = PROP_NAMES[k];
+      if (k == selected) {
+        opt.selected = true;
+      }
+      varDropdown.appendChild(opt);
+    });
+
+    varDropdown.addEventListener('change', (ev) => {
+      let propKey = ev.target.value;
+      state.props = [config.PROPS[`${propKey}.Y:2019`]];
+      map.set('main', state.props);
+      legend.set(state.props);
+      createLegendVariableDropdown(propKey);
+    });
+    document.getElementById(`${mapId}--legend`).appendChild(varDropdown);
+  }
   const legend = new Legend(`${mapId}--legend`, map, {id: 'main', layer: 'data'}, state.props, []);
+  createLegendVariableDropdown('STU_TOT_BAL');
 
   // For getting bounds
   // window.getbbox = () => map.map.getBounds();
