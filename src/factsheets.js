@@ -341,12 +341,6 @@ function renderTables(tableState) {
         renderPercent(instData['sticker_price']['change'] , true)
       ],
       [
-        instData['real_cost']['name'],
-        instData['real_cost']['label'],
-        instData['real_cost'][rankVariable],
-        renderPercent(instData['real_cost']['change'] , true)
-      ],
-      [
         instData['sci']['name'],
         instData['sci']['label'],
         instData['sci'][rankVariable],
@@ -357,7 +351,6 @@ function renderTables(tableState) {
       crossFootnote,
       '*Since 2008-2009 AY',
       '**Sticker price = tuition, fees, ancillary costs, living expenses, and transportation',
-      '***Real cost of college = sticker price minus scholarships/grants',
       '****SCI ranges from 0 (perfect competition) to 10,000 (complete monopoly). A SCI of 10,000 indicates one school accounts for all the enrollment for that geographic area.'
     ]
   );
