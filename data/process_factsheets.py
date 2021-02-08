@@ -3,11 +3,11 @@ import math
 import pandas as pd
 
 dfs = [pd.read_csv(f) for f in [
-    'src/factsheets/MSD_State_Lvl_12.14.2020.csv',
-    'src/factsheets/MSD_CD_Lvl_12.14.2020.csv',
+    'src/factsheets/MSD_State_Lvl_02.03.21.csv',
+    'src/factsheets/MSD_CD_Lvl_02.03.21.csv',
 ]]
 
-demographics = ['asian', 'black', 'hispanic', 'white', 'minority']
+demographics = ['asian', 'black', 'latino', 'white']
 schema = {
     'debt': {
         'average': {

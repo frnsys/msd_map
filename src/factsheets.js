@@ -150,7 +150,7 @@ function renderTables(tableState) {
   }
   let debtStat = tableState.groups.debt;
   debtStat = debtStat.charAt(0).toUpperCase() + debtStat.slice(1);
-  const demos = ['asian', 'black', 'hispanic', 'white', 'minority'];
+  const demos = ['asian', 'black', 'latino', 'white'];
 
   let section = renderCollapsibleSection('student_debt', '2019 Student Debt', parent);
   renderTable(
@@ -181,7 +181,7 @@ function renderTables(tableState) {
     'avg_student_debt_by_tract_demo',
     section,
     `${debtStat} Student Debt by Census Tract Demographics**`,
-    ['', 'Maj.\nAsian', 'Maj.\nBlack', 'Maj.\nHispanic', 'Maj.\nWhite', 'Maj.\nMinority'],
+    ['', 'Plur.\nAsian', 'Plur.\nBlack', 'Plur.\nLatinx', 'Plur.\nWhite'],
     demoCols.map((i) => {
       return [rows[i]].concat(demos.map((demo) => {
         let val = debtData['debt_demographics'][demo][i];
@@ -196,7 +196,7 @@ function renderTables(tableState) {
     [
       crossFootnote,
       '*Median/average of total student debt per person.',
-      '**Individuals are sorted into racial categories based on the racial majority of the sampled individual’s census tract. The median/average for each racial category is reported for the geographical area you’ve selected.'
+      '**Individuals are sorted into racial categories based on the racial plurality of the sampled individual’s census tract. The median/average for each racial category is reported for the geographical area you’ve selected.'
     ]
   );
 
@@ -221,7 +221,7 @@ function renderTables(tableState) {
     section,
     // `${debtStat} Income of Borrowers by Census Tract Demographics`,
     `Median Income by Census Tract Demographics**`,
-    ['', 'Maj.\nAsian', 'Maj.\nBlack', 'Maj.\nHispanic', 'Maj.\nWhite', 'Maj.\nMinority'],
+    ['', 'Plur.\nAsian', 'Plur.\nBlack', 'Plur.\nLatinx', 'Plur.\nWhite'],
     demoCols.map((i) => {
       return [rows[i]].concat(demos.map((demo) => {
         // let val = debtData['income_demographics'][demo][i];
@@ -237,7 +237,7 @@ function renderTables(tableState) {
     [
       crossFootnote,
       '*From the 5-year American Community Survey (ACS) census-tract median income values, which are aggregated at the national, state, and congressional district level.',
-      '**Individual census tracts are sorted into groups based on the racial majority of their total population.'
+      '**Individual census tracts are sorted into groups based on the racial plurality of their total population.'
     ]
   );
 
@@ -262,7 +262,7 @@ function renderTables(tableState) {
     section,
     // `${debtStat} Student Debt-to-Income by Census Tract Demographics`,
     `Median Student Debt-to-Income by Census Tract Demographics**`,
-    ['', 'Maj.\nAsian', 'Maj.\nBlack', 'Maj.\nHispanic', 'Maj.\nWhite', 'Maj.\nMinority'],
+    ['', 'Plur.\nAsian', 'Plur.\nBlack', 'Plur.\nLatinx', 'Plur.\nWhite'],
     demoCols.map((i) => {
       return [rows[i]].concat(demos.map((demo) => {
         // let val = debtData['debtincome_demographics'][demo][i];
@@ -278,7 +278,7 @@ function renderTables(tableState) {
     [
       crossFootnote,
       '*As we do not have individual income levels, we aggregate our individual total student debt to the census-tract level to calculate the tract’s median student debt and then divided by the tract’s reported median income to calculate a ratio. Then take the median ratio among all tracts within your selected geographic area.',
-      '**Individual census tracts were sorted into groups based on the racial majority of their total population.'
+      '**Individual census tracts were sorted into groups based on the racial plurality of their total population.'
     ]
   );
 
