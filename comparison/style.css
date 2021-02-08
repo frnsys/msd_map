@@ -228,6 +228,9 @@ h4 a.selected {
 .legend--bivariate .legend--special {
   margin-top: 2.5em;
 }
+.legend--special {
+  display: none;
+}
 
 .focus-point {
   background: #05A1FF;

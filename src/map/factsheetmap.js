@@ -230,9 +230,7 @@ function FSMSDMap(config, mapId, showData) {
     map.fitBounds(bbox);
   });
 
-  const otherColors = {};
-  otherColors[`No ${config.SHORT_NAME}`] = '#520004';
-  const legend = new Legend(`${mapId}--legend`, map, {id: 'main', layer: 'data'}, state.props, otherColors, ['min']);
+  const legend = new Legend(`${mapId}--legend`, map, {id: 'main', layer: 'data'}, state.props, []);
 
   // For getting bounds
   // window.getbbox = () => map.map.getBounds();
