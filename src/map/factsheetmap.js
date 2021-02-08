@@ -115,6 +115,12 @@ function FSMSDMap(config, mapId, showData) {
     }
   }];
 
+  // Jump to focus national button
+  const nationalFocusButton = document.getElementById(`${mapId}--national`);
+  nationalFocusButton.addEventListener('click', () => {
+    focusFeatures({main: []});
+  });
+
   function focusFeatures(features, ev) {
     let name = 'National';
     let meta = '&nbsp;';
@@ -145,11 +151,14 @@ function FSMSDMap(config, mapId, showData) {
       }
       showData(name, meta);
       state.focused = statefp;
+
+      nationalFocusButton.style.display = 'block';
     } else {
       // Reset
       map.set('main', state.props);
       state.focused = null;
       showData(name, meta);
+      nationalFocusButton.style.display = 'none';
     }
 
     if (fit) {

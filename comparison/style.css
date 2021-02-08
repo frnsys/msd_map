@@ -421,6 +421,17 @@ footer a {
   color: #fff;
 }
 
+.jump-to-national {
+	position: absolute;
+	right: 3px;
+	top: 3px;
+	background: #eee;
+	line-height: 0.8;
+	padding: 6px 2px 0;
+  cursor: pointer;
+  display: none;
+}
+
 @media print {
   header, #intro, .info {
     color: #000;
