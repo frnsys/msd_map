@@ -17,6 +17,22 @@ const formatter = new Intl.NumberFormat('en-US', {
   currency: 'USD',
 });
 
+const defaultStyle = {
+  'fill-color': '#000000', // will be replaced on map initialization
+
+  // Fade-out feature outlines at low zooms
+  'fill-outline-color': [
+    'interpolate', ['linear'], ['zoom'], 2, 'rgba(0, 0, 0, 0)', 8, 'rgba(0,0,0,0.5)'
+  ],
+
+  'fill-opacity': [
+    'case',
+      ['boolean', ['feature-state', 'mute'], false],
+        0.2,
+      1.0
+  ]
+};
+
 // For district screenshots
 function rangeFocus(prop, statefp) {
   return [
@@ -102,7 +118,7 @@ function FSMSDMap(config, mapId, showData) {
     'type': 'fill',
     'source': 'main',
     'source-layer': dataLayerName,
-    'paint': styles.defaultPlaces
+    'paint': defaultStyle
   }, {
     'id': 'states',
     'type': 'line',
