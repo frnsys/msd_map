@@ -156,7 +156,7 @@ function renderTables(tableState) {
   renderTable(
     'avg_student_debt',
     section,
-    `<a data-value="median" class="${debtStat == 'Median' ? 'selected' : ''}">Median</a> <a data-value="average" class="${debtStat == 'Average' ? 'selected' : ''}">Average</a> Student Debt`,
+    `Student Debt: <a data-value="median" class="${debtStat == 'Median' ? 'selected' : ''}">Median</a> vs <a data-value="average" class="${debtStat == 'Average' ? 'selected' : ''}">Average</a>`,
     ['', '', `${rankVariable == 'nationalRank' ? 'Nat\'l' : 'In-State'} Rank<sup>✝</sup>`],
     [
       [`${debtData['debt']['name']}*`, debtData['debt']['label'], debtData['debt'][rankVariable]],

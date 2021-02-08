@@ -68,14 +68,14 @@ h1 {
 h4 a {
   color: #383838;
   cursor: pointer;
-  text-decoration: underline #383838;
+  text-decoration: underline #F4DA1A;
 }
 h4 a:hover {
   color: #fff;
 }
 h4 a.selected {
   color: #fff;
-  text-decoration: underline #F4DA1A;
+  text-decoration: underline #ff3a3a;
 }
 
 #intro {
