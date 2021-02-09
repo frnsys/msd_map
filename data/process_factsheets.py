@@ -55,7 +55,7 @@ schema = {
             ],
             'debtincome': {
                 'name': 'Median Student Debt to Income Ratio',
-                'label': 'MED_DEBT_INC_19_Label',
+                'label': 'MED_DEBT_INC_19',
                 'nationalRank': 'MED_DEBT_INC_19_NatRank',
                 'stateRank': 'MED_DEBT_INC_19_StateRank'
             },
@@ -66,7 +66,7 @@ schema = {
                 'stateRank': 'MED_DEBT_INC_pch_0919_StateRank'
             },
             'debtincome_demographics': [
-                'MED_DEBT_INC_19_{}_Label',
+                'MED_DEBT_INC_19_{}',
                 'MED_DEBT_INC_19_{}_NatRank',
                 'MED_DEBT_INC_19_{}_StateRank',
                 'MED_DEBT_INC_pch_0919_{}_Label',
