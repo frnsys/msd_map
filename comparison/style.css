@@ -451,6 +451,25 @@ footer a {
   display: none;
 }
 
+#overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.8);
+  z-index: 100;
+  display: none;
+  text-align: center;
+}
+#modal {
+  padding: 0.5em;
+  background: #202020;
+  display: inline-block;
+  border: 2px solid #F4C618;
+  margin-top: 2em;
+}
+
 @media print {
   header, #intro, .info {
     color: #000;

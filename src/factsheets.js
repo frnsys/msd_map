@@ -418,3 +418,26 @@ function renderPercent(val, flip) {
 
 renderTables(tableStates.a);
 renderTables(tableStates.b);
+
+const overlay = document.getElementById('overlay');
+overlay.addEventListener('click', (ev) => {
+  if (ev.target == overlay) {
+    overlay.style.display = 'none';
+  }
+});
+
+document.getElementById('open-video-tutorial').addEventListener('click', () => {
+  let iframe = document.createElement('iframe');
+  iframe.width = 800;
+  iframe.height = 450;
+  iframe.setAttribute('allowFullScreen', '')
+  iframe.setAttribute('frameborder', '0')
+  iframe.src = 'https://www.youtube.com/embed/9N85BQvtewY';
+
+  let modal = document.getElementById('modal');
+  while (modal.hasChildNodes()) {
+    modal.removeChild(modal.lastChild);
+  }
+  modal.appendChild(iframe);
+  overlay.style.display = 'block';
+});
