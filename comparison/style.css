@@ -435,9 +435,15 @@ footer {
   padding: 1em 1em 0.5em 1em;
   border-top: 2px solid #424242;
   font-size: 0.9em;
+  color: #fff;
 }
 footer a {
   color: #fff;
+}
+footer ul {
+  text-align: left;
+  max-width: 720px;
+  margin: 0 auto;
 }
 
 .jump-to-national {
