@@ -215,6 +215,7 @@ function FSMSDMap(config, mapId, showData) {
             ${loa_keys.length > 1 ? `<div>${loa_keys.length - 1} other districts here (zoom in to see).</div>` : ''}
           `;
         });
+        legend.renderFeatures([feat]);
       } else {
         tooltip.style.display = 'none';
       }
