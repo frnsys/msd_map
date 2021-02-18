@@ -135,7 +135,11 @@ function renderTables(tableState) {
   if (tableState.state == 'National') {
     crossFootnote = '<sup>✝</sup>1st place = highest value. National Rank indicates how the state ranks against all 50 states plus Washington, DC, thus varies from 1 to 51.';
   } else if (tableState.rankVariable == 'nationalRank') {
-    crossFootnote = '<sup>✝</sup>1st place = highest value. National Rank indicates how the congressional district ranks against all 435 congressional districts across the country plus Washington, DC, thus varies from 1 to 436.';
+    if (tableState.state.includes('District')) {
+      crossFootnote = '<sup>✝</sup>1st place = highest value. National Rank indicates how the congressional district ranks against all 435 congressional districts across the country plus Washington, DC, thus varies from 1 to 436.';
+    } else {
+      crossFootnote = '<sup>✝</sup>1st place = highest value. National Rank indicates how the state ranks against all 50 states plus Washington, DC, thus varies from 1 to 51.';
+    }
   } else {
     crossFootnote = '<sup>✝</sup>1st place = highest value. In-State Rank indicates how the selected congressional district ranks against other congressional districts in the same state, thus varies from 1 to the total number of districts in the state.';
   }
