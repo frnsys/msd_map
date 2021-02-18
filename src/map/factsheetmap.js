@@ -85,7 +85,7 @@ function focusStateDistrictFP(map, state, statefp, loakey) {
 
 function FSMSDMap(config, mapId, showData) {
   const loa = config.LOA;
-  const state = config.INITIAL_STATE;
+  const state = {...config.INITIAL_STATE};
   const tooltip = document.getElementById(`${mapId}--map-tooltip`);
 
   // If a state is focused
