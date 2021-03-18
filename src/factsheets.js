@@ -5,6 +5,7 @@ import dataset from '../data/gen/factsheets.json';
 // Maps
 mapboxgl.accessToken = config.MAPBOX_TOKEN;
 config.CD.INITIAL_CAT.Y = '2019';
+config.CD.MAP_ID = 'jfift.msd_comparisons__3_5';
 
 const maps = {};
 maps['a'] = FSMSDMap(config.CD, 'a', (stateName, meta) => {

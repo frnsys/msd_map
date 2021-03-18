@@ -233,11 +233,13 @@ function FSMSDMap(config, mapId, showData) {
 
   const PROP_NAMES = {
     'STU_TOT_BAL': 'Median Total Balance',
-    'MEDIANINCOME': 'Median Income'
+    'MEDIANINCOME': 'Median Income',
+    'MED_INC_pch_0919': '% change in Median Income',
+    'MED_BAL_pch_0919': '% change in Median Balance'
   }
   function createLegendVariableDropdown(selected) {
     let varDropdown = document.createElement('select');
-    ['STU_TOT_BAL', 'MEDIANINCOME'].forEach((k) => {
+    Object.keys(PROP_NAMES).forEach((k) => {
       let opt = document.createElement('option');
       opt.value = k;
       opt.innerText = PROP_NAMES[k];

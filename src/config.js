@@ -88,6 +88,41 @@ const PROPS = {
         'Data Unavailable': '#333333'
       }
     }
+  },
+
+  'MED_INC_pch_0919': {
+    desc: 'Percent Change in Median Income',
+    nick: '% change in Median Income',
+    color: {
+      0.0: '#079b1d',
+      0.25: '#f4e61a',
+      1.0: '#f4371a'
+    },
+    nullColor: '#333333',
+    legend: {
+      maxClamped: true,
+      minClamped: true,
+      special: {
+        'Data Unavailable': '#333333'
+      }
+    }
+  },
+  'MED_BAL_pch_0919': {
+    desc: 'Percent Change in Median Balance',
+    nick: '% change in Median Balance',
+    color: {
+      0.0: '#079b1d',
+      0.25: '#f4e61a',
+      1.0: '#f4371a'
+    },
+    nullColor: '#333333',
+    legend: {
+      maxClamped: true,
+      minClamped: true,
+      special: {
+        'Data Unavailable': '#333333'
+      }
+    }
   }
 }
 
@@ -139,6 +174,8 @@ const CATS_FOR_PROPS = {
   'AVGTF': ['S', 'I', 'Y'],
   'MEDIANINCOME': ['Y'],
   'STU_TOT_BAL': ['Y'],
+  'MED_INC_pch_0919': ['Y'],
+  'MED_BAL_pch_0919': ['Y']
 };
 const PROPS_FOR_LOA = {};
 const META = {
