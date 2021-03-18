@@ -457,8 +457,10 @@ with open('gen/factsheets.json', 'w') as f:
 # Create the tileset
 # Can drop years except 2019, since that's all we use in the comparison map,
 # then add in additional data
+props = ['MED_INC_pch_0919', 'MED_BAL_pch_0919']
 territory_fips = ['60', '66', '69', '72', '78']
 cd_lvl.set_index('CONG_DIST', inplace=True)
+vals = {}
 with open('gen/tile_data/CD/ALL.geojson', 'r') as f:
     geojson = []
     for l in f.readlines():
@@ -473,9 +475,22 @@ with open('gen/tile_data/CD/ALL.geojson', 'r') as f:
             pass
         else:
             data = cd_lvl.loc[district]
-            for k in ['MED_INC_pch_0919', 'MED_BAL_pch_0919']:
+            for k in props:
                 feat['properties']['{}.Y:2019'.format(k)] = data[k]
+                if k not in vals:
+                    vals[k] = []
+                vals[k].append(data[k])
         geojson.append(feat)
 
 with open('gen/tile_data/CD/COMPARISONS.geojson', 'w') as f:
     f.write('\n'.join([json.dumps(feat) for feat in geojson]))
+
+# Update existing meta
+with open('gen/CD/meta.json', 'r') as f:
+    meta = json.load(f)
+for k in props:
+    mn, mx = min(vals[k]), max(vals[k])
+    meta['ranges'][k] = (mn, mx)
+    meta['min']['{}.Y:2019'.format(k)] = mn
+with open('gen/CD/meta.json', 'w') as f:
+    json.dump(meta, f)
