@@ -470,11 +470,12 @@ with open('gen/tile_data/CD/ALL.geojson', 'r') as f:
         # If ends with ZZ, then its a body of water
         district = feat['properties']['loa_key']
         if district.endswith('ZZ') or any(district.startswith(c) for c in territory_fips):
-            geojson.append(feat)
+            pass
         else:
             data = cd_lvl.loc[district]
             for k in ['MED_INC_pch_0919', 'MED_BAL_pch_0919']:
                 feat['properties']['{}.Y:2019'.format(k)] = data[k]
+        geojson.append(feat)
 
 with open('gen/tile_data/CD/COMPARISONS.geojson', 'w') as f:
     f.write('\n'.join([json.dumps(feat) for feat in geojson]))
