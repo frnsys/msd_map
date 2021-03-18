@@ -2,10 +2,9 @@ import json
 import math
 import pandas as pd
 
-dfs = [pd.read_csv(f) for f in [
-    'src/factsheets/MSD_State_Lvl_02.03.21.csv',
-    'src/factsheets/MSD_CD_Lvl_02.03.21.csv',
-]]
+state_lvl = pd.read_csv('src/factsheets/MSD_State_Lvl_02.03.21.csv')
+cd_lvl = pd.read_csv('src/factsheets/MSD_CD_Lvl_02.03.21.csv')
+dfs = [state_lvl, cd_lvl]
 
 demographics = ['asian', 'black', 'latino', 'white']
 schema = {
@@ -454,3 +453,28 @@ for df in dfs:
 
 with open('gen/factsheets.json', 'w') as f:
     json.dump(data, f)
+
+# Create the tileset
+# Can drop years except 2019, since that's all we use in the comparison map,
+# then add in additional data
+territory_fips = ['60', '66', '69', '72', '78']
+cd_lvl.set_index('CONG_DIST', inplace=True)
+with open('gen/tile_data/CD/ALL.geojson', 'r') as f:
+    geojson = []
+    for l in f.readlines():
+        feat = json.loads(l)
+        to_delete = [k for k in feat['properties'].keys() if 'Y:' in k and not k.endswith('Y:2019')]
+        for k in to_delete:
+            del feat['properties'][k]
+
+        # If ends with ZZ, then its a body of water
+        district = feat['properties']['loa_key']
+        if district.endswith('ZZ') or any(district.startswith(c) for c in territory_fips):
+            geojson.append(feat)
+        else:
+            data = cd_lvl.loc[district]
+            for k in ['MED_INC_pch_0919', 'MED_BAL_pch_0919']:
+                feat['properties']['{}.Y:2019'.format(k)] = data[k]
+
+with open('gen/tile_data/CD/COMPARISONS.geojson', 'w') as f:
+    f.write('\n'.join([json.dumps(feat) for feat in geojson]))
