@@ -157,6 +157,7 @@ if LOA == 'ZCTA':
     QUERY_FIELDS['ZCTAZONEPOP'] = ['Y']
 elif LOA == 'CD':
     QUERY_FIELDS['CDPOP'] = ['Y']
+    QUERY_FIELDS['STU_TOT_BAL'] = ['Y']
 
 # Use these instead of the actual data max
 # To deal with outliers squashing the visual data range
