@@ -490,6 +490,8 @@ with open('gen/CD/meta.json', 'r') as f:
     meta = json.load(f)
 for k in props:
     mn, mx = min(vals[k]), max(vals[k])
+    if k == 'MED_INC_pch_0919':
+        mx = 20.0
     meta['ranges'][k] = (mn, mx)
     meta['min']['{}.Y:2019'.format(k)] = mn
 with open('gen/CD/meta.json', 'w') as f:

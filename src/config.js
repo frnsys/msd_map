@@ -94,9 +94,9 @@ const PROPS = {
     desc: 'Percent Change in Median Income',
     nick: '% change in Median Income',
     color: {
-      0.0: '#079b1d',
+      0.0: '#f4371a',
       0.25: '#f4e61a',
-      1.0: '#f4371a'
+      1.0: '#079b1d'
     },
     nullColor: '#333333',
     legend: {
