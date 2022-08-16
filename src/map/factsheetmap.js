@@ -5,10 +5,10 @@ import util from './util';
 import styles from './styles';
 import SchoolDB from './db';
 import color from '../lib/color';
-import fipsToState from '../../data/fipsToState.json';
+import fipsToState from 'assets/fipsToState.json';
 import bboxes from '../../data/gen/fipsToBbox.json';
 import regions from '../../data/gen/regions.json';
-import districtCounts from '../../data/districtCounts.json';
+import districtCounts from 'assets/districtCounts.json';
 
 const EMPTY_COLOR = '#E2E0E6';
 

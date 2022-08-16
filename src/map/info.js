@@ -1,6 +1,6 @@
 import util from './util';
 import I from '../lib/info';
-import fipsToState from '../../data/fipsToState.json';
+import fipsToState from 'assets/fipsToState.json';
 
 const CONTROL = {
   1: 'Public',

@@ -209,22 +209,40 @@ class Legend {
         cell.classList.add('legend--cell')
         cell.style.background = rgb;
         cell.addEventListener('mouseenter', () => {
+          // j -> a
           let a_rng = ranges.a[1] - ranges.a[0];
           let a_l = ranges.a[0] + (a_rng * (n-J-1)/n);
           let a_u = ranges.a[0] + (a_rng * (n-J)/n);
 
+          // i -> b
           let b_rng = ranges.b[1] - ranges.b[0];
           let b_l = ranges.b[0] + (b_rng * I/n);
           let b_u = ranges.b[0] + (b_rng * (I+1)/n);
 
           // Select features _outside_ of this range,
           // to mute them
-          let filter = ['any',
-            ['<', propA.key, a_l],
-            ['>', propA.key, a_u],
-            ['<', propB.key, b_l],
-            ['>', propB.key, b_u],
-          ];
+          let filter = ['any'];
+
+          // If it's the lowest, include anything below the upper range (i.e. <=u)
+          // If it's the highest, include anything above the lower range (i.e. >=l)
+          if (i == n-1) {
+            filter.push(['>', prop.key, b_u]);
+          } else if (i == 0) {
+            filter.push(['<', prop.key, b_l]);
+          } else {
+            filter.push(['<', prop.key, b_l]);
+            filter.push(['>', prop.key, b_u]);
+          }
+
+          if (j == n-1) {
+            filter.push(['>', prop.key, a_u]);
+          } else if (j == 0) {
+            filter.push(['<', prop.key, a_l]);
+          } else {
+            filter.push(['<', prop.key, a_l]);
+            filter.push(['>', prop.key, a_u]);
+          }
+
           this.map.setFilter(this.source, filter, {mute: true}, {mute: false});
         });
         cell.addEventListener('mouseleave', () => {
@@ -306,6 +324,15 @@ class Legend {
           ['<', prop.key, l],
           ['>', prop.key, u],
         ];
+
+        // If it's the lowest, include anything below the upper range (i.e. <=u)
+        if (i == n-1) {
+          filter = ['any', ['>', prop.key, u]];
+
+        // If it's the highest, include anything above the lower range (i.e. >=l)
+        } else if (i == 0) {
+          filter = ['any', ['<', prop.key, l]];
+        }
         this.map.setFilter(this.source, filter, {mute: true}, {mute: false});
       });
       bin.addEventListener('mouseleave', () => {
