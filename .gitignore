@@ -1,6 +1,6 @@
+deploy.sh
 data/bboxes
 !readme.md
 *.md
-*.sh
 *.zip
 config*

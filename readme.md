@@ -6,8 +6,7 @@ Outputs that are used directly in the frontend should be symlinked to `assets/da
 
 ## Sources
 
-- Download ZCTA GeoJSON data from: <https://geo.nyu.edu/catalog/harvard-tg10uszcta5>
-    - And backup shapefile (for ZCTAs not present in the GeoJSON) from: <https://catalog.data.gov/dataset/tiger-line-shapefile-2017-2010-nation-u-s-2010-census-5-digit-zip-code-tabulation-area-zcta5-na>
+Run `data/src/download.sh` to download the publicly available source data.
 
 ## Data generation
 
@@ -24,7 +23,9 @@ python makeschools.py
 
 ```
 # data/
-python process_data.py
+python process_data.py <level of analysis>
+# example: python process_data.py zcta
+
 bash make_tiles.sh
 ```
 
