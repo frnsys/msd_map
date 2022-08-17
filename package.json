@@ -2,26 +2,18 @@
   "name": "map",
   "version": "0.0.0",
   "scripts": {
-    "start": "webpack-dev-server --watch --progress --mode=development",
-    "build": "NODE_ENV=production webpack --progress --colors -p"
+    "start": "webpack serve --host 0.0.0.0 --progress --compress --mode=development",
+    "build": "rm -rf dist; NODE_ENV=production webpack --mode production"
   },
   "dependencies": {
-    "@babel/polyfill": "^7.0.0",
-    "mapbox-gl": "^1.8.0",
-    "simple-lightbox": "^2.1.0"
+    "mapbox-gl": "^1.8.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0-beta.39",
-    "@babel/plugin-proposal-class-properties": "^7.0.0-beta.42",
-    "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.42",
-    "@babel/preset-env": "^7.0.0-beta.39",
-    "@babel/preset-react": "^7.0.0-beta.39",
-    "babel-loader": "^8.0.0-beta.0",
     "css-loader": "^3.0.0",
     "file-loader": "^4.0.0",
     "style-loader": "^0.23.1",
-    "webpack": "^4.21.0",
-    "webpack-cli": "^3.3.4",
-    "webpack-dev-server": "^3.1.14"
+    "webpack": "^5.40.0",
+    "webpack-cli": "^4.7.2",
+    "webpack-dev-server": "^3.11.2"
   }
 }

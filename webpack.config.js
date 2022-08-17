@@ -1,11 +1,9 @@
-var path = require('path');
+const path = require('path');
 const dev = process.env.NODE_ENV !== 'production';
 
 module.exports = {
   entry: {
-    'main': ['@babel/polyfill', './src/main'],
-    'factsheets': ['@babel/polyfill', './src/factsheets'],
-    'numberLines': ['@babel/polyfill', './src/numberLines'],
+    'main': ['./src/main'],
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -14,15 +12,6 @@ module.exports = {
   devtool: dev ? 'inline-source-map' : 'source-map',
   module: {
     rules: [{
-      test: /\.js$/,
-      exclude: /node_modules/,
-      use: {
-        loader: 'babel-loader',
-        options: {
-          presets: ['@babel/preset-env', '@babel/preset-react']
-        }
-      }
-    }, {
       test: /\.css$/i,
       use: ['style-loader', 'css-loader'],
     }, {
@@ -37,4 +26,3 @@ module.exports = {
     writeToDisk: true
   }
 };
-
