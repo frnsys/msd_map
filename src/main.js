@@ -1,5 +1,5 @@
 import config from './config';
-import MSDMap from './map/msd';
+import MSDMap from './app/map';
 
 // Maps
 mapboxgl.accessToken = config.MAPBOX_TOKEN;

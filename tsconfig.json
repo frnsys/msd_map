@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "baseUrl": "src",
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["*"]
+      "@/*": ["src/*"]
     },
     "outDir": "./dist/",
     "sourceMap": true,
@@ -10,6 +10,7 @@
     "module": "es6",
     "target": "es5",
     "allowJs": true,
+    "resolveJsonModule": true,
     "moduleResolution": "node",
     "downlevelIteration": true,
     "allowSyntheticDefaultImports": true

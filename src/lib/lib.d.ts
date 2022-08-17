@@ -31,5 +31,6 @@ interface MapFilter {
   state: MapFeatureState | null,
   resetState: MapFeatureState | null
 }
+type SourceMapping<T> = {[key:string]: T};
 
 type Bounds = [number, number, number, number];

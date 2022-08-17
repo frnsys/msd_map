@@ -24,7 +24,12 @@ module.exports = {
     }]
   },
   resolve: {
-    extensions: ['.ts', '.js']
+    extensions: ['.ts', '.js'],
+    alias: {
+      '@': path.resolve(__dirname, 'src/'),
+      'data': path.resolve(__dirname, 'data/'),
+      'assets': path.resolve(__dirname, 'assets/'),
+    }
   },
   devServer: {
     writeToDisk: true

@@ -1,7 +1,6 @@
 import Painter from './paint';
 import type { PointLike, MapboxOptions, MapMouseEvent, Map as MapboxMap } from 'mapbox-gl';
 
-type SourceMapping<T> = {[key:string]: T};
 
 class Map {
   map: MapboxMap;
