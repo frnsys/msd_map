@@ -48,7 +48,6 @@
             <nav>
                 <a href="#intro">Introduction</a>
                 <a href="#maptool">Map</a>
-                <a href="#summary">Summary Statistics</a>
                 <a href="#download">Download Data</a>
                 <a href="#methodology">Methodology</a>
                 <a href="https://docs.google.com/forms/d/e/1FAIpQLSc8zKxb1WiHkEMcljk701caviug0tzb2kE0hTO1YGpV4NSpHw/viewform">Contact Researchers</a>
@@ -193,79 +192,6 @@
                 <div class="info" id="cd--info"></div>
             </section>
         </div>
-        <section id="summary" class="text summary">
-            <h1>Summary Statistics</h1>
-            <p>Between the 2008–09 and 2018–19 academic years, the higher education industry has undergone major changes: the wave of post-recession enrollment, a boom and bust of for-profit institutions, traditional not-for-profit higher ed adopting for-profit business strategies, and a funding crisis coupled with bloating costs borne by students and increasing <a href="https://phenomenalworld.org/analysis/the-geography-and-cost-of-higher-education-post-2008">enrollment concentration</a> across schools. As these shifts unfolded, the volume of student debt ballooned from $675 billion at the end of 2008 to over $1.6 trillion in 2019.</p>
-            <p>We have compiled data on most of these issues and summarized key statistics below. Higher education institutional summary statistics look at trends in the country for schools that have physical campuses as sourced from the Integrated Postsecondary Education Data System (<span class="smallcaps">IPEDS</span>). Zip-level summary statistics look at trends across the country in income, indebtedness, and institutional choice. Student loan data is sourced from a repeated cross-sectional credit archive sample on 18–35 year-olds with student loan activity conducted by Experian Information Solutions, Inc. Income and population statistics are sourced from the American Community Survey. Concentration, enrollment, and school prices at the <span class="smallcaps">ZCTA</span>-level are calculated according to 45 minute commuting distances. All tables are reproducible with the data that’s <a href="#download">available for download</a>.</p>
-            <div id="number-lines">
-                <h2>Student Debt by State - how does your state fare against others?</h2>
-                <div class="details">Student debt samples were grouped to common census tracts, appended to demographic data, and then aggregated to state-level.</div>
-                <div class="number-lines-controls">
-                    <div id="number-line-group-select">
-                        <button class="selected" data-value="median">Median</button>
-                        <button data-value="average">Average</button>
-                    </div>
-                    <div>
-                        <div id="number-line-type-select">
-                            <button class="selected" data-value="all">All Tracts</button>
-                            <button data-value="white">Majority-White Tracts</button>
-                            <button data-value="black">Majority-Black Tracts</button>
-                            <button data-value="asian">Majority-Asian Tracts</button>
-                            <button data-value="hispanic">Majority-Hispanic Tracts</button>
-                            <button data-value="minority">Majority-Minority Tracts</button>
-                        </div>
-                        <select id="number-line-state-select"></select>
-                    </div>
-                </div>
-                <div id="income-number-line"></div>
-                <div id="debt-number-line"></div>
-                <div id="change-number-line"></div>
-            </div>
-            <h2></h2>
-            <p class="summary-notes"></p>
-            <div class="summary-tabs-label">Choose your Level of Analysis:</div>
-            <div class="summary-tabs" id="summary-tabs--level">
-                <div data-value="schools">Schools</div>
-                <div data-value="zips" class="selected">Zips</div>
-            </div>
-            <div id="summary-tabs--school">
-                <div class="summary-tabs-label">Choose your School Type:</div>
-                <div class="summary-tabs" id="summary-tabs--school-type">
-                    <div data-value="allschools" class="selected">All Schools</div>
-                    <div data-value="public">Public</div>
-                    <div data-value="privnot4prof">Private Not-for-profit</div>
-                    <div data-value="priv4prof">Private For-profit</div>
-                    <div data-value="bachelor">Four-Year</div>
-                    <div data-value="associate">Two-Year</div>
-                    <div data-value="belowassociate">Below Two-Year</div>
-                </div>
-            </div>
-            <div class="summary-tabs-divider"></div>
-            <div class="table-wrapper">
-                <table id="summary-table"></table>
-            </div>
-            <div class="viz-gallery">
-                <a href="assets/viz/TotalBalanceDistribution.png" title="Total Balance on Student Loans, 2009 & 2019."><img src="assets/viz/TotalBalanceDistribution.png" alt="Distributions conditional on 18 to 35-year-olds with positive student loan balances. Between 2009 and 2019, the distribution of student loan balances skewed further and further to the right, which combined with the greater number of overall borrowers, reflects the crisis in aggregate and for individuals. Whereas in 2009 only 28% of borrowers in the sample owed over $30,000 in student loans, in 2019, that fraction had jumped to 34%. Scale capped at $100,000 for viewing purposes." /></a>
-                <a href="assets/viz/AvgBalanceOverTime.png" title="Average Total Balance on Student Loans."><img src="assets/viz/AvgBalanceOverTime.png" alt="Examining average total debt reflects the scale of the crisis. More 18-35 year-olds are saddled with alarming amounts of student debt compared to 2009, pulling the average up steadily overtime. Average total balances increased by 41% on non-deferred loans and 10% on deferred loans between 2009 and 2019." /></a>
-                <a href="assets/viz/MedianBalanceOverTime.png" title="Median Total Balance on Student Loans."><img src="assets/viz/MedianBalanceOverTime.png" alt="Annual random samples of 18-35 year-olds from 2009 to 2019 reveal rising educational indebtedness. Median total balances increased by 29% on non-deferred loans and 8% on deferred loans between 2009 and 2019." /></a>
-                <a href="assets/viz/region_map_2019.jpeg" title="Median Student Loan Debt in 2019 and Percent Change from 2009, by Region."><img src="assets/viz/region_map_2019.jpeg" alt="A regional map showing the median student loan total balance in 2019 as well as the percent change of the balance from 2009 to 2019. The percent changes are all positive and above 8%, with the Great Lakes region having the largest percent change in per-person student loan debt between 2009 and 2019, at 27.63%. 20 states have percent changes above 20%, with Idaho being the only western state in that group." /></a>
-                <a href="assets/viz/fig1_med_bal.jpeg" title="Median Student Loan Total Balance by Age Group, 2009 - 2019."><img src="assets/viz/fig1_med_bal.jpeg" alt="Median student loan balance should some 2009 to 2019 reveal a worrying gradual rise and levels of student debt in the United States. Our analysis shows that the median student loan balance for individuals in the 31 to 35 age group has increased by 30% in the 11-year period between 2009 and 2019." /></a>
-                <a href="assets/viz/fig5_income_debt_race_09_18.png" title="Median Income and Student Debt by Zip Demographics, 2009 & 2018."><img src="assets/viz/fig5_income_debt_race_09_18.png" alt="Binned scatter plot showing the relationship of meeting household income and median student loan total balance by racial demographics in 2009 and 2019. Similar to the previous graph, majority-minority zips face debt burdens above the level faced by white zips in the same income category. This trend has become more pronounced in 2019 versus 2009. The positive relationship between income and debt is present for zips with median incomes above $18,000. A worrying negative relationship between debt and income is present for zips with median income below $18,000, which becomes more pronounced in 2019 versus 2009." /></a>
-                <a href="assets/viz/Debt_Burden.png" title="Student Debt to Income Ratio for ZCTA Deciles - 2009 & 2018."><img src="assets/viz/Debt_Burden.png" alt="The ratio of median 18 - 35-year-old total balance to median income for all ZCTAs has worsened for all income-grouped ZCTAs. Poorer ZCTAs experience both the highest debt burden relative to income and the largest increase in this burden over time, despite poorer ZCTAs having smaller balances on average." /></a>
-                <a href="assets/viz/fig2_stu_dist.jpeg" title="Distribution of Overdue Student Loan Accounts, 2009-2019."><img src="assets/viz/fig2_stu_dist.jpeg" alt="The distribution of overdue student loan accounts shows the situation becoming worse for the proportion of overdue accounts considered severely delinquent (over 90 days past due), peaking at 83% in 2016. While there was some improvement in the last 3 years, the overall predicament has deteriorated since 2009, as the total count of overdue loans has increased by 6.9% from 2009 to 2019." /></a>
-                <a href="assets/viz/fig6_FE_Scatter.png" title="Student Debt and School Concentration at Zip Level, 2009-2018."><img src="assets/viz/fig6_FE_Scatter.png" alt="Binned scatter-plot showing the relationship between median school concentration index (45-minute driving distance) and median recently-opened student loan debt (student loans that were opened within 24 months of the archive date) from 2009 to 2018. Using a “fixed-effects” specification to filter out the time-invariant zip level effects, we find that, conditional on the “fixed-effects” control, there's a positive and significant relationship between school concentration and levels of student debt. A total of 104,769 data points were converted to 104 bins, three of which are not shown here for viewing purposes." /></a>
-                <a href="assets/viz/Tot_Delq_Loans.png" title="Total Student Loan Accounts and Percent Delinquent, 2009 - 2019."><img src="assets/viz/Tot_Delq_Loans.png" alt="A bar graph showing the aggregate total of student loan accounts and the share of them which are overdue, from annual random samples of 18-35 year-olds with recent student loan activity. Over the period of analysis, the share and count of student loans that are overdue peaked in 2015. While the proportion of overdue accounts in 2019 is below that of 2009, the opposite is true considering the aggregate count of overdue accounts - attributable to the sheer increase in student loan accounts since 2009." /></a>
-
-                <a href="assets/viz/TotalBalanceDistribution.png" title="Total Balance on Student Loans, 2009 & 2019."><img src="assets/viz/TotalBalanceDistribution.png" alt="Distributions conditional on 18 to 35-year-olds with positive student loan balances. Between 2009 and 2019, the distribution of student loan balances skewed further and further to the right, which combined with the greater number of overall borrowers, reflects the crisis in aggregate and for individuals. Whereas in 2009 only 28% of borrowers in the sample owed over $30,000 in student loans, in 2019, that fraction had jumped to 34%. Scale capped at $100,000 for viewing purposes." /></a>
-
-                <a href="assets/viz/MSD_4_Figure_1.png" title="Balance as a Share of 2009 Starting balance"><img src="assets/viz/MSD_4_Figure_1.png" alt="For the panel data cohort, this chart tracks outstanding student loan balance as a share of the 'initial' 2009 balance, so a value of 1 indicates that an individual has the same amount of student debt oustanding in na given year as they did in 2009. Quantiles of the distribution of that ratio (computed year by year) are plotted over time." /></a>
-                <a href="assets/viz/MSD_4_Figure_3.png" title="Share of Student Loans where Current Balance Exceeds Original"><img src="assets/viz/MSD_4_Figure_3.png" alt="Each point references the percent of student loans that have a current balance that is higher than the loan's original balance, by year. This data is broken down to show the disparities by neighborhood racial demographics. Demographic data is from zip level ACS 5-year estimates (2009-2018). The 'All Zips' trend includes data from majority minority, majority white, as well as unknown/unreleased zips." /></a>
-                <a href="assets/viz/MSD_4_Figure_4.png" title="Distribution of Student Loans, by Age of Loan (2009-2019)"><img src="assets/viz/MSD_4_Figure_4.png" alt="The age distribution of the loans in each year of the cross-section (amounting to a million loan borrowers per year, including all of their loans) has been getting older over time." /></a>
-                <a href="assets/viz/MSD_4_Figure_5.png" title="Share of Current Balances that Exceed Original, by Origination Year"><img src="assets/viz/MSD_4_Figure_5.png" alt="Each line references student loans originating in a specific year. The y-axis is the share of student loans in the sample that have a balance above the original loan amount, including loans that were paid off over the period of analysis. The x-axis is years since the student loan's origination year." /></a>
-                <a href="assets/viz/MSD_4_Figure_6.png" title="Distribution of Annual Payments Due as Share of Outstanding Balance"><img src="assets/viz/MSD_4_Figure_6.png" alt="Distribution of student loans, held by 18-35 year-olds, showing the loan's estimated annual payment amount (monthly payment due * 12) as a percentage of the outstanding balance. Data conditional on loans with an outstanding balance of $100 or more. The vertical lines show the 25, 50, 75, 95, and 99 percentiles for both years. Scale capped at 27.5% for viewing purposes." /></a>
-
-            </div>
-        </section>
         <section class="text">
             <h1>About Our Researchers</h1>
             <p>This project was produced by the Higher Education Finance Team at <a href="https://www.jainfamilyinstitute.org/">Jain Family Institute</a>. Principal researchers were <a href="https://www.jainfamilyinstitute.org/about-us/people/laura-beamer/">Laura Beamer</a>, <a href="https://www.jainfamilyinstitute.org/about-us/people/francis-tseng/">Francis Tseng</a>, and <a href="https://www.jainfamilyinstitute.org/about-us/people/eduard-eddie-nilaj/">Eduard Nilaj</a>, with additional research from <a href="https://www.jainfamilyinstitute.org/about-us/people/jack-gross/">Jack Gross</a>, <a href="https://www.jainfamilyinstitute.org/about-us/people/maya-adereth/">Maya Adereth</a>, and <a href="https://www.jainfamilyinstitute.org/about-us/people/marshall-steinbaum/">Marshall Steinbaum</a>.</p>
