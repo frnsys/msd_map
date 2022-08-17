@@ -12,6 +12,10 @@ module.exports = {
   devtool: dev ? 'inline-source-map' : 'source-map',
   module: {
     rules: [{
+      test: /\.tsx?$/,
+      use: 'ts-loader',
+      exclude: /node_modules/,
+    }, {
       test: /\.css$/i,
       use: ['style-loader', 'css-loader'],
     }, {
@@ -20,7 +24,7 @@ module.exports = {
     }]
   },
   resolve: {
-    extensions: ['.js']
+    extensions: ['.ts', '.js']
   },
   devServer: {
     writeToDisk: true

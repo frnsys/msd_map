@@ -1,8 +1,24 @@
-// import mapboxgl from 'mapbox-gl';
-// import 'mapbox-gl/dist/mapbox-gl.css';
+import Painter from './paint';
+import type { PointLike, MapboxOptions, MapMouseEvent, Map as MapboxMap } from 'mapbox-gl';
+
+type SourceMapping<T> = {[key:string]: T};
 
 class Map {
-  constructor(conf, sources, layers, initProps, painter, onClickFeatures, onMouseMove) {
+  map: MapboxMap;
+  painter: Painter;
+  focusedLock: boolean;
+  focused: SourceMapping<MapFeature[]>;
+  featuresUnderMouse: SourceMapping<Set<MapFeature>>;
+  sources: SourceMapping<MapSource>;
+  filters: SourceMapping<MapFilter>;
+
+  constructor(conf: MapboxOptions,
+              sources: SourceMapping<MapSource>,
+              layers: MapLayer[],
+              initProps: SourceMapping<Prop[]>,
+              painter: Painter,
+              onClickFeatures: (features: SourceMapping<MapFeature[]>, ev: MapMouseEvent) => void,
+              onMouseMove: (features: SourceMapping<MapFeature[]>, ev: MapMouseEvent) => void) {
     this.sources = sources;
     this.filters = Object.keys(sources).reduce((acc, s) => {
       acc[s] = {
@@ -12,13 +28,13 @@ class Map {
         resetState: null
       };
       return acc;
-    }, {});
+    }, {} as SourceMapping<MapFilter>);
 
-    this.featuresUnderMouse = new Set();
+    this.featuresUnderMouse = {};
     this.focused = Object.keys(sources).reduce((acc, s) => {
       acc[s] = [];
       return acc;
-    }, {});
+    }, {} as SourceMapping<MapFeature[]>);
     this.focusedLock = false;
 
     this.map = new mapboxgl.Map(conf);
@@ -26,7 +42,7 @@ class Map {
     this.map.touchZoomRotate.disableRotation();
     this.painter = painter;
 
-    this.map.getContainer().addEventListener('keydown', (ev) => {
+    this.map.getContainer().addEventListener('keydown', (ev: KeyboardEvent) => {
       if (ev.key == 'Escape') {
         this.focusedLock = false;
       }
@@ -46,7 +62,7 @@ class Map {
       });
     });
 
-    this.map.on('mousemove', (e) => {
+    this.map.on('mousemove', (e: MapMouseEvent) => {
       // Be conservative in running mousemove responses,
       // since it can be a big performance hit
       if (!this.map.isMoving() && !this.map.isZooming()) {
@@ -60,7 +76,7 @@ class Map {
           this.featuresUnderMouse = Object.keys(features).reduce((acc, s) => {
             acc[s] = new Set(features[s].map((f) => f.id));
             return acc;
-          }, {});
+          }, {} as SourceMapping<Set<MapFeature>>);
           onMouseMove(features, e);
         }
       }
@@ -87,30 +103,30 @@ class Map {
     });
   }
 
-  set(source, props) {
+  set(source: string, props: Prop[]) {
     this.map.setPaintProperty(
       source,
       'fill-color',
       this.paint(props));
   }
 
-  paint(props) {
+  paint(props: Prop[]) {
     props = props.filter((p) => p);
     if (props.length > 1) {
-      return this.painter.bivariate(...props);
+      return this.painter.bivariate(props[0], props[1]);
     } else {
-      return this.painter.range(...props);
+      return this.painter.range(props[0]);
     }
   }
 
-  featuresAtPoint(point) {
+  featuresAtPoint(point: PointLike) {
     let features = this.map.queryRenderedFeatures(point);
 
     let sources = Object.keys(this.sources).concat(['composite']);
-    let acc = sources.reduce((acc, s) => {
+    let acc: {[key:string]: MapFeature[]} = sources.reduce((acc, s) => {
       acc[s] = [];
       return acc;
-    }, {});
+    }, {} as SourceMapping<MapFeature[]>);
 
     // Filter to features with the correct source
     return features.reduce((acc, f) => {
@@ -121,11 +137,11 @@ class Map {
     }, acc);
   }
 
-  focusFeature(source, feat) {
+  focusFeature(source: MapSource, feat: MapFeature) {
     this.focusFeatures(source, [feat]);
   }
 
-  focusFeatures(source, feats) {
+  focusFeatures(source: MapSource, feats: MapFeature[]) {
     this.focused[source.id].forEach((f) => {
       this.map.setFeatureState({
         source: source.id,
@@ -147,7 +163,7 @@ class Map {
     this.focused[source.id] = feats;
   }
 
-  setFilter(source, filter, state, resetState) {
+  setFilter(source: MapSource, filter: MapboxExpression, state: MapFeatureState, resetState: MapFeatureState) {
     let fl = this.filters[source.id];
     if (filter !== fl.filter && fl.feats) {
       this.resetFilter(source, fl.resetState);
@@ -169,7 +185,7 @@ class Map {
     });
   }
 
-  resetFilter(source, resetState) {
+  resetFilter(source: MapSource, resetState: MapFeatureState) {
     let fl = this.filters[source.id];
     fl.filter = null;
     fl.feats.forEach((f) => {
@@ -188,7 +204,7 @@ class Map {
   // a feature that matches the query, the callback
   // will never be called. So you should validate
   // that a feature exists for the query before calling this.
-  featsByProp(source, propKey, propVal, cb) {
+  featsByProp(source: MapSource, propKey: string, propVal: any, cb: (feats: MapFeature[]) => void) {
     let opts = {
       sourceLayer: source.layer,
       filter: ['all', ['==', propKey, propVal]]
@@ -203,7 +219,7 @@ class Map {
     }
   }
 
-  fitBounds(bbox, cb) {
+  fitBounds(bbox: Bounds) {
     this.map.fitBounds(bbox);
   }
 }

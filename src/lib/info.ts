@@ -1,9 +1,11 @@
 class Info {
-  constructor(id) {
+  el: HTMLElement
+
+  constructor(id: string) {
     this.el = document.getElementById(id);
   }
 
-  explainFeature(html) {
+  explainFeature(html: string) {
     this.el.innerHTML = html;
     this.el.style.display = 'block';
   }

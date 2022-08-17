@@ -1,8 +1,15 @@
+import Map from './map';
 import color from './color';
 
-
 class Legend {
-  constructor(id, map, source, initProps, special, stats) {
+  el: HTMLElement;
+  map: Map;
+  props: Prop[];
+  source: MapSource;
+  special: Colors;
+  stats: string[];
+
+  constructor(id: string, map: Map, source: MapSource, initProps: Prop[], special: Colors, stats: string[]) {
     this.el = document.getElementById(id);
     this.map = map;
     this.props = initProps;
@@ -12,7 +19,7 @@ class Legend {
     this.set(initProps);
   }
 
-  set(props) {
+  set(props: Prop[]) {
     this.props = props.filter((p) => p);
 
     // Bivariate
@@ -25,7 +32,7 @@ class Legend {
     }
   }
 
-  renderPoint(cls, vals) {
+  renderPoint(cls: string, vals: number[]) {
     // Focused feature indicator
     let pointEl = document.createElement('div');
     pointEl.classList.add(cls);
@@ -77,7 +84,7 @@ class Legend {
 
   // Render points of data (i.e. features)
   // on the legend
-  renderFeatures(feats) {
+  renderFeatures(feats: MapFeature[]) {
     this.hideFeatures();
 
     feats.forEach((feat) => {
@@ -86,12 +93,12 @@ class Legend {
     });
   }
 
-  renderFeature(feat) {
+  renderFeature(feat: MapFeature) {
     this.renderFeatures([feat]);
   }
 
   hideFeatures() {
-    [...this.el.querySelectorAll('.focus-point')].forEach((el) => {
+    Array.from(this.el.querySelectorAll('.focus-point')).forEach((el) => {
       el.remove();
     });
   }
@@ -101,7 +108,7 @@ class Legend {
     while (this.el.hasChildNodes()) {
       this.el.removeChild(this.el.lastChild);
     }
-    this.el.classList = 'legend';
+    this.el.className = 'legend';
   }
 
   _stats() {
@@ -143,7 +150,7 @@ class Legend {
     }
   }
 
-  bivariate(propA, propB) {
+  bivariate(propA: Prop, propB: Prop) {
     this.reset();
     this.el.classList.add('legend--bivariate');
 
@@ -168,7 +175,7 @@ class Legend {
     let labels_a = document.createElement('div');
     labels_a.classList.add('legend--labels');
 
-    let legend_a = propA.legend || {};
+    let legend_a = propA.legend;
     let labelTexts_a = [
       legend_a.minClamped ? `≤${Math.floor(ranges.a[0])}` : Math.floor(ranges.a[0]),
       legend_a.maxClamped ? `≥${Math.ceil(ranges.a[1])}` : Math.ceil(ranges.a[1]),
@@ -176,11 +183,11 @@ class Legend {
     if (flipA) labelTexts_a.reverse();
 
     let upperLabel = document.createElement('div');
-    upperLabel.innerText = labelTexts_a[1];
+    upperLabel.innerText = labelTexts_a[1].toString();
     labels_a.appendChild(upperLabel);
 
     let lowerLabel = document.createElement('div');
-    lowerLabel.innerText = labelTexts_a[0];
+    lowerLabel.innerText = labelTexts_a[0].toString();
     labels_a.appendChild(lowerLabel);
     container.appendChild(labels_a);
 
@@ -221,26 +228,26 @@ class Legend {
 
           // Select features _outside_ of this range,
           // to mute them
-          let filter = ['any'];
+          let filter: any[] = ['any'];
 
           // If it's the lowest, include anything below the upper range (i.e. <=u)
           // If it's the highest, include anything above the lower range (i.e. >=l)
           if (i == n-1) {
-            filter.push(['>', prop.key, b_u]);
+            filter.push(['>', propB.key, b_u]);
           } else if (i == 0) {
-            filter.push(['<', prop.key, b_l]);
+            filter.push(['<', propB.key, b_l]);
           } else {
-            filter.push(['<', prop.key, b_l]);
-            filter.push(['>', prop.key, b_u]);
+            filter.push(['<', propB.key, b_l]);
+            filter.push(['>', propB.key, b_u]);
           }
 
           if (j == n-1) {
-            filter.push(['>', prop.key, a_u]);
+            filter.push(['>', propA.key, a_u]);
           } else if (j == 0) {
-            filter.push(['<', prop.key, a_l]);
+            filter.push(['<', propA.key, a_l]);
           } else {
-            filter.push(['<', prop.key, a_l]);
-            filter.push(['>', prop.key, a_u]);
+            filter.push(['<', propA.key, a_l]);
+            filter.push(['>', propA.key, a_u]);
           }
 
           this.map.setFilter(this.source, filter, {mute: true}, {mute: false});
@@ -258,7 +265,7 @@ class Legend {
     labels_b.classList.add('legend--labels');
     labels_b.classList.add('legend--labels_x');
 
-    let legend_b = propB.legend || {};
+    let legend_b = propB.legend;
     let labelTexts_b = [
       legend_b.minClamped ? `≤${Math.floor(ranges.b[0])}` : Math.floor(ranges.b[0]),
       legend_b.maxClamped ? `≥${Math.ceil(ranges.b[1])}` : Math.ceil(ranges.b[1]),
@@ -267,11 +274,11 @@ class Legend {
     if (flipB) labelTexts_b.reverse();
 
     upperLabel = document.createElement('div');
-    upperLabel.innerText = labelTexts_b[1];
+    upperLabel.innerText = labelTexts_b[1].toString();
     labels_b.appendChild(upperLabel);
 
     lowerLabel = document.createElement('div');
-    lowerLabel.innerText = labelTexts_b[0];
+    lowerLabel.innerText = labelTexts_b[0].toString();
     labels_b.appendChild(lowerLabel);
 
     gridContainer.appendChild(labels_b);
@@ -296,7 +303,7 @@ class Legend {
     this._special();
   }
 
-  range(prop) {
+  range(prop: Prop) {
     this.reset();
 
     let flip = prop.legend && prop.legend.flip;
@@ -348,7 +355,7 @@ class Legend {
     let labels = document.createElement('div');
     labels.classList.add('legend--labels');
 
-    let legendSpec = prop.legend || {};
+    let legendSpec = prop.legend;
     let labelTexts = [
       legendSpec.minClamped ? `≤${Math.floor(range[0])}` : Math.floor(range[0]),
       legendSpec.maxClamped ? `≥${Math.ceil(range[1])}` : Math.ceil(range[1]),
@@ -357,10 +364,10 @@ class Legend {
     if (flip) labelTexts.reverse();
 
     let lowerLabel = document.createElement('div');
-    lowerLabel.innerText = labelTexts[0];
+    lowerLabel.innerText = labelTexts[0].toString();
 
     let upperLabel = document.createElement('div');
-    upperLabel.innerText = labelTexts[1];
+    upperLabel.innerText = labelTexts[1].toString();
 
     labels.appendChild(upperLabel);
     labels.appendChild(lowerLabel);

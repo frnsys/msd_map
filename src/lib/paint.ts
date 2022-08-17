@@ -4,13 +4,13 @@ import color from './color';
 // values into 0, so we can
 // specify a different value that
 // we're using in the geojson to represent null.
-const NULL_VALUE = null;
+const NULL_VALUE: null = null;
 
-function stopToValue(stop, range) {
+function stopToValue(stop: number, range: NumRange) {
   return range[0] + (range[1] - range[0]) * stop;
 }
 
-function gradientToStyle(gradient, range, idx) {
+function gradientToStyle(gradient: Gradient, range: NumRange, idx?: number) {
   return Object.keys(gradient)
     .map((stop) => parseFloat(stop))
     .sort()
@@ -26,12 +26,15 @@ function gradientToStyle(gradient, range, idx) {
 }
 
 class Painter {
-  constructor(colors, nullValue) {
+  colors: Colors;
+  nullValue: any;
+
+  constructor(colors: Colors, nullValue?: any) {
     this.colors = colors;
     this.nullValue = nullValue || NULL_VALUE;
   }
 
-  bivariate(propA, propB) {
+  bivariate(propA: Prop, propB: Prop) {
     let ranges = {
       a: propA.range,
       b: propB.range,
@@ -87,7 +90,7 @@ class Painter {
     ]
   }
 
-  range(prop) {
+  range(prop: Prop) {
     return [
       'case',
 
