@@ -19,7 +19,7 @@ python check_coords.py
 python makeschools.py
 ```
 
-### Map geometry data
+### Generating tiles
 
 ```
 # data/
@@ -27,6 +27,17 @@ python process_data.py <level of analysis>
 # example: python process_data.py zcta
 
 bash make_tiles.sh
+```
+
+### Upload tileset
+
+```
+# As of 8/18/2022,
+# this still requires Python <3.8
+# pip install mapboxcli
+
+export MAPBOX_ACCESS_TOKEN=MY_TOKEN
+mapbox upload USERNAME.msd_LOA__YEAR_MONTH-VERSION zcta.mbtiles
 ```
 
 # Running
