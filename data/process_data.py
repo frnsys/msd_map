@@ -30,18 +30,21 @@ INPUTS_BY_LOA = {
         # The shape feature id field,
         # to link it to `main_feature_id`
         'shape_feature_id': 'ZCTA5CE20',
+        'shape_feature_name': 'ZCTA5CE20',
     },
     'state': {
         'main': 'src/map_data_state_2021.csv',
         'main_feature_id': 'State',
         'shape': 'src/geo/state/cb_2021_us_state_500k.shp',
         'shape_feature_id': 'STUSPS',
+        'shape_feature_name': 'NAME',
     },
     'county': {
         'main': 'src/map_data_county_2021.csv',
         'main_feature_id': 'County',
         'shape': 'src/geo/county/cb_2021_us_county_500k.shp',
         'shape_feature_id': 'GEOID',
+        'shape_feature_name': lambda props: f"{props['NAMELSAD']}, {props['STUSPS']}",
     }
 }
 
@@ -113,7 +116,9 @@ if __name__ == '__main__':
 
     mapper = Mapper()
     region_bboxes = mapper.calculate_region_bboxes()
-    geojson, bboxes = mapper.gen_geojson(INPUTS['shape'], processor.feat_data, INPUTS['shape_feature_id'])
+    geojson, bboxes = mapper.gen_geojson(
+            INPUTS['shape'], processor.feat_data,
+            INPUTS['shape_feature_id'], INPUTS['shape_feature_name'])
 
     print('Saving files...')
 
@@ -124,6 +129,12 @@ if __name__ == '__main__':
     # Common to all LOA
     with open('gen/regions.json', 'w') as f:
         json.dump(region_bboxes, f)
+
+    with open('gen/prop_cats.json', 'w') as f:
+        prop_cats = {}
+        prop_cats.update(FEAT_FIELDS)
+        prop_cats.update(QUERY_FIELDS)
+        json.dump(prop_cats, f)
 
     # LOA specific
     if not os.path.exists('gen/{}'.format(LOA)):

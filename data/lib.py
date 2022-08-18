@@ -1,3 +1,4 @@
+import math
 import fiona
 import pandas as pd
 from tqdm import tqdm
@@ -45,10 +46,10 @@ class Processor:
         self.ranges = ranges
 
         # Data embedded in features as properties
-        self.feat_data = defaultdict(dict)
+        self.feat_data = {}
 
         # Data queried via "api"
-        self.query_data = defaultdict(dict)
+        self.query_data = {}
 
         # Map-wide metadata
         self.meta = {}
@@ -86,6 +87,8 @@ class Processor:
 
                         if field in self.feat_fields:
                             key = self.labeler.keyForCat(cat, field)
+                            if feat_id not in data:
+                                data[feat_id] = {}
                             data[feat_id][key] = val
 
                         # Query fields handled slightly differently
@@ -152,22 +155,41 @@ class Mapper:
         region_bboxes['American Samoa'] = [-171.84922996050645, -14.93534547358692, -168.25721358668446, -13.663497668009555]
         return region_bboxes
 
-    def gen_geojson(self, shape_path, feat_data, feat_id_prop):
+    def gen_geojson(self, shape_path, feat_data, feat_id_prop, feat_name_prop):
         """Generate geojson, using `self.feat_data` as feature properties,
         and calculate bounding boxes for features"""
         geojson = []
         bboxes = {}
+        missing = 0
         for f in tqdm(fiona.open(shape_path), desc='Generating geojson'):
             feat_id = f['properties'][feat_id_prop]
+            feat_name = f['properties'][feat_name_prop] \
+                    if isinstance(feat_name_prop, str) \
+                    else feat_name_prop(f['properties'])
 
-            # Only keep non-null values
-            f['properties'] = {k: v for k, v in feat_data[feat_id].items() if v is not None}
+            f['properties'] = {}
+            try:
+                data = feat_data[feat_id]
+            except KeyError:
+                data = {}
+                missing += 1
+
+            for k, v in data.items():
+                # Need to save NaN as null,
+                # as NaN is invalid JSON
+                if math.isnan(v):
+                    f['properties'][k] = None
+                else:
+                    f['properties'][k] = v
 
             # Remove id, if any, will be replaced
             if 'id' in f:
                 del f['id']
 
             f['properties']['id'] = feat_id
+            f['properties']['name'] = feat_name
             bboxes[feat_id] = shape(f['geometry']).bounds
             geojson.append(f)
+        if missing:
+            print('Missing data for', missing, 'features')
         return geojson, bboxes
