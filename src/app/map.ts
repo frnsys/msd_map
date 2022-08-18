@@ -4,7 +4,6 @@ import Painter from '@/lib/paint';
 // import color from '@/lib/color';
 import API from './api';
 import Info from './info';
-import util from './util';
 import styles from './styles';
 import setupUI from './ui';
 import type { MapMouseEvent } from 'mapbox-gl';
@@ -24,10 +23,6 @@ function MSDMap(config: Config) {
       'type': 'vector',
       'url': `mapbox://${config.MAP_ID}`
     },
-    'schools': {
-      'type': 'geojson',
-      'data': `assets/schools.geojson`
-    }
   };
   const layers = [{
     'id': 'main',
@@ -46,38 +41,7 @@ function MSDMap(config: Config) {
         layer: dataLayerName
       }, feats);
       legend.renderFeatures(feats);
-
-      // If only one feature,
-      // highlight schools for that ZCTA
-      if (feats.length == 1) {
-        let feat = feats[0];
-        let loa_key = feat.properties['loa_key'].split(',')[0];
-        let key = util.keyForCat({'Y': state.cat['Y'], 'I': state.cat['I']});
-        api.dataForKeyPlace(key, loa_key).then((data) => {
-          let schoolIds = data['schools'] || [];
-          let filter = ['!in', '$id'].concat(schoolIds);
-          map.setFilter({
-            id: 'schools'
-          }, filter, {mute: true}, {mute: false});
-        });
-      } else {
-        map.focusFeatures({
-          id: 'schools'
-        }, []);
-      }
-
-      if (features['schools'].length > 0) {
-        let focusedSchools = features['schools'];
-        info.explain(feats, state.cat);
-        map.focusFeatures({
-          id: 'schools'
-        }, focusedSchools);
-      } else {
-        map.focusFeatures({
-          id: 'schools'
-        }, []);
-        info.explain(feats, state.cat);
-      }
+      info.explain(feats, state.cat);
 
     // Otherwise, hide
     } else {
@@ -102,7 +66,7 @@ function MSDMap(config: Config) {
     // Ignore at low zoom levels, gets really choppy
     if (map.map.getZoom() <= 6) return;
 
-    if (features['schools'].length > 0) {
+    if (true) {
       tooltip.style.left = `${ev.originalEvent.offsetX+10}px`;
       tooltip.style.top = `${ev.originalEvent.offsetY+10}px`;
       tooltip.style.display = 'block';
@@ -125,50 +89,7 @@ function MSDMap(config: Config) {
   setupUI(map, config, legend, info, state);
   info.reset();
 
-  // For district screenshots
-  // function rangeFocus(prop, statefp) {
-  //   return [
-  //     'case',
-
-  //     ['!=', ['get', 'STATEFP'], statefp],
-  //       '#333333',
-
-  //     ['interpolate', ['linear'], ['get', prop.key]].concat(gradientToStyle(prop.color, prop.range))
-  //   ];
-  // }
-  // // statefp should be a string
-  // window.focusStateFP = (statefp) => {
-  //   let paint = rangeFocus(...state.props, statefp);
-  //   map.map.setPaintProperty(
-  //     'main',
-  //     'fill-color',
-  //     paint);
-  // }
-
-  // For getting bounds
-  // window.getbbox = () => map.map.getBounds();
   return map;
 }
-
-// For district screnshots
-// function stopToValue(stop, range) {
-//   return range[0] + (range[1] - range[0]) * stop;
-// }
-
-// function gradientToStyle(gradient, range, idx) {
-//   return Object.keys(gradient)
-//     .map((stop) => parseFloat(stop))
-//     .sort()
-//     .reduce((acc, stop) => {
-//       acc.push(stopToValue(stop, range));
-//       if (idx !== undefined) {
-//         acc.push(color.hexToRGB(gradient[stop])[idx]);
-//       } else {
-//         acc.push(gradient[stop]);
-//       }
-//       return acc;
-//     }, []);
-// }
-
 
 export default MSDMap;

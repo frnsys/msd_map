@@ -5,27 +5,25 @@ import MSDMap from './app/map';
 mapboxgl.accessToken = config.MAPBOX_TOKEN;
 
 const maps = {};
-maps['zcta'] = MSDMap(config.ZCTA);
+maps['zcta'] = MSDMap(config.zcta);
 
 [...document.querySelectorAll('.map-tab')].forEach((el) => {
   el.addEventListener('click', () => {
-    if (el.dataset.tab == 'comparisons') {
-      window.open('./factsheets', '_blank');
-    } else {
-      document.querySelector('.map-tab.selected').classList.remove('selected');
-      document.querySelector('.map-tab-pane.active').classList.remove('active');
-      el.classList.add('selected');
-      document.getElementById(`${el.dataset.tab}--map-tab`).classList.add('active');
+    document.querySelector('.map-tab.selected').classList.remove('selected');
+    document.querySelector('.map-tab-pane.active').classList.remove('active');
+    el.classList.add('selected');
+    document.getElementById(`${el.dataset.loa}--map-tab`).classList.add('active');
 
-      // Lazy loading of CD map
-      if (el.dataset.tab == 'cd' && !('cd' in maps)) {
-        maps['cd'] = MSDMap(config.CD);
-      }
-      maps[el.dataset.tab].map.resize();
+    // Lazy loading of other maps
+    let loa = el.dataset.loa;
+    if (!(loa in maps)) {
+      maps[loa] = MSDMap(config[loa]);
     }
+    maps[loa].map.resize();
   });
 });
 
+// Hide UI, for screenshots and whatnot
 window.hideUI = () => {
   ['.icon-legend', '.icon-legend-show',
     '.map-regions', '.info', '.mapboxgl-control-container',

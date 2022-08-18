@@ -67,9 +67,9 @@
         </section>
         <a id="maptool"></a>
         <div class="map-tabs">
-            <div class="map-tab selected" data-tab="zcta">ZCTA</div>
-            <div class="map-tab" data-tab="cd">Congressional Districts</div>
-            <div class="map-tab" data-tab="comparisons">Comparisons</div>
+            <div class="map-tab selected" data-loa="zcta">ZCTA</div>
+            <div class="map-tab" data-loa="state">State</div>
+            <div class="map-tab" data-loa="county">County</div>
         </div>
         <div class="map-tab-pane active" id="zcta--map-tab">
             <div class="control" id="zcta--control">
@@ -81,8 +81,8 @@
                     <label class="control-label">Academic Year</label>
                     <select name="year"></select>
                 </div>
-                <div data-control-cat="S">
-                    <label class="control-label">School Types</label>
+                <div data-control-cat="R">
+                    <label class="control-label">Race</label>
                     <select name="category"></select>
                 </div>
                 <div class="control-properties">
@@ -92,22 +92,7 @@
                 </div>
                 <div>
                     <label class="control-label">Display Variable</label>
-                    <select name="display" autocomplete="off">
-                        <option value="AVGNP">Average Net Price</option>
-                        <option value="STU_TOT_BAL">Median Total Balance for Student Loan Borrowers aged 18-35</option>
-                        <option value="MEDIANINCOME">Median Income</option>
-                        <option value="SCI">School Concentration Index (SCI)</option>
-                        <option value="SCI,AVGNP">SCI &amp; Average Net Price</option>
-                    </select>
-                </div>
-
-                <div class="control-isochrone" data-control-cat="I">
-                    <label class="control-label">Driving Distance</label>
-                    <div>
-                        <button value="30min">30 min</button>
-                        <button value="45min" class="selected">45 min</button>
-                        <button value="60min">60 min</button>
-                    </div>
+                    <select name="display" autocomplete="off"></select>
                 </div>
             </div>
             <section class="stage">
@@ -117,35 +102,22 @@
                     <div class="map" id="zcta--map"></div>
                     <div class="map-tooltip" id="zcta--map-tooltip"></div>
                     <div class="legend" id="zcta--legend"></div>
-                    <div class="icon-legend-show" id="zcta--icon-legend-show">?</div>
-                    <div class="icon-legend" id="zcta--icon-legend">
-                        <div class="icon-legend--icons">
-                            <div>
-                                <div><span class="icon-key" style="background:#33C377;"></span><span>Public</span></div>
-                                <div><span class="icon-key" style="background:#ffcc00;"></span><span>Private not-for-profit</span></div>
-                                <div><span class="icon-key" style="background:#05a1ff;"></span><span>Private for-profit</span></div>
-                            </div>
-                            <div>
-                                <div><span class="icon-key" style="border:2px solid #000;"></span><span>Bachelor Degree</span></div>
-                                <div><span class="icon-key" style="border:2px solid #888888;"></span><span>Associate Degree</span></div>
-                                <div><span class="icon-key" style="border:2px solid #ffffff;"></span><span>Below Associate Degree</span></div>
-                            </div>
-                        </div>
-                        <div class="icon-legend--note">Schools appear at higher zoom levels.</div>
-                        <div class="icon-legend-close" id="zcta--icon-legend-close">✖</div>
-                    </div>
                 </div>
                 <div class="info" id="zcta--info"></div>
             </section>
         </div>
-        <div class="map-tab-pane" id="cd--map-tab">
-            <div class="control" id="cd--control">
+        <div class="map-tab-pane" id="state--map-tab">
+            <div class="control" id="state--control">
+                <div>
+                    <label class="control-label">Jump to State</label>
+                    <input name="place" type="text" placeholder="State">
+                </div>
                 <div data-control-cat="Y">
                     <label class="control-label">Academic Year</label>
                     <select name="year"></select>
                 </div>
-                <div data-control-cat="S">
-                    <label class="control-label">School Types</label>
+                <div data-control-cat="R">
+                    <label class="control-label">Race</label>
                     <select name="category"></select>
                 </div>
                 <div class="control-properties">
@@ -155,41 +127,53 @@
                 </div>
                 <div>
                     <label class="control-label">Display Variable</label>
-                    <select name="display" autocomplete="off">
-                        <option value="STU_TOT_BAL">Median Total Balance for Student Loan Borrowers aged 18-35</option>
-                        <option value="AVGNP">Average Net Price</option>
-                        <option value="MEDIANINCOME">Median Income</option>
-                        <option value="SCI">School Concentration Index (SCI)</option>
-                        <option value="SCI,AVGNP">SCI &amp; Average Net Price</option>
-                    </select>
+                    <select name="display" autocomplete="off"></select>
                 </div>
             </div>
             <section class="stage">
-                <div class="map-regions" id="cd--map-regions"></div>
+                <div class="map-regions" id="state--map-regions"></div>
                 <div class="map-wrapper">
-                    <div class="map-notification" id="cd--map-notification"></div>
-                    <div class="map" id="cd--map"></div>
-                    <div class="map-tooltip" id="cd--map-tooltip"></div>
-                    <div class="legend" id="cd--legend"></div>
-                    <div class="icon-legend-show" id="cd--icon-legend-show">?</div>
-                    <div class="icon-legend" id="cd--icon-legend">
-                        <div class="icon-legend--icons">
-                            <div>
-                                <div><span class="icon-key" style="background:#33C377;"></span><span>Public</span></div>
-                                <div><span class="icon-key" style="background:#ffcc00;"></span><span>Private not-for-profit</span></div>
-                                <div><span class="icon-key" style="background:#05a1ff;"></span><span>Private for-profit</span></div>
-                            </div>
-                            <div>
-                                <div><span class="icon-key" style="border:2px solid #000;"></span><span>Bachelor Degree</span></div>
-                                <div><span class="icon-key" style="border:2px solid #888888;"></span><span>Associate Degree</span></div>
-                                <div><span class="icon-key" style="border:2px solid #ffffff;"></span><span>Below Associate Degree</span></div>
-                            </div>
-                        </div>
-                        <div class="icon-legend--note">Schools appear at higher zoom levels.</div>
-                        <div class="icon-legend-close" id="cd--icon-legend-close">✖</div>
-                    </div>
+                    <div class="map-notification" id="state--map-notification"></div>
+                    <div class="map" id="state--map"></div>
+                    <div class="map-tooltip" id="state--map-tooltip"></div>
+                    <div class="legend" id="state--legend"></div>
                 </div>
-                <div class="info" id="cd--info"></div>
+                <div class="info" id="state--info"></div>
+            </section>
+        </div>
+        <div class="map-tab-pane" id="county--map-tab">
+            <div class="control" id="county--control">
+                <div>
+                    <label class="control-label">Jump to county</label>
+                    <input name="place" type="text" placeholder="County">
+                </div>
+                <div data-control-cat="Y">
+                    <label class="control-label">Academic Year</label>
+                    <select name="year"></select>
+                </div>
+                <div data-control-cat="R">
+                    <label class="control-label">Race</label>
+                    <select name="category"></select>
+                </div>
+                <div class="control-properties">
+                    <label class="control-label">Properties</label>
+                    <select name="propertyA"></select>
+                    <select name="propertyB"></select>
+                </div>
+                <div>
+                    <label class="control-label">Display Variable</label>
+                    <select name="display" autocomplete="off"></select>
+                </div>
+            </div>
+            <section class="stage">
+                <div class="map-regions" id="county--map-regions"></div>
+                <div class="map-wrapper">
+                    <div class="map-notification" id="county--map-notification"></div>
+                    <div class="map" id="county--map"></div>
+                    <div class="map-tooltip" id="county--map-tooltip"></div>
+                    <div class="legend" id="county--legend"></div>
+                </div>
+                <div class="info" id="county--info"></div>
             </section>
         </div>
         <section class="text">

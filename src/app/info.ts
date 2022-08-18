@@ -1,30 +1,23 @@
 import API from './api';
 import util from './util';
 import I from '@/lib/info';
-import fipsToState from 'assets/data/fipsToState.json';
 
 type Data = {[key:string]: number};
-const DISPLAY_PROPS = ['SCI', 'AVGNP', 'AVGTF', 'ENROLLED', 'STU_TOT_BAL', 'n'];
 
-function labelForPlace(loa: string, place: string) {
-  return loa == 'zcta' ? place :
-    `${(fipsToState as {[key:string]: string})[place.slice(0,2)]}, District ${place.slice(2)}`;
-}
-
-function describePlace(loa: string, place: string, data: Data) {
-  let label = labelForPlace(loa, place);
-  return `
-    <h2>${label}</h2>
-    <span class="variable-name">SCI</span>: ${data['SCI'] > 0 ? data['SCI'].toFixed(2) : (loa == 'cd' ? 'N/A' : 'Education Desert')}<br/>
-    <span class="variable-name">Average Net Price</span>: ${data['AVGNP'] ? formatter.format(data['AVGNP']) : 'N/A'}<br/>
-    <span class="variable-name">Average Tuition & Fees</span>: ${data['AVGTF'] ? formatter.format(data['AVGTF']) : 'N/A'}<br/>
-    <span class="variable-name">${loa == 'cd' ? 'Average Schools Local to a Resident' : 'Number of Schools'}</span>: ${data['n'] || 'N/A'}<br/>
-    ${'ENROLLED' in data ? `<span class="variable-name">Enrollment</span>: ${data['ENROLLED'] || 0}<br/>` : ''}
-    ${'ZCTAZONEPOP' in data ? `<span class="variable-name">25mi Zone Population Estimate</span>: ${data['ZCTAZONEPOP'] || 'N/A'}<br/>` : ''}
-    ${'CDPOP' in data ? `<span class="variable-name">Population</span>: ${data['CDPOP'] || 'N/A'}<br/>` : ''}
-    <span class="variable-name">Median Income</span>: ${data['MEDIANINCOME'] ? formatter.format(data['MEDIANINCOME']) : 'N/A'}<br/>
-    <span class="variable-name">Median Total Student Loans Balance</span>: ${data['STU_TOT_BAL'] ? formatter.format(data['STU_TOT_BAL']) : 'N/A'}<br/>
+function describePlace(data: Data) {
+  let label = data['name'];
+  let body = '';
+  if (Object.keys(data).length === 0) {
+    body = 'No data for this place.';
+  } else {
+    body = `
+      <span class="variable-name">Median Balance</span>: ${fmtOrNA(data['med_bal'])}<br />
+      <span class="variable-name">Median Debt-to-Income Ratio</span>: ${fmtOrNA(data['med_dti'])}<br />
+      <span class="variable-name">Median Income</span>: ${fmtOrNA(data['med_inc'])}<br />
+      <span class="variable-name">Percent of Loans where Current Balance is Greater than Origination Balance</span>: ${pctOrNA(data['pct_bal_grt'])}<br />
     `;
+  }
+  return `<h2>${label}</h2>${body}`;
 }
 
 const formatter = new Intl.NumberFormat('en-US', {
@@ -32,6 +25,22 @@ const formatter = new Intl.NumberFormat('en-US', {
   currency: 'USD',
   minimumFractionDigits: 2
 });
+const fmt = formatter.format;
+
+function fmtOrNA(val: number) {
+  if (val === undefined || val === null) {
+    return 'N/A';
+  } else {
+    return fmt(val);
+  }
+}
+function pctOrNA(val: number) {
+  if (val === undefined || val === null) {
+    return 'N/A';
+  } else {
+    return `${(val*100).toFixed(1)}%`;
+  }
+}
 
 class Info {
   api: API;
@@ -45,13 +54,13 @@ class Info {
   }
 
   explain(feats: MapFeature[], cat: Category) {
-    let key = util.keyForCat({'Y': cat['Y']});
+    let key = util.keyForCat(cat);
 
     // Get place data for the current LOA
     const placeDatas: {[key:string]: Data} = {};
     let promises = feats.map(async (feat) => {
       let p = feat.properties;
-      let [place, ..._otherPlaces] = p['loa_key'].split(',');
+      let [place, ..._otherPlaces] = p['id'].split(',');
       return this.api.dataForKeyPlace(key, place).then((data) => {
         placeDatas[place] = data;
       });
@@ -60,28 +69,23 @@ class Info {
     Promise.all(promises).then(() => {
       let html = feats.map((feat) => {
         let p = feat.properties;
-        let [place, ...otherPlaces] = p['loa_key'].split(',');
+        let [place, ...otherPlaces] = p['id'].split(',');
         let placeData = placeDatas[place] || {};
 
-        let d: Data = DISPLAY_PROPS.reduce((acc, k) => {
-          if (Object.keys(this.config.PROPS).includes(k)) {
-            // Feature properties
-            acc[k] = p[util.propForCat(k, cat)];
-          } else {
-            // Zip data already filtered by Y and I
-            let key = util.propForCat(k, {'S': cat['S']});
-            if (key in placeData) {
-              acc[k] = placeData[key];
-            }
+        // Extract property values for the current selected category
+        let d: Data = {...placeData};
+        Object.keys(p).forEach((k) => {
+          let [prop, catKey] = util.keyParts(k);
+          if (!catKey || key == catKey) {
+            d[prop] = p[k];
           }
-          return acc;
-        }, {} as Data);
+        });
 
-        let html = describePlace(this.config.LOA, place, d);
+        let html = describePlace(d);
         return `
           ${html}
           ${otherPlaces.length > 0 ?
-              `<div class="other-places"><span class="variable-name">Other ${this.config.PLACE_NAME}s here</span>: ${otherPlaces.slice(0, 5).join(', ')}${otherPlaces.length > 5 ? `, ... +${otherPlaces.length-5} more <em>(zoom in to see)</em>.` : ''}</div>`
+              `<div class="other-places"><span class="variable-name">Other ${this.config.PLACE_NAME_PLURAL} here</span>: ${otherPlaces.slice(0, 5).join(', ')}${otherPlaces.length > 5 ? `, ... +${otherPlaces.length-5} more <em>(zoom in to see)</em>.` : ''}</div>`
               : ''}
         `;
       }).join('\n');

@@ -3,6 +3,7 @@ import type Info from './info';
 import type Map from '@/lib/map';
 import type Legend from '@/lib/legend';
 import regions from 'data/gen/regions.json';
+import CATS_FOR_PROPS from 'data/gen/prop_cats.json';
 
 function setupUI(map: Map, config: Config, legend: Legend, info: Info, state: State) {
   const loa = config.LOA;
@@ -36,14 +37,14 @@ function setupUI(map: Map, config: Config, legend: Legend, info: Info, state: St
   if (placeInput) {
     placeInput.addEventListener('input', (ev) => {
       let place = (ev.target as HTMLInputElement).value;
-      if (place.length == config.UI.MIN_PLACE_ID_LENGTH) {
+      if (place.length == config.UI.PLACE_ID_LENGTH) {
         util.bboxForPlace(loa, place).then((bbox) => {
           if (!bbox) return;
           map.fitBounds(bbox);
           map.featsByProp({
             id: 'main',
             layer: 'data'
-          }, 'loa_key', place, (feats) => {
+          }, 'id', place, (feats) => {
             let feat = feats[0];
             map.focusFeatures({id: 'main', layer: 'data'}, [feat]);
             info.explain([feat], state.cat);
@@ -75,7 +76,7 @@ function setupUI(map: Map, config: Config, legend: Legend, info: Info, state: St
 
     opt = opt.cloneNode(true) as HTMLOptionElement;
     propertyBInput.appendChild(opt);
-    if (property == state.props[1].key) {
+    if (state.props[1] && property == state.props[1].key) {
       opt.selected = true;
     }
   });
@@ -88,18 +89,32 @@ function setupUI(map: Map, config: Config, legend: Legend, info: Info, state: St
   }
   propertyBInput.appendChild(opt);
 
-  function setupCat(catKey: string) {
+  document.querySelectorAll(`#${loa}--control [data-control-cat]`).forEach((el: HTMLElement) => {
+    let catKey = el.dataset.controlCat;
+    let selectEl = el.querySelector('select');
     Object.keys(config.CATS[catKey]).forEach((cat) => {
       let opt = document.createElement('option');
       opt.innerText = config.CATS[catKey][cat];
       opt.value = cat;
-      yearInput.appendChild(opt);
+      selectEl.appendChild(opt);
       if (cat == state.cat[catKey]) {
         opt.selected = true;
       }
     });
-  }
-  setupCat('Y');
+
+    selectEl.addEventListener('change', (ev) => {
+      state.cat[catKey] = (ev.target as HTMLSelectElement).value;
+      state.props = state.props.map((p) => config.PROPS[util.propForCat(p.key, state.cat)]);
+      map.set('main', state.props);
+      legend.set(state.props);
+      checkMissingData(state.props);
+
+      if (map.focused['main']) {
+        info.explain(map.focused['main'], state.cat);
+      };
+    });
+
+  });
 
   function propertyInputChange(el: HTMLSelectElement, idx: number) {
     el.addEventListener('change', (ev) => {
@@ -113,24 +128,24 @@ function setupUI(map: Map, config: Config, legend: Legend, info: Info, state: St
   propertyInputChange(propertyAInput, 0);
   propertyInputChange(propertyBInput, 1);
 
-  function categoryInputChange(el: HTMLSelectElement, catKey: string) {
-    el.addEventListener('change', (ev) => {
-      state.cat[catKey] = (ev.target as HTMLSelectElement).value;
-      state.props = state.props.map((p) => config.PROPS[util.propForCat(p.key, state.cat)]);
-      map.set('main', state.props);
-      legend.set(state.props);
-      checkMissingData(state.props);
-
-      if (map.focused['main']) {
-        info.explain(map.focused['main'], state.cat);
-      };
-    });
-  }
-  categoryInputChange(categoryInput, 'S');
-  categoryInputChange(yearInput, 'Y');
 
   // Toggle properties
   const displayInput = document.querySelector(`#${loa}--control select[name=display]`);
+  Object.keys(config.PROPS).forEach((property) => {
+    let opt = document.createElement('option');
+
+    // Skip categorized properties
+    if (property.includes('.')) return;
+
+    let prop = config.PROPS[property];
+    opt.innerText = prop.desc;
+    opt.value = property;
+    displayInput.appendChild(opt);
+    if (property == state.props[0].key) {
+      opt.selected = true;
+    }
+  });
+
   displayInput.addEventListener('change', (ev) => {
     let propKeys = (ev.target as HTMLSelectElement).value.split(',');
     state.props = propKeys.map((p) => config.PROPS[util.propForCat(p, state.cat)]);
@@ -139,7 +154,7 @@ function setupUI(map: Map, config: Config, legend: Legend, info: Info, state: St
     checkMissingData(state.props);
 
     let catProps = new Set();
-    propKeys.forEach((p) => config.CATS_FOR_PROPS[p].forEach((cat) => catProps.add(cat)));
+    propKeys.forEach((p) => (CATS_FOR_PROPS as PropCategories)[p].forEach((cat) => catProps.add(cat)));
     document.querySelectorAll(`#${loa}--control [data-control-cat]`).forEach((el: HTMLElement) => {
       if (catProps.has(el.dataset.controlCat)) {
         el.classList.remove('disabled');
@@ -147,14 +162,6 @@ function setupUI(map: Map, config: Config, legend: Legend, info: Info, state: St
         el.classList.add('disabled');
       }
     });
-  });
-
-  const legendKey = document.getElementById(`${loa}--icon-legend`);
-  document.getElementById(`${loa}--icon-legend-show`).addEventListener('click', () => {
-    legendKey.style.display = 'block';
-  });
-  document.getElementById(`${loa}--icon-legend-close`).addEventListener('click', () => {
-    legendKey.style.display = '';
   });
 }
 

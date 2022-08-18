@@ -31,8 +31,14 @@ class API {
         },
         method: 'GET',
       })
-      .then(res => res.json())
-      .catch(err => { console.log(err) });
+      .then((res) => {
+        if (res.ok) {
+          return res.json()
+        } else {
+          // Return empty obj on errors
+          return {};
+        }
+      })
   }
 }
 

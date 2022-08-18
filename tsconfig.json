@@ -4,6 +4,7 @@
     "paths": {
       "@/*": ["src/*"]
     },
+    "lib": ["dom", "es2020"],
     "outDir": "./dist/",
     "sourceMap": true,
     "noImplicitAny": true,

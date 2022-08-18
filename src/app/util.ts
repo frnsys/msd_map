@@ -1,11 +1,16 @@
-import config from '@/config';
+import CATS_FOR_PROPS from 'data/gen/prop_cats.json';
+
+function keyParts(propWithCat: string) {
+  let [p, ...catKey] = propWithCat.split('.');
+  return [p, catKey.join('.')];
+}
 
 function propForCat(prop: string, cat: Category) {
   let [p, ..._] = prop.split('.');
-  if (!config.HAS_CATS.includes(p)) {
+  if (!(p in CATS_FOR_PROPS)) {
     return p;
   } else {
-    cat = (config.CATS_FOR_PROPS as {[propKey:string]: string[]})[p]
+    cat = (CATS_FOR_PROPS as PropCategories)[p]
       .reduce((acc, k) => {
         if (Object.keys(cat).includes(k)) {
           acc[k] = cat[k];
@@ -24,6 +29,22 @@ function keyForCat(cat: Category) {
     .join('.');
 }
 
+// Generate all category combinations
+function allCategories(cats: {[catKey:string]: {[catVal:string]: string}}) {
+  let combos: Category[] = [];
+  Object.keys(cats).forEach((k) => {
+    let vals = Object.keys(cats[k]);
+    if (combos.length > 0) {
+      combos = combos.flatMap((c: Category) => {
+        return vals.map((val) => ({...c, [k]: val}));
+      });
+    } else {
+      combos = vals.map((val) => ({[k]: val}));
+    }
+  });
+  return combos;
+}
+
 async function bboxForPlace(loa: string, placeId: string) {
   let url = `assets/maps/${loa}/bboxes/${placeId}.json`;
   return fetch(url, {
@@ -37,4 +58,4 @@ async function bboxForPlace(loa: string, placeId: string) {
     .catch(err => { console.log(err) });
 }
 
-export default {propForCat, keyForCat, bboxForPlace};
+export default {propForCat, keyForCat, keyParts, allCategories, bboxForPlace};
