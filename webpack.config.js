@@ -12,6 +12,15 @@ module.exports = {
   devtool: dev ? 'inline-source-map' : 'source-map',
   module: {
     rules: [{
+      test: /\.js$/,
+      exclude: /node_modules/,
+      use: {
+        loader: 'babel-loader',
+        options: {
+          presets: ['@babel/preset-env', '@babel/preset-react']
+        }
+      }
+    }, {
       test: /\.tsx?$/,
       use: 'ts-loader',
       exclude: /node_modules/,
@@ -24,7 +33,7 @@ module.exports = {
     }]
   },
   resolve: {
-    extensions: ['.ts', '.js'],
+    extensions: ['.tsx', '.ts', '.js'],
     alias: {
       '@': path.resolve(__dirname, 'src/'),
       'data': path.resolve(__dirname, 'data/'),
@@ -32,6 +41,12 @@ module.exports = {
     }
   },
   devServer: {
-    writeToDisk: true
+    static: {
+      watch: true,
+      directory: path.resolve(__dirname),
+    },
+    devMiddleware: {
+      writeToDisk: true
+    }
   }
 };

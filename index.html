@@ -5,7 +5,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>JFI: Unceasing Debt, Disparate Burdens: Student Debt and Young America</title>
-  <link rel="stylesheet" type="text/css" href="style.css">
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <link rel="stylesheet" type="text/css" href="css/map.css">
   <link rel="stylesheet" type="text/css" href="assets/simpleLightbox.css">
 
   <link rel="apple-touch-icon" sizes="57x57" href="assets/favicon/apple-icon-57x57.png">
@@ -54,7 +55,6 @@
             </nav>
             <div>
                 <a href="https://jainfamilyinstitute.org/"><img src="assets/jfi-logo.svg" class="jfi-logo" aria-label="Go to Jain Family Institute site"></a>
-                <a href="https://phenomenalworld.org/" aria-label="Go to Phenomenal World site"><img src="assets/pw-icon.svg"></a>
             </div>
         </header>
         <section id="intro" class="text">
@@ -66,116 +66,7 @@
             <p>Click on an area to freeze the informational panel and explore the statistics and institutions for that zip. Happy mapping!</p>
         </section>
         <a id="maptool"></a>
-        <div class="map-tabs">
-            <div class="map-tab selected" data-loa="zcta">ZCTA</div>
-            <div class="map-tab" data-loa="state">State</div>
-            <div class="map-tab" data-loa="county">County</div>
-        </div>
-        <div class="map-tab-pane active" id="zcta--map-tab">
-            <div class="control" id="zcta--control">
-                <div>
-                    <label class="control-label">Jump to Zip</label>
-                    <input name="place" type="text" placeholder="Zip">
-                </div>
-                <div data-control-cat="Y">
-                    <label class="control-label">Academic Year</label>
-                    <select name="year"></select>
-                </div>
-                <div data-control-cat="R">
-                    <label class="control-label">Race</label>
-                    <select name="category"></select>
-                </div>
-                <div class="control-properties">
-                    <label class="control-label">Properties</label>
-                    <select name="propertyA"></select>
-                    <select name="propertyB"></select>
-                </div>
-                <div>
-                    <label class="control-label">Display Variable</label>
-                    <select name="display" autocomplete="off"></select>
-                </div>
-            </div>
-            <section class="stage">
-                <div class="map-regions" id="zcta--map-regions"></div>
-                <div class="map-wrapper">
-                    <div class="map-notification" id="zcta--map-notification"></div>
-                    <div class="map" id="zcta--map"></div>
-                    <div class="map-tooltip" id="zcta--map-tooltip"></div>
-                    <div class="legend" id="zcta--legend"></div>
-                </div>
-                <div class="info" id="zcta--info"></div>
-            </section>
-        </div>
-        <div class="map-tab-pane" id="state--map-tab">
-            <div class="control" id="state--control">
-                <div>
-                    <label class="control-label">Jump to State</label>
-                    <input name="place" type="text" placeholder="State">
-                </div>
-                <div data-control-cat="Y">
-                    <label class="control-label">Academic Year</label>
-                    <select name="year"></select>
-                </div>
-                <div data-control-cat="R">
-                    <label class="control-label">Race</label>
-                    <select name="category"></select>
-                </div>
-                <div class="control-properties">
-                    <label class="control-label">Properties</label>
-                    <select name="propertyA"></select>
-                    <select name="propertyB"></select>
-                </div>
-                <div>
-                    <label class="control-label">Display Variable</label>
-                    <select name="display" autocomplete="off"></select>
-                </div>
-            </div>
-            <section class="stage">
-                <div class="map-regions" id="state--map-regions"></div>
-                <div class="map-wrapper">
-                    <div class="map-notification" id="state--map-notification"></div>
-                    <div class="map" id="state--map"></div>
-                    <div class="map-tooltip" id="state--map-tooltip"></div>
-                    <div class="legend" id="state--legend"></div>
-                </div>
-                <div class="info" id="state--info"></div>
-            </section>
-        </div>
-        <div class="map-tab-pane" id="county--map-tab">
-            <div class="control" id="county--control">
-                <div>
-                    <label class="control-label">Jump to county</label>
-                    <input name="place" type="text" placeholder="County">
-                </div>
-                <div data-control-cat="Y">
-                    <label class="control-label">Academic Year</label>
-                    <select name="year"></select>
-                </div>
-                <div data-control-cat="R">
-                    <label class="control-label">Race</label>
-                    <select name="category"></select>
-                </div>
-                <div class="control-properties">
-                    <label class="control-label">Properties</label>
-                    <select name="propertyA"></select>
-                    <select name="propertyB"></select>
-                </div>
-                <div>
-                    <label class="control-label">Display Variable</label>
-                    <select name="display" autocomplete="off"></select>
-                </div>
-            </div>
-            <section class="stage">
-                <div class="map-regions" id="county--map-regions"></div>
-                <div class="map-wrapper">
-                    <div class="map-notification" id="county--map-notification"></div>
-                    <div class="map" id="county--map"></div>
-                    <div class="map-tooltip" id="county--map-tooltip"></div>
-                    <div class="legend" id="county--legend"></div>
-                </div>
-                <div class="info" id="county--info"></div>
-            </section>
-        </div>
+        <section class="map-tool"></section>
         <section class="text">
             <h1>About Our Researchers</h1>
             <p>This project was produced by the Higher Education Finance Team at <a href="https://www.jainfamilyinstitute.org/">Jain Family Institute</a>. Principal researchers were <a href="https://www.jainfamilyinstitute.org/about-us/people/laura-beamer/">Laura Beamer</a>, <a href="https://www.jainfamilyinstitute.org/about-us/people/francis-tseng/">Francis Tseng</a>, and <a href="https://www.jainfamilyinstitute.org/about-us/people/eduard-eddie-nilaj/">Eduard Nilaj</a>, with additional research from <a href="https://www.jainfamilyinstitute.org/about-us/people/jack-gross/">Jack Gross</a>, <a href="https://www.jainfamilyinstitute.org/about-us/people/maya-adereth/">Maya Adereth</a>, and <a href="https://www.jainfamilyinstitute.org/about-us/people/marshall-steinbaum/">Marshall Steinbaum</a>.</p>

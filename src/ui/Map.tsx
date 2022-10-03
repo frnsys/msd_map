@@ -1,0 +1,183 @@
+import Info from './Info';
+import Map from '@/lib/map';
+import MapLegend from './map/Legend';
+import PlaceSelector from './map/PlaceSelector';
+import RegionSelector from './map/RegionSelector';
+import PropertySelector from './map/PropertySelector';
+import type { MapMouseEvent } from 'mapbox-gl';
+import util from '@/util';
+import styles from '@/styles';
+import Painter from '@/lib/paint';
+import * as React from 'react';
+
+export const MAP_SOURCE = {
+  id: 'main',
+  layer: 'data'
+};
+const dataLayerName = 'data';
+
+const COLORS = {
+  focus: '#f9ca74',
+  null: '#202124'
+};
+const MAP_STYLE = 'mapbox://styles/jfift/ckkfrwny700zc17pdajfucczo';
+
+function createMap(
+  mapId: string,
+  container: HTMLElement,
+  props: Prop[],
+  onMouseMove: (features: SourceMapping<MapFeature[]>, ev: MapMouseEvent) => void,
+  onFocusFeatures: (features: SourceMapping<MapFeature[]>, ev: MapMouseEvent) => void) {
+
+  const sources = {
+    'main': {
+      'type': 'vector',
+      'url': `mapbox://${mapId}`
+    },
+  };
+  const layers = [{
+    'id': 'main',
+    'type': 'fill',
+    'source': 'main',
+    'source-layer': dataLayerName,
+    'paint': styles.defaultPlaces
+  }];
+
+  const painter = new Painter(COLORS);
+  const map = new Map({
+    container,
+    style: MAP_STYLE,
+    zoom: 3.5,
+    maxZoom: 12,
+    minZoom: 2,
+    center: [-98.5556199, 39.8097343]
+  }, sources, layers, {'main': props}, painter, onFocusFeatures, (features, ev) => {
+    // Ignore at low zoom levels, gets really choppy
+    if (map.map.getZoom() <= 6) return;
+
+    onMouseMove(features, ev);
+    if (!map.focusedLock) {
+      onFocusFeatures(features, ev);
+    }
+  });
+  return map;
+}
+
+function MapTool({config}: {config: MapConfig}) {
+  const [cat, setCat] = React.useState(config.INITIAL_STATE.cat);
+  const [props, setProps] = React.useState(config.INITIAL_STATE.props);
+  const [feats, setFeats] = React.useState<MapFeature[]>([]);
+  const [tipState, setTipState] = React.useState({
+    top: `0px`,
+    left: `0px`,
+    display: 'none',
+    text: '',
+  });
+
+  const mapEl = React.useRef();
+  const [map, setMap] = React.useState<Map>();
+  React.useEffect(() => {
+    const map = createMap(
+      config.MAP_ID,
+      mapEl.current,
+      props,
+      (features, ev) => {
+        if (features['main'].length > 0) {
+          setTipState({
+            text: 'hello!',
+            display: 'block',
+            left: `${ev.originalEvent.offsetX+10}px`,
+            top: `${ev.originalEvent.offsetY+10}px`,
+          });
+        } else {
+          setTipState({...tipState, display: 'none'});
+        }
+      },
+      (features) => {
+        // If features, render
+        if (features['main'].length > 0) {
+          let feats = features['main'];
+          map.focusFeatures({
+            id: 'main',
+            layer: dataLayerName
+          }, feats);
+          setFeats(feats);
+
+        // Otherwise, hide
+        } else {
+          // TODO?
+          // if (features['composite']) {
+          //   info.empty();
+          // }
+          setFeats([]);
+        }
+      });
+    map.map.on('dragstart', () => {
+      setTipState({...tipState, display: 'none'});
+    });
+    setMap(map);
+  }, []);
+  React.useEffect(() => {
+    if (map) {
+      map.set('main', props);
+    }
+  }, [props]);
+
+  let mapOverlay;
+  if (props.some((p) => config.UI.NO_DATA.includes(p.key))) {
+    mapOverlay = <div className="map-notification">No data available for this selection.</div>;
+  }
+
+  const onPropertySelect = React.useCallback((propKeys: string[]) => {
+    let newProps = propKeys.map((p) => config.PROPS[util.propForCat(p, cat)]);
+    setProps(newProps);
+  }, [config]);
+  const onPlaceSelect = React.useCallback((bbox: Bounds, place: string) => {
+    map.fitBounds(bbox);
+    map.featsByProp(MAP_SOURCE, 'id', place, (feats) => {
+      let feat = feats[0];
+      map.focusFeatures(MAP_SOURCE, [feat]);
+      setFeats([feat]);
+    });
+  }, [map]);
+  const onRegionSelect = React.useCallback((bbox: Bounds) => {
+    map.fitBounds(bbox);
+  }, [map]);
+
+  return <div className="map-wrapper">
+    <div className="control">
+      <PlaceSelector
+        loa={config.LOA}
+        name={config.PLACE_NAME}
+        idLength={config.UI.PLACE_ID_LENGTH}
+        onSelect={onPlaceSelect} />
+      <PropertySelector
+        props={config.PROPS}
+        selected={props[0].key}
+        onChange={onPropertySelect} />
+    </div>
+    <section className="stage">
+      <RegionSelector
+        onSelect={onRegionSelect}
+        excludeTerritories={config.UI.NO_TERRITORIES} />
+      <div className="map-wrapper">
+        {mapOverlay}
+        <div className="map" ref={mapEl}></div>
+        <div className="map-tooltip" style={tipState}>{tipState.text}</div>
+        <MapLegend
+          map={map}
+          props={props}
+          features={feats}
+          noDataLabel={`No ${config.PLACE_NAME}`} />
+      </div>
+      <Info
+        loa={config.LOA}
+        category={cat}
+        features={feats}
+        defaultMsg={config.INFO}
+        placeNamePlural={config.PLACE_NAME_PLURAL} />
+    </section>
+  </div>
+}
+
+export default MapTool;

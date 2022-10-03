@@ -5,14 +5,16 @@ interface CategorySpec {
     [catVal:string]: string
   }
 }
-interface Config {
+type MapConfigs = {[key:string]: MapConfig};
+type PropMap = {[key:string]: Prop};
+interface MapConfig {
   LOA: string,
   MAP_ID: string,
   INFO: string,
   PLACE_NAME: string,
   PLACE_NAME_PLURAL: string,
   INITIAL_STATE: State,
-  PROPS: {[key:string]: Prop},
+  PROPS: PropMap,
   CATS: CategorySpec,
   COLORS: Colors,
   UI: UIConfig,

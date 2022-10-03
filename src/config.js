@@ -1,4 +1,4 @@
-import util from '@/app/util';
+import util from '@/util';
 import config from '../config';
 import zctaMeta from 'data/gen/zcta/meta.json';
 import stateMeta from 'data/gen/state/meta.json';
@@ -71,7 +71,7 @@ const CATS = {
   R: {
     'ALL': 'All',
     'BLACK': 'Black',
-    'WHITE': 'white',
+    'WHITE': 'White',
     'NATVAM': 'Native Amer.',
     'ASIAN': 'Asian',
     'LATINO': 'Latino',
@@ -117,61 +117,63 @@ const SHARED_CONFIG = {
 };
 
 export default {
-  zcta: {
-    LOA: 'zcta',
-    MAP_ID: 'jfift.msd_zcta__2022_08-1',
-    INFO: '<p>Welcome to the Millennial Student Debt map visualized at the <span class="smallcaps">ZCTA</span>-level. This map displays institutional, demographic, and financial variables sortable by academic year and in some cases, commuting distances and school type. <em style="color:#fff;">All dollar amounts are 2019-inflation adjusted.</em></p><p>Use the quick zoom buttons in the top left or type in your desired zip (try your home zip code!) to locate a particular area. Toggle different maps with the drop-downs and buttons; see the corresponding summary statistics on the gradient legend. Hover over the colorful statistical legend in the bottom left corner to highlight areas on the map that correspond to a particular statistical measurement. As you mouse over certain geographic areas, the schools within commuting distance of that zip will illuminate.</p>',
-    PLACE_NAME: 'zip',
-    PLACE_NAME_PLURAL: 'zips',
-    UI: {
-      NO_DATA,
-      PLACE_ID_LENGTH: 5,
-      NO_TERRITORIES: false,
+  maps: {
+    zcta: {
+      LOA: 'zcta',
+      MAP_ID: 'jfift.msd_zcta__2022_08-1',
+      INFO: '<p>Welcome to the Millennial Student Debt map visualized at the <span class="smallcaps">ZCTA</span>-level. This map displays institutional, demographic, and financial variables sortable by academic year and in some cases, commuting distances and school type. <em style="color:#fff;">All dollar amounts are 2019-inflation adjusted.</em></p><p>Use the quick zoom buttons in the top left or type in your desired zip (try your home zip code!) to locate a particular area. Toggle different maps with the drop-downs and buttons; see the corresponding summary statistics on the gradient legend. Hover over the colorful statistical legend in the bottom left corner to highlight areas on the map that correspond to a particular statistical measurement. As you mouse over certain geographic areas, the schools within commuting distance of that zip will illuminate.</p>',
+      PLACE_NAME: 'zip',
+      PLACE_NAME_PLURAL: 'zips',
+      UI: {
+        NO_DATA,
+        PLACE_ID_LENGTH: 5,
+        NO_TERRITORIES: false,
+      },
+      PROPS: PROPS_FOR_LOA['zcta'],
+      INITIAL_STATE: {
+        cat: INITIAL_CAT,
+        props: [PROPS_FOR_LOA['zcta'][INITIAL_KEY]]
+      },
+      ...SHARED_CONFIG
     },
-    PROPS: PROPS_FOR_LOA['zcta'],
-    INITIAL_STATE: {
-      cat: INITIAL_CAT,
-      props: [PROPS_FOR_LOA['zcta'][INITIAL_KEY]]
-    },
-    ...SHARED_CONFIG
-  },
 
-  state: {
-    LOA: 'state',
-    MAP_ID: 'jfift.msd_state__2022_08-1',
-    INFO: 'TODO',
-    PLACE_NAME: 'state',
-    PLACE_NAME_PLURAL: 'states',
-    UI: {
-      NO_DATA,
-      PLACE_ID_LENGTH: 2,
-      NO_TERRITORIES: false,
+    state: {
+      LOA: 'state',
+      MAP_ID: 'jfift.msd_state__2022_08-1',
+      INFO: 'TODO',
+      PLACE_NAME: 'state',
+      PLACE_NAME_PLURAL: 'states',
+      UI: {
+        NO_DATA,
+        PLACE_ID_LENGTH: 2,
+        NO_TERRITORIES: false,
+      },
+      PROPS: PROPS_FOR_LOA['state'],
+      INITIAL_STATE: {
+        cat: INITIAL_CAT,
+        props: [PROPS_FOR_LOA['state'][INITIAL_KEY]]
+      },
+      ...SHARED_CONFIG
     },
-    PROPS: PROPS_FOR_LOA['state'],
-    INITIAL_STATE: {
-      cat: INITIAL_CAT,
-      props: [PROPS_FOR_LOA['state'][INITIAL_KEY]]
-    },
-    ...SHARED_CONFIG
-  },
 
-  county: {
-    LOA: 'county',
-    MAP_ID: 'jfift.msd_county__2022_08-1',
-    INFO: 'TODO',
-    PLACE_NAME: 'county',
-    PLACE_NAME_PLURAL: 'counties',
-    UI: {
-      NO_DATA,
-      PLACE_ID_LENGTH: 5,
-      NO_TERRITORIES: false,
+    county: {
+      LOA: 'county',
+      MAP_ID: 'jfift.msd_county__2022_08-1',
+      INFO: 'TODO',
+      PLACE_NAME: 'county',
+      PLACE_NAME_PLURAL: 'counties',
+      UI: {
+        NO_DATA,
+        PLACE_ID_LENGTH: 5,
+        NO_TERRITORIES: false,
+      },
+      PROPS: PROPS_FOR_LOA['county'],
+      INITIAL_STATE: {
+        cat: INITIAL_CAT,
+        props: [PROPS_FOR_LOA['county'][INITIAL_KEY]]
+      },
+      ...SHARED_CONFIG
     },
-    PROPS: PROPS_FOR_LOA['county'],
-    INITIAL_STATE: {
-      cat: INITIAL_CAT,
-      props: [PROPS_FOR_LOA['county'][INITIAL_KEY]]
-    },
-    ...SHARED_CONFIG
   },
 
   MAPBOX_TOKEN
