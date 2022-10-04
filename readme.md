@@ -4,6 +4,12 @@ Data processing code, source files, and generated files go into `data/`.
 
 Outputs that are used directly in the frontend should be symlinked to `assets/data/`.
 
+## Releases
+
+Each major release and subsequent updates should be tagged.
+
+That way each new release can remove files that were only relevant to the previous release, while preserving them in version control in a way that can easily be recovered.
+
 ## Sources
 
 Run `data/src/download.sh` to download the publicly available source data.
