@@ -1,4 +1,5 @@
 import util from '@/util';
+import styles from '@/styles';
 import config from '../config';
 import zctaMeta from 'data/gen/zcta/meta.json';
 import stateMeta from 'data/gen/state/meta.json';
@@ -6,6 +7,26 @@ import countyMeta from 'data/gen/county/meta.json';
 import CATS_FOR_PROPS from 'data/gen/prop_cats.json';
 
 const MAPBOX_TOKEN = config.MAPBOX_TOKEN;
+export const MAP = {
+  SOURCE: {
+    id: 'main',
+    layer: 'data'
+  },
+  LAYERS: [{
+    'id': 'main',
+    'type': 'fill',
+    'source': 'main',
+    'source-layer': 'data',
+    'paint': styles.defaultPlaces
+  }],
+  CONFIG: {
+    style: 'mapbox://styles/jfift/ckkfrwny700zc17pdajfucczo',
+    zoom: 3.5,
+    maxZoom: 12,
+    minZoom: 2,
+    center: [-98.5556199, 39.8097343]
+  }
+}
 
 const LOAS = ['zcta', 'state', 'county'];
 
@@ -16,7 +37,7 @@ const INITIAL_CAT = {
 };
 const INITIAL_KEY = util.propForCat('med_bal', INITIAL_CAT);
 
-const COLORS = {
+export const COLORS = {
   focus: '#f9ca74',
   null: '#202124'
 };

@@ -1,25 +1,26 @@
 import Legend from '@/lib/Legend';
 import * as React from 'react';
 import type Map from '@/lib/map';
-import { MAP_SOURCE } from '../Map';
+import { MAP } from '@/config';
 
 interface Props {
   map: Map,
   props: Prop[],
   features: MapFeature[],
   noDataLabel: string,
+  children: JSX.Element,
 }
 
-function MapLegend({props, map, features, noDataLabel}: Props) {
+function MapLegend({props, map, features, noDataLabel, children}: Props) {
   const otherColors: Colors = {
     [noDataLabel]: '#520004'
   };
 
   const onBinEnter = React.useCallback((filter: MapboxExpression) => {
-    map.setFilter(MAP_SOURCE, filter, {mute: true}, {mute: false});
+    map.setFilter(MAP.SOURCE, filter, {mute: true}, {mute: false});
   }, [map]);
   const onBinLeave = React.useCallback(() => {
-    map.resetFilter(MAP_SOURCE, {mute: false});
+    map.resetFilter(MAP.SOURCE, {mute: false});
   }, [map]);
 
   return <Legend

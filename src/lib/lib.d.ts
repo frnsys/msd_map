@@ -23,6 +23,7 @@ interface Legend {
 type MapLayer = AnyLayer;
 type MapSource = AnySourceData;
 type MapFeature = MapboxGeoJSONFeature;
+type MapboxConfig = MapboxOptions;
 type MapFeatureState = {[key:string]: any};
 type MapboxExpression = Array<number | string | MapboxExpression>;
 interface MapFilter {

@@ -1,26 +1,14 @@
 import Info from './Info';
 import Map from '@/lib/map';
+import { MAP, COLORS } from '@/config';
 import MapLegend from './map/Legend';
 import PlaceSelector from './map/PlaceSelector';
 import RegionSelector from './map/RegionSelector';
 import PropertySelector from './map/PropertySelector';
 import type { MapMouseEvent } from 'mapbox-gl';
 import util from '@/util';
-import styles from '@/styles';
 import Painter from '@/lib/paint';
 import * as React from 'react';
-
-export const MAP_SOURCE = {
-  id: 'main',
-  layer: 'data'
-};
-const dataLayerName = 'data';
-
-const COLORS = {
-  focus: '#f9ca74',
-  null: '#202124'
-};
-const MAP_STYLE = 'mapbox://styles/jfift/ckkfrwny700zc17pdajfucczo';
 
 function createMap(
   mapId: string,
@@ -35,23 +23,12 @@ function createMap(
       'url': `mapbox://${mapId}`
     },
   };
-  const layers = [{
-    'id': 'main',
-    'type': 'fill',
-    'source': 'main',
-    'source-layer': dataLayerName,
-    'paint': styles.defaultPlaces
-  }];
 
   const painter = new Painter(COLORS);
   const map = new Map({
     container,
-    style: MAP_STYLE,
-    zoom: 3.5,
-    maxZoom: 12,
-    minZoom: 2,
-    center: [-98.5556199, 39.8097343]
-  }, sources, layers, {'main': props}, painter, onFocusFeatures, (features, ev) => {
+    ...MAP.CONFIG as MapboxConfig,
+  }, sources, MAP.LAYERS, {'main': props}, painter, onFocusFeatures, (features, ev) => {
     // Ignore at low zoom levels, gets really choppy
     if (map.map.getZoom() <= 6) return;
 
@@ -97,10 +74,7 @@ function MapTool({config}: {config: MapConfig}) {
         // If features, render
         if (features['main'].length > 0) {
           let feats = features['main'];
-          map_.focusFeatures({
-            id: 'main',
-            layer: dataLayerName
-          }, feats);
+          map_.focusFeatures(MAP.SOURCE, feats);
           setFeats(feats);
 
         // Otherwise, hide
@@ -138,9 +112,9 @@ function MapTool({config}: {config: MapConfig}) {
   }, [config]);
   const onPlaceSelect = React.useCallback((bbox: Bounds, place: string) => {
     map.fitBounds(bbox);
-    map.featsByProp(MAP_SOURCE, 'id', place, (feats) => {
+    map.featsByProp(MAP.SOURCE, 'id', place, (feats) => {
       let feat = feats[0];
-      map.focusFeatures(MAP_SOURCE, [feat]);
+      map.focusFeatures(MAP.SOURCE, [feat]);
       setFeats([feat]);
     });
   }, [map]);
