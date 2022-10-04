@@ -155,6 +155,7 @@ export default {
         NO_DATA,
         PLACE_ID_LENGTH: 5,
         NO_TERRITORIES: false,
+        NO_PLACE_SELECTOR: true,
       },
       PROPS: PROPS_FOR_LOA['county'],
       INITIAL_STATE: {
@@ -174,6 +175,7 @@ export default {
         NO_DATA,
         PLACE_ID_LENGTH: 5,
         NO_TERRITORIES: false,
+        NO_PLACE_SELECTOR: false,
       },
       PROPS: PROPS_FOR_LOA['zcta'],
       INITIAL_STATE: {
@@ -193,6 +195,7 @@ export default {
         NO_DATA,
         PLACE_ID_LENGTH: 2,
         NO_TERRITORIES: false,
+        NO_PLACE_SELECTOR: true,
       },
       PROPS: PROPS_FOR_LOA['state'],
       INITIAL_STATE: {

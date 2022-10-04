@@ -1,12 +1,15 @@
+import util from '@/util';
 import * as React from 'react';
 
 interface Props {
   props: PropMap,
+  label: string,
   selected: string,
+  hideLabel?: boolean,
   onChange: (propKeys: string[]) => void,
 }
 
-function PropertySelector({props, selected, onChange}: Props) {
+function PropertySelector({props, selected, onChange, label, hideLabel}: Props) {
   const opts = Object.keys(props).map((property) => {
     // Skip categorized properties
     if (property.includes('.')) return;
@@ -22,9 +25,11 @@ function PropertySelector({props, selected, onChange}: Props) {
     onChange(propKeys);
   }, [onChange]);
 
-  return <div>
-    <label>Display Variable</label>
-    <select autoComplete="off" onChange={handler} value={selected}>
+  let [current, ..._rest] = util.keyParts(selected);
+  let title = props[current].desc;
+  return <div className="property-selector" title={title}>
+    {!hideLabel && <label>{label}</label>}
+    <select aria-label={label} autoComplete="off" onChange={handler} value={current}>
       {opts}
     </select>
   </div>

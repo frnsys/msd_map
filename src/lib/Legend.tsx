@@ -9,6 +9,7 @@ export interface Props {
   features: MapFeature[],
   onBinEnter: (filter: MapboxExpression) => void,
   onBinLeave: () => void,
+  children?: JSX.Element,
 }
 
 function Legend(props: Props) {
@@ -33,6 +34,7 @@ function Legend(props: Props) {
         </div>
       })}
     </div>
+    {props.children}
   </div>
 }
 

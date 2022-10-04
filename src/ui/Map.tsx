@@ -128,17 +128,6 @@ function MapTool({config}: {config: MapConfig}) {
   }, []);
 
   return <div className="map-wrapper">
-    <div className="control">
-      <PlaceSelector
-        loa={config.LOA}
-        name={config.PLACE_NAME}
-        idLength={config.UI.PLACE_ID_LENGTH}
-        onSelect={onPlaceSelect} />
-      <PropertySelector
-        props={config.PROPS}
-        selected={props[0].key}
-        onChange={onPropertySelect} />
-    </div>
     <section className="stage">
       <RegionSelector
         onSelect={onRegionSelect}
@@ -151,7 +140,19 @@ function MapTool({config}: {config: MapConfig}) {
           map={map}
           props={props}
           features={feats}
-          noDataLabel={`No ${config.PLACE_NAME}`} />
+          noDataLabel={`No ${config.PLACE_NAME}`}>
+          <PropertySelector
+            hideLabel={true}
+            label="Display Variable"
+            props={config.PROPS}
+            selected={props[0].key}
+            onChange={onPropertySelect} />
+        </MapLegend>
+        {!config.UI.NO_PLACE_SELECTOR && <PlaceSelector
+          loa={config.LOA}
+          name={config.PLACE_NAME}
+          idLength={config.UI.PLACE_ID_LENGTH}
+          onSelect={onPlaceSelect} />}
       </div>
       <Info
         loa={config.LOA}

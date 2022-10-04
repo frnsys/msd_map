@@ -29,7 +29,9 @@ function MapLegend({props, map, features, noDataLabel, children}: Props) {
     special={otherColors}
     stats={['min']}
     onBinEnter={onBinEnter}
-    onBinLeave={onBinLeave} />
+    onBinLeave={onBinLeave}>
+    {children}
+  </Legend>
 }
 
 export default MapLegend;
