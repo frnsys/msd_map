@@ -59,9 +59,10 @@ function MapTool({config}: {config: MapConfig}) {
       mapEl.current,
       props,
       (features, ev) => {
-        if (features['main'].length > 0) {
+        let feats = features['main'];
+        if (feats.length > 0) {
           setTipState({
-            text: 'hello!',
+            text: feats[0].properties.name,
             display: 'block',
             left: `${ev.originalEvent.offsetX+10}px`,
             top: `${ev.originalEvent.offsetY+10}px`,
@@ -72,8 +73,8 @@ function MapTool({config}: {config: MapConfig}) {
       },
       (features) => {
         // If features, render
-        if (features['main'].length > 0) {
-          let feats = features['main'];
+        let feats = features['main'];
+        if (feats.length > 0) {
           map_.focusFeatures(MAP.SOURCE, feats);
           setFeats(feats);
 

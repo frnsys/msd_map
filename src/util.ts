@@ -29,8 +29,10 @@ function keyForCat(cat: Category) {
     .join('.');
 }
 
+type CatsConfig = {[catKey:string]: {[catVal:string]: string}};
+
 // Generate all category combinations
-function allCategories(cats: {[catKey:string]: {[catVal:string]: string}}) {
+function allCategories(cats: CatsConfig) {
   let combos: Category[] = [];
   Object.keys(cats).forEach((k) => {
     let vals = Object.keys(cats[k]);

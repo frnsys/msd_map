@@ -38,11 +38,12 @@ class Labeler:
 
 
 class Processor:
-    def __init__(self, categories, feat_fields, query_fields, feat_id_col, ranges):
+    def __init__(self, categories, feat_fields, query_fields, query_cats, feat_id_col, ranges):
         self.categories = categories
         self.labeler = Labeler(categories)
         self.feat_fields = feat_fields
         self.query_fields = query_fields
+        self.query_categories = query_cats
         self.feat_id_col = feat_id_col
         self.ranges = ranges
 
@@ -60,9 +61,14 @@ class Processor:
         with the provided category values.
         - `file_cats` is the dict of categories this CSV file represents.
             For example, if you have a CSV for each year, this would be e.g. {'Y': 2021}
-        - `col_for_cat` is a function that returns a column name given a field name and a cat dict
+        - `feat_col_for_cat` is a function that returns a column name given a field name and a cat dict
             For example, say you have columns by race, e.g. `med_bal_BLACK`.
             Your function could be: `lambda field, cat: f'{field}_{cat["R"]}'`
+        - `query_cols_for_cat` is a function that returns column names given a field name and a cat dict
+            For example, say you have columns by race, e.g. `med_bal_BLACK`.
+            Your function could be: `lambda field, cat: [f'{field}_{cat["R"]}']`
+            The difference between this and `feat_col_for_cat` is that query fields
+            may want to include values for multiple categories.
         """
         df = pd.read_csv(csv_file, dtype={self.feat_id_col: object})
         for row in tqdm(df.itertuples(), total=len(df), desc=csv_file):
@@ -70,7 +76,7 @@ class Processor:
             feat_id = row_data[self.feat_id_col]
             if feat_id is None or not isinstance(feat_id, str): continue
 
-            for data, fields in [(self.feat_data, self.feat_fields), (self.query_data, self.query_fields)]:
+            for is_feat, data, fields in [(True, self.feat_data, self.feat_fields), (False, self.query_data, self.query_fields)]:
                 for field, cats in fields.items():
                     # Cats that aren't part of the overall csv file category
                     # are assumed to at the column level.
@@ -82,11 +88,10 @@ class Processor:
                         cat.update(file_cats)
                         cat = {t: cat[t] for t in cats}
 
-                        # Figure out the column name for this field and category
-                        col = col_for_cat(field, cat)
-                        val = row_data[col]
-
-                        if field in self.feat_fields:
+                        # Feature field
+                        if is_feat:
+                            col = col_for_cat(field, cat)
+                            val = row_data[col]
                             key = self.labeler.keyForCat(cat, field)
                             if feat_id not in data:
                                 data[feat_id] = {}
@@ -94,10 +99,27 @@ class Processor:
 
                         # Query fields handled slightly differently
                         else:
+                            # Create all subcategory combinations
+                            sub_cats = [{}]
+                            other_keys = [k for k in self.query_categories.keys() if k not in cat]
+                            for k in other_keys:
+                                sub_cats = sum(([{**c, k: v} for v in self.query_categories[k]] for c in sub_cats), [])
+
                             key = self.labeler.keyForCat(cat)
-                            if key not in data:
-                                data[key] = defaultdict(dict)
-                            data[key][feat_id][field] = val
+                            for sc in sub_cats:
+                                c = {**cat, **sc}
+                                col = col_for_cat(field, c)
+                                val = row_data[col]
+                                if key not in data:
+                                    data[key] = defaultdict(dict)
+
+                                if sc:
+                                    if field not in data[key][feat_id]:
+                                        data[key][feat_id][field] = {}
+                                    subkey = self.labeler.keyForCat(sc)
+                                    data[key][feat_id][field][subkey] = val
+                                else:
+                                    data[key][feat_id][field] = val
 
     def update_meta(self):
         """Update map-wide metadata,

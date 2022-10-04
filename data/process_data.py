@@ -10,6 +10,7 @@ are replaced w/ "_"
 import os
 import sys
 import json
+import simplejson
 from lib import Processor, Mapper
 
 # loa = Level of analysis
@@ -69,20 +70,45 @@ CATEGORIES = {
 # What gets included in the geojson features,
 # try to include only that will be used to color tiles
 FEAT_FIELDS = {
-    'med_bal': ['Y', 'R'],
-    'med_dti': ['Y', 'R'],
-    'med_inc': ['Y', 'R'],
-    'pct_bal_grt': ['Y', 'R'],
-    'med_bal_sh_obal': ['Y', 'R'],
+    'med_bal': ['Y'],
+    'med_dti': ['Y'],
+    'med_inc': ['Y'],
+    'pct_bal_grt': ['Y'],
+    'med_bal_sh_obal': ['Y'],
 }
 
 # These are queried separately via the "api"
 # when a feature is focused on,
 # instead of being embedded as part of the feature itself
 QUERY_FIELDS = {
-    'avg_bal': ['Y', 'R'],
-    'avg_dti': ['Y', 'R'],
+    'avg_bal': ['Y'],
+    'avg_bal_rankNat': ['Y'],
+    'med_bal': ['Y'],
+    'med_bal_rankNat': ['Y'],
+    'avg_dti': ['Y'],
+    'avg_dti_rankNat': ['Y'],
+    'med_dti': ['Y'],
+    'med_dti_rankNat': ['Y'],
+    'avg_inc': ['Y'],
+    'avg_inc_rankNat': ['Y'],
+    'med_inc': ['Y'],
+    'med_inc_rankNat': ['Y'],
+    'avg_bal_sh_obal': ['Y'],
+    'avg_bal_sh_obal_rankNat': ['Y'],
+    'med_bal_sh_obal': ['Y'],
+    'med_bal_sh_obal_rankNat': ['Y'],
+    'pct_bal_grt': ['Y'],
+    'pct_bal_grt_rankNat': ['Y'],
 }
+# Queries may want to include multiple subcategories
+# even if they aren't facted over all of them.
+# E.g. say `avg_bal` is faceted by Y (by year).
+# But I have multiple columns per year broken down by race.
+# So I don't just want e.g. `avg_bal.2021`; I instead want
+# `avg_bal.2021.BLACK, avg_bal.2021.WHITE, etc`.
+# QUERY_CATEGORIES defines what additional categories,
+# beyond the defined facets in QUERY_FIELDS, should be used.
+QUERY_CATEGORIES = CATEGORIES
 
 # Use these instead of the actual data max
 # To deal with outliers squashing the visual data range
@@ -95,7 +121,7 @@ RANGES = {
 
 # Get a column name given a field name and categories
 def col_for_cat(field, cat):
-    if cat['R'] == 'ALL':
+    if cat.get('R', 'ALL') == 'ALL':
         return field
     else:
         return f'{field}_{cat["R"]}'
@@ -105,6 +131,7 @@ if __name__ == '__main__':
             categories=CATEGORIES,
             feat_fields=FEAT_FIELDS,
             query_fields=QUERY_FIELDS,
+            query_cats=QUERY_CATEGORIES,
             feat_id_col=INPUTS['main_feature_id'],
             ranges=RANGES)
 
@@ -156,6 +183,6 @@ if __name__ == '__main__':
             os.makedirs(cat_dir)
         for feat_id, data in feats.items():
             with open(os.path.join(cat_dir, '{}.json'.format(feat_id)), 'w') as f:
-                json.dump(data, f)
+                simplejson.dump(data, f, ignore_nan=True)
 
     print('Done')
