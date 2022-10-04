@@ -147,6 +147,11 @@ function MapTool({config}: {config: MapConfig}) {
   const onRegionSelect = React.useCallback((bbox: Bounds) => {
     map.fitBounds(bbox);
   }, [map]);
+  const hideTooltip = React.useCallback(() => {
+    setTipState((cur) => {
+      return {...cur, display: 'none'};
+    });
+  }, []);
 
   return <div className="map-wrapper">
     <div className="control">
@@ -164,7 +169,7 @@ function MapTool({config}: {config: MapConfig}) {
       <RegionSelector
         onSelect={onRegionSelect}
         excludeTerritories={config.UI.NO_TERRITORIES} />
-      <div className="map-wrapper">
+      <div className="map-wrapper" onMouseLeave={hideTooltip}>
         {mapOverlay}
         <div className="map" ref={mapEl}></div>
         <div className="map-tooltip" style={tipState}>{tipState.text}</div>

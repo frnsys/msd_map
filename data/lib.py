@@ -1,5 +1,6 @@
 import math
 import fiona
+import numpy as np
 import pandas as pd
 from tqdm import tqdm
 from collections import defaultdict
@@ -121,8 +122,11 @@ class Processor:
         # Use user-specified ranges if provided
         for k, vals in data.items():
             limits = self.ranges.get(k, {})
-            mn = limits.get('min', min(vals))
-            mx = limits.get('max', max(vals))
+            # If not range provided, default to 5 and 95 percentiles
+            # to manage effect of outliers
+            p5, p95 = np.nanpercentile(vals, [5, 95])
+            mn = limits.get('min', p5)
+            mx = limits.get('max', p95)
             self.meta['ranges'][k] = (mn, mx)
 
 

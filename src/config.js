@@ -31,6 +31,8 @@ const PROPS = {
     },
     legend: {
       flip: false,
+      minClamped: true,
+      maxClamped: true,
       special: {
         'Missing Data': COLORS['null'],
       }
@@ -45,6 +47,8 @@ const PROPS = {
     },
     legend: {
       flip: false,
+      minClamped: true,
+      maxClamped: true,
       special: {
         'Missing Data': COLORS['null'],
       }
@@ -59,6 +63,8 @@ const PROPS = {
     },
     legend: {
       flip: false,
+      minClamped: true,
+      maxClamped: true,
       special: {
         'Missing Data': COLORS['null'],
       }
@@ -84,8 +90,8 @@ const CATS = {
 const PROPS_FOR_LOA = {};
 const META = {
   zcta: zctaMeta,
-  state: countyMeta,
-  county: stateMeta,
+  county: countyMeta,
+  state: stateMeta,
 };
 const allCategories = util.allCategories(CATS);
 LOAS.forEach((loa) => {
@@ -118,6 +124,25 @@ const SHARED_CONFIG = {
 
 export default {
   maps: {
+    county: {
+      LOA: 'county',
+      MAP_ID: 'jfift.msd_county__2022_08-1',
+      INFO: 'TODO',
+      PLACE_NAME: 'county',
+      PLACE_NAME_PLURAL: 'counties',
+      UI: {
+        NO_DATA,
+        PLACE_ID_LENGTH: 5,
+        NO_TERRITORIES: false,
+      },
+      PROPS: PROPS_FOR_LOA['county'],
+      INITIAL_STATE: {
+        cat: INITIAL_CAT,
+        props: [PROPS_FOR_LOA['county'][INITIAL_KEY]]
+      },
+      ...SHARED_CONFIG
+    },
+
     zcta: {
       LOA: 'zcta',
       MAP_ID: 'jfift.msd_zcta__2022_08-1',
@@ -152,25 +177,6 @@ export default {
       INITIAL_STATE: {
         cat: INITIAL_CAT,
         props: [PROPS_FOR_LOA['state'][INITIAL_KEY]]
-      },
-      ...SHARED_CONFIG
-    },
-
-    county: {
-      LOA: 'county',
-      MAP_ID: 'jfift.msd_county__2022_08-1',
-      INFO: 'TODO',
-      PLACE_NAME: 'county',
-      PLACE_NAME_PLURAL: 'counties',
-      UI: {
-        NO_DATA,
-        PLACE_ID_LENGTH: 5,
-        NO_TERRITORIES: false,
-      },
-      PROPS: PROPS_FOR_LOA['county'],
-      INITIAL_STATE: {
-        cat: INITIAL_CAT,
-        props: [PROPS_FOR_LOA['county'][INITIAL_KEY]]
       },
       ...SHARED_CONFIG
     },
