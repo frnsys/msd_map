@@ -77,7 +77,7 @@ function MapTool({config}: {config: MapConfig}) {
   const mapEl = React.useRef();
   const [map, setMap] = React.useState<Map>();
   React.useEffect(() => {
-    const map = createMap(
+    const map_ = createMap(
       config.MAP_ID,
       mapEl.current,
       props,
@@ -97,7 +97,7 @@ function MapTool({config}: {config: MapConfig}) {
         // If features, render
         if (features['main'].length > 0) {
           let feats = features['main'];
-          map.focusFeatures({
+          map_.focusFeatures({
             id: 'main',
             layer: dataLayerName
           }, feats);
@@ -112,16 +112,20 @@ function MapTool({config}: {config: MapConfig}) {
           setFeats([]);
         }
       });
-    map.map.on('dragstart', () => {
+    map_.map.on('dragstart', () => {
       setTipState({...tipState, display: 'none'});
     });
-    setMap(map);
+    setMap(map_);
   }, []);
   React.useEffect(() => {
-    if (map) {
-      map.set('main', props);
-    }
+    if (map) map.set('main', props);
   }, [props]);
+
+  // Resize the map when visibility changes
+  const visible = useVisible(mapEl);
+  React.useEffect(() => {
+    if (visible) map.map.resize();
+  }, [visible]);
 
   let mapOverlay;
   if (props.some((p) => config.UI.NO_DATA.includes(p.key))) {
@@ -180,4 +184,24 @@ function MapTool({config}: {config: MapConfig}) {
   </div>
 }
 
-export default MapTool;
+// Hook for when an element's visibility changes
+function useVisible<T extends Element>(ref: React.MutableRefObject<T>) {
+  const [visible, setVisible] = React.useState(false);
+  React.useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setVisible(entry.intersectionRatio > 0);
+      }, {
+        root: document.documentElement
+      });
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+    return () => {
+      observer.unobserve(ref.current);
+    };
+  }, [ref]);
+  return visible;
+}
+
+export default React.memo(MapTool);
