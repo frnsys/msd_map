@@ -55,9 +55,15 @@ function Univariate({onBinEnter, onBinLeave, props, stats, features}: Props) {
     let val = prop.stats[stat];
     return <Point key={stat} className="stat-point" value={val} prop={prop} />
   });
-  const featPoints = features.map((feat) => {
+  const featPoints = features.map((feat, i) => {
     let val = feat.properties[prop.key];
-    return <Point key={feat.id} className="focus-point" value={val} prop={prop} />
+    // There is a bug where if I use `feat.id` as the `key` here,
+    // sometimes points stick on the legend even after those features are
+    // no longer present in the `features` array.
+    // So you'll get weird situations where `features.length === 1` but
+    // there are 5 different points showing up on the legend.
+    // Using the index as the key instead seems to resolve it.
+    return <Point key={i} className="focus-point" value={val} prop={prop} />
   });
 
   return <>

@@ -14,6 +14,7 @@ interface MapConfig {
   PLACE_NAME: string,
   PLACE_NAME_PLURAL: string,
   INITIAL_STATE: State,
+  MIN_ZOOM: number,
   PROPS: PropMap,
   CATS: CategorySpec,
   COLORS: Colors,

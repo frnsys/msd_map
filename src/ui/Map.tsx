@@ -14,6 +14,7 @@ function createMap(
   mapId: string,
   container: HTMLElement,
   props: Prop[],
+  minZoom: number,
   onMouseMove: (features: SourceMapping<MapFeature[]>, ev: MapMouseEvent) => void,
   onFocusFeatures: (features: SourceMapping<MapFeature[]>, ev: MapMouseEvent) => void) {
 
@@ -30,7 +31,10 @@ function createMap(
     ...MAP.CONFIG as MapboxConfig,
   }, sources, MAP.LAYERS, {'main': props}, painter, onFocusFeatures, (features, ev) => {
     // Ignore at low zoom levels, gets really choppy
-    if (map.map.getZoom() <= 6) return;
+    if (map.map.getZoom() <= minZoom) {
+      onMouseMove({}, ev);
+      return;
+    }
 
     onMouseMove(features, ev);
     if (!map.focusedLock) {
@@ -58,8 +62,9 @@ function MapTool({config}: {config: MapConfig}) {
       config.MAP_ID,
       mapEl.current,
       props,
+      config.MIN_ZOOM,
       (features, ev) => {
-        let feats = features['main'];
+        let feats = features['main'] || [];
         if (feats.length > 0) {
           setTipState({
             text: feats[0].properties.name,
@@ -137,6 +142,7 @@ function MapTool({config}: {config: MapConfig}) {
         {mapOverlay}
         <div className="map" ref={mapEl}></div>
         <div className="map-tooltip" style={tipState}>{tipState.text}</div>
+        {(map && map.focusedLock) && <div className="map-help">Press <span className="hotkey">Esc</span> to unfocus.</div>}
         <MapLegend
           map={map}
           props={props}

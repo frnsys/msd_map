@@ -51,6 +51,7 @@
   min-width: 60px;
   border: 1px solid #111;
   border-radius: 2px;
+  user-select: none;
 }
 
 .map-notification {
@@ -287,6 +288,22 @@
 }
 .legend .property-selector select {
   font-size: 0.75em;
+}
+
+.map-help {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+  bottom: 2em;
+  background: rgba(0,0,0,0.8);
+  color: #fff;
+  border-radius: 2px;
+  line-height: 1;
+  padding: 0.5em 0.5em 0.25em;
+}
+.map-help .hotkey {
+  color: #FFEB5A;
+  font-weight: bold;
 }
 
 .place-schools {
