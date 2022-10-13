@@ -76,6 +76,7 @@
   background: #202020;
   height: 100%;
   overflow-y: scroll;
+  overscroll-behavior: contain;
 }
 .info-body {
   padding: 0 12px 1em;
@@ -84,12 +85,14 @@
   padding: 12px 12px 6px 12px;
   line-height: 1;
   font-weight: normal;
-  border-bottom: 1px solid #AD80FF;
+  background: #AD80FF;
   text-transform: capitalize;
   position: sticky;
   top: 0;
-  background: #202020;
+  color: #202020;
   font-size: 1.2em;
+  font-weight: bold;
+  border-bottom: 2px solid #6945a9;
 }
 .info h2:first-child {
   margin-top: 0;
