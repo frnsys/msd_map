@@ -167,7 +167,7 @@ export default {
 
     zcta: {
       LOA: 'zcta',
-      MAP_ID: 'jfift.msd_zcta__2022_10-1',
+      MAP_ID: 'jfift.msd_zcta__2022_10-2',
       INFO: '<p>Welcome to the Millennial Student Debt map visualized at the <span class="smallcaps">ZCTA</span>-level. This map displays institutional, demographic, and financial variables sortable by academic year and in some cases, commuting distances and school type. <em style="color:#fff;">All dollar amounts are 2019-inflation adjusted.</em></p><p>Use the quick zoom buttons in the top left or type in your desired zip (try your home zip code!) to locate a particular area. Toggle different maps with the drop-downs and buttons; see the corresponding summary statistics on the gradient legend. Hover over the colorful statistical legend in the bottom left corner to highlight areas on the map that correspond to a particular statistical measurement. As you mouse over certain geographic areas, the schools within commuting distance of that zip will illuminate.</p>',
       PLACE_NAME: 'zip',
       PLACE_NAME_PLURAL: 'zips',

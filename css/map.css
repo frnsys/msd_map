@@ -71,7 +71,7 @@
 }
 
 .info {
-  flex: 1;
+  flex: 2;
   color: #fff;
   background: #202020;
   height: 100%;
@@ -117,12 +117,17 @@
   border-bottom: 1px solid #555;
   line-height: 1;
 }
-.info-table {
+.info h4 .info-table-group-year {
+  font-weight: normal;
+  margin-right: 0.1em;
+}
+.info-table-group {
   margin: 1em 0 2em;
 }
 .info table {
   width: 100%;
   border-collapse: collapse;
+  margin-bottom: 1em;
 }
 .info table:first-child td:first-child {
   font-weight: bold;
@@ -132,16 +137,16 @@
   line-height: 1.2;
 }
 .info td:first-child {
-  font-weight: bold;
   text-align: left;
-  color: #ffeb5a;
   vertical-align: bottom;
 }
 .info thead {
   text-align: right;
+  color: #ffeb5a;
 }
 .info table td:first-child {
   max-width: 300px;
+  color: #d5d5d5;
 }
 .info td {
   text-align: right;

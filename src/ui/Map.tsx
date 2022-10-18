@@ -143,8 +143,8 @@ function MapTool({config}: {config: MapConfig}) {
         <div className="map" ref={mapEl}></div>
         <div className="map-tooltip" style={tipState}>{tipState.text}</div>
         {(map && map.focusedLock) ?
-          <div className="map-help">Press <span className="hotkey">Esc</span> to unfocus.</div>
-          : <div className="map-help"><span className="hotkey">Click</span> on a place to focus.</div>}
+          <div className="map-help">Press <span className="hotkey">Esc</span> to unselect.</div>
+          : <div className="map-help"><span className="hotkey">Click</span> on a place to select it.</div>}
         <MapLegend
           map={map}
           props={props}

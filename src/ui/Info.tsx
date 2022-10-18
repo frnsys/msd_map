@@ -1,14 +1,65 @@
 import API from '@/api';
 import util from '@/util';
 import * as React from 'react';
+import TableGroup from './Table';
 
-const COL_NAMES: {[key:string]: string} = {
-  'R:ALL': 'All',
-  'R:BLACK': 'Black',
-  'R:WHITE': 'White',
-  'R:NATVAM': 'Native',
-  'R:ASIAN': 'Asian',
-  'R:LATINO': 'Latino',
+const COLS = [
+  {key: 'R:BLACK', label: 'Black'},
+  {key: 'R:WHITE', label: 'White'},
+  {key: 'R:NATVAM', label: 'Native'},
+  {key: 'R:ASIAN', label: 'Asian'},
+  {key: 'R:LATINO', label: 'Latino'},
+];
+type Fmt = (v: number) => string;
+
+function summaryRowFn(key: string, fmt: Fmt, data: Data) {
+  return (c: string) => {
+    if (c === 'rankNat') {
+      let k = `${key}_rankNat`;
+      return orNA((data[k] as any)['R:ALL']);
+    } else {
+      return fmt((data[key] as any)['R:ALL']);
+    }
+  }
+}
+
+function makeSummaryTable(rows: {label: string, key: string}[], fmt: Fmt, data: Data) {
+  return {
+    cols: [{
+      key: '',
+      label: ''
+    }, {
+      key: 'rankNat',
+      label: 'Nat\'l Rank',
+    }],
+    rows: rows.map(({label, key}) => ({
+      label,
+      func: summaryRowFn(key, fmt, data)
+    }))
+  };
+}
+
+function makeMedAvgTables(label: string, key: string, fmt: Fmt, data: Data) {
+  const summaryTable = makeSummaryTable([{
+    label: `Average ${label}`,
+    key: `avg_${key}`,
+  }, {
+    label: `Median ${label}`,
+    key: `med_${key}`,
+  }], fmt, data);
+
+  const demogTable = {
+    cols: COLS,
+    rows: [{
+      label: `Average ${label}`,
+      func: (c: string) => fmt((data[`avg_${key}`] as any)[c])
+    }, {
+      label: `Median ${label}`,
+      func: (c: string) => fmt((data[`med_${key}`] as any)[c])
+    }]
+  }
+
+  return [summaryTable, demogTable];
 }
 
 type Data = {[key:string]: number};
@@ -16,74 +67,29 @@ function describePlace(data: Data) {
   let label = data['name'];
   let body = <>No data for this place.</>;
   if ('med_bal' in data) {
-    let rows = Object.keys(data.med_bal);
     body = <>
-      <Table title="Student Debt Balance" cols={{
-        Median: {
-          data: data.med_bal as any,
-          fmt: fmtOrNA,
-        },
-        Average: {
-          data: data.avg_bal as any,
-          fmt: fmtOrNA,
-        },
-        'Nat. Rank': {
-          data: data.avg_bal_rankNat as any,
-          fmt: orNA
-        }
-      }} rows={rows} />
-      <Table title="Tract-Level Individual Income" cols={{
-        Median: {
-          data: data.med_inc as any,
-          fmt: fmtOrNA,
-        },
-        Average: {
-          data: data.avg_inc as any,
-          fmt: fmtOrNA,
-        },
-        'Nat. Rank': {
-          data: data.avg_inc_rankNat as any,
-          fmt: orNA
-        }
-      }} rows={rows} />
-      <Table title="Student-Debt-to-Income Ratio" cols={{
-        Median: {
-          data: data.med_dti as any,
-          fmt: pctOrNA,
-        },
-        Average: {
-          data: data.avg_dti as any,
-          fmt: pctOrNA,
-        },
-        'Nat. Rank': {
-          data: data.avg_dti_rankNat as any,
-          fmt: orNA
-        }
-      }} rows={rows} />
-      <Table title="Current Student Debt Balance as a Share of Balance at Origination" cols={{
-        Median: {
-          data: data.med_bal_sh_obal as any,
-          fmt: pctOrNA,
-        },
-        Average: {
-          data: data.avg_bal_sh_obal as any,
-          fmt: pctOrNA,
-        },
-        'Nat. Rank': {
-          data: data.avg_bal_sh_obal_rankNat as any,
-          fmt: orNA
-        }
-      }} rows={rows} />
-      <Table title="Percent of student loans where current balance is greater than origination balance" cols={{
-        Percent: {
-          data: data.pct_bal_grt as any,
-          fmt: pctOrNA,
-        },
-        'Nat. Rank': {
-          data: data.pct_bal_grt_rankNat as any,
-          fmt: orNA
-        }
-      }} rows={rows} />
+      <TableGroup title="Student Debt Balance" year={2022}
+        tables={makeMedAvgTables('Student Debt', 'bal', fmtOrNA, data)} />
+      <TableGroup title="Tract-Level Individual Income" year={2022}
+        tables={makeMedAvgTables('Income', 'inc', fmtOrNA, data)} />
+      <TableGroup title="Student-Debt-to-Income Ratio" year={2022}
+        tables={makeMedAvgTables('Debt-to-Income Ratio', 'dti', pctOrNA, data)} />
+      <TableGroup title="Debt Balance as a Share of Origination Balance" year={2022}
+        tables={makeMedAvgTables('Debt-to-Origination Ratio', 'bal_sh_obal', pctOrNA, data)} />
+      <TableGroup title="Percent of student loans where current balance is greater than origination balance" year={2022}
+        tables={[
+          makeSummaryTable([{
+            label: 'Percent Greater than Origination',
+            key: 'pct_bal_grt'
+          }], pctOrNA, data),
+          {
+            cols: COLS,
+            rows: [{
+              label: 'Percent Greater than Origination',
+              func: (c: string) => pctOrNA((data['pct_bal_grt'] as any)[c])
+            }]
+          }
+        ]} />
     </>;
   }
   return <>
@@ -95,43 +101,6 @@ function describePlace(data: Data) {
       </ul>
     </div>
   </>;
-}
-
-interface TableProps {
-  title: string,
-  rows: string[],
-  cols: {[key:string]: {
-    data: Data,
-    fmt: (v: number) => string
-  }}
-}
-
-function Table({title, cols, rows}: TableProps) {
-  return <div className="info-table">
-    <h4>{title}</h4>
-    <table>
-      <thead>
-        <tr>
-          <th></th>
-          {Object.keys(cols).map((k) =>
-            <th key={k}>{k}</th>
-          )}
-        </tr>
-      </thead>
-      <tbody>
-        {rows.map((k) =>
-          <tr key={k}>
-            <td>{COL_NAMES[k]}</td>
-            {Object.keys(cols).map((c) => {
-              let fmt = cols[c].fmt;
-              let val = cols[c].data[k];
-              return <td key={c} className={val == null ? 'na' : ''}>{fmt(val)}</td>
-            }
-            )}
-          </tr>)}
-      </tbody>
-    </table>
-  </div>
 }
 
 interface Props {
