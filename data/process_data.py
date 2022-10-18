@@ -16,6 +16,8 @@ from lib import Processor, Mapper
 # loa = Level of analysis
 LOA = sys.argv[1] # 'zcta' OR 'cd' OR 'county'
 
+zctaToState = json.load(open('src/zctaToState.json'))
+
 INPUTS_BY_LOA = {
     'zcta': {
         # Main input CSV
@@ -26,12 +28,13 @@ INPUTS_BY_LOA = {
         'main_feature_id': 'ZCTA',
 
         # Input shapefile
-        'shape': 'src/geo/zcta/cb_2020_us_zcta520_500k.shp',
+        'shape': 'src/geo/zcta/tl_2021_us_zcta520.shp',
 
         # The shape feature id field,
         # to link it to `main_feature_id`
         'shape_feature_id': 'ZCTA5CE20',
         'shape_feature_name': 'ZCTA5CE20',
+        'shape_feature_name': lambda props: f"{props['ZCTA5CE20']}, {zctaToState[props['ZCTA5CE20']]}",
     },
     'state': {
         'main': 'src/map_data_state_2021.csv',
