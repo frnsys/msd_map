@@ -191,7 +191,7 @@ const Info = ({loa, placeNamePlural, defaultMsg, category, features, setYear}: P
         <div className="info-body">
           {describePlace(d, category)}
 
-          <div className="info-school-summary">
+          {'n_allschools' in d && <div className="info-school-summary">
             <h4>{category['Y']} Higher Education Market</h4>
             <div className="inline-selector">
               {Object.entries(SCHOOL_TYPES).map(([k, v]) => {
@@ -220,7 +220,7 @@ const Info = ({loa, placeNamePlural, defaultMsg, category, features, setYear}: P
                 <td>{fmtOrNA(d[`gr_${schoolType}`])}</td>
               </tr>
             </table>
-          </div>
+          </div>}
 
           <ul className="footnotes">
             <li>Footnote test</li>
