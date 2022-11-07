@@ -15,7 +15,7 @@ type Table = {
 };
 
 interface TableGroupProps {
-  year: number,
+  year: string|number,
   title: string,
   tables: Table[],
 }

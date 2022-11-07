@@ -32,7 +32,7 @@ const LOAS = ['zcta', 'state', 'county'];
 
 // Initially selected category
 const INITIAL_CAT = {
-  Y: '2021'
+  Y: '2022'
 };
 const INITIAL_KEY = util.propForCat('med_bal', INITIAL_CAT);
 
@@ -94,16 +94,17 @@ const PROPS = {
 
 // Mapping of cat keys to labels
 export const CATS = {
-  R: {
-    'ALL': 'All',
-    'BLACK': 'Black',
-    'WHITE': 'White',
-    'NATVAM': 'Native Amer.',
-    'ASIAN': 'Asian',
-    'LATINO': 'Latino',
-  },
+  // R: {
+  //   'ALL': 'All',
+  //   'BLACK': 'Black',
+  //   'WHITE': 'White',
+  //   'NATVAM': 'Native Amer.',
+  //   'ASIAN': 'Asian',
+  //   'LATINO': 'Latino',
+  // },
   Y: { // Show academic year
-    '2021': '2020-2021',
+    // '2021': '2020-2021',
+    '2022': '2021-2022',
   }
 };
 
@@ -142,12 +143,16 @@ const SHARED_CONFIG = {
   COLORS,
 };
 
+const INTRO = `
+<p>Welcome to the 2022 Millennial Student Debt map. This map visualizes institutional, demographic, and economic statistics at the State, County, and Zip-level. <i>All dollar amounts are 2022-inflation adjusted.</i></p>
+<p>Zoom in to locate a particular area or use the buttons on the top-left corner to view non-contiguous US states and territories. At the Zip-level, you can also type in your desired zip (try your home zip code!) to locate its area. As you hover over the map, various statistics and rankings for the geographical area will populate on the right hand side of the map. Use the drop down menu in the legend in the bottom left corner to toggle between different display variables. Hover over the legend attribute bar to highlight areas on the map that correspond to a particular statistical measurement.</p>`;
+
 export default {
   maps: {
     county: {
       LOA: 'county',
-      MAP_ID: 'jfift.msd_county__2022_10-1',
-      INFO: 'TODO',
+      MAP_ID: 'jfift.msd_county__2022_11-2',
+      INFO: INTRO,
       PLACE_NAME: 'county',
       PLACE_NAME_PLURAL: 'counties',
       MIN_ZOOM: 4,
@@ -167,8 +172,8 @@ export default {
 
     zcta: {
       LOA: 'zcta',
-      MAP_ID: 'jfift.msd_zcta__2022_10-2',
-      INFO: '<p>Welcome to the Millennial Student Debt map visualized at the <span class="smallcaps">ZCTA</span>-level. This map displays institutional, demographic, and financial variables sortable by academic year and in some cases, commuting distances and school type. <em style="color:#fff;">All dollar amounts are 2019-inflation adjusted.</em></p><p>Use the quick zoom buttons in the top left or type in your desired zip (try your home zip code!) to locate a particular area. Toggle different maps with the drop-downs and buttons; see the corresponding summary statistics on the gradient legend. Hover over the colorful statistical legend in the bottom left corner to highlight areas on the map that correspond to a particular statistical measurement. As you mouse over certain geographic areas, the schools within commuting distance of that zip will illuminate.</p>',
+      MAP_ID: 'jfift.msd_zcta__2022_11-2',
+      INFO: INTRO,
       PLACE_NAME: 'zip',
       PLACE_NAME_PLURAL: 'zips',
       MIN_ZOOM: 6,
@@ -188,8 +193,8 @@ export default {
 
     state: {
       LOA: 'state',
-      MAP_ID: 'jfift.msd_state__2022_10-1',
-      INFO: 'TODO',
+      MAP_ID: 'jfift.msd_state__2022_11-2',
+      INFO: INTRO,
       PLACE_NAME: 'state',
       PLACE_NAME_PLURAL: 'states',
       MIN_ZOOM: 2,

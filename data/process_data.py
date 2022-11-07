@@ -11,6 +11,7 @@ import os
 import sys
 import json
 import simplejson
+import pandas as pd
 from lib import Processor, Mapper
 
 # loa = Level of analysis
@@ -20,8 +21,18 @@ zctaToState = json.load(open('src/zctaToState.json'))
 
 INPUTS_BY_LOA = {
     'zcta': {
-        # Main input CSV
-        'main': 'src/map_data_zcta_2021.csv',
+        # Main input files CSV
+        'files': [{
+            # 'path': 'src/2021/map_data_zcta_2021.csv',
+            # 'cat': {'Y': 2021},
+        # }, {
+            'paths': [
+                'src/2022/map_data_zcta_2022.csv',
+                'src/2022/map_data_zctaschools_2022.csv',
+            ],
+            'join_column': 'ZCTA',
+            'cat': {'Y': 2022},
+        }],
 
         # The main input CSV column that
         # links it to a shape feature
@@ -37,14 +48,34 @@ INPUTS_BY_LOA = {
         'shape_feature_name': lambda props: f"{props['ZCTA5CE20']}, {zctaToState[props['ZCTA5CE20']]}",
     },
     'state': {
-        'main': 'src/map_data_state_2021.csv',
+        'files': [{
+            # 'path': 'src/2021/map_data_state_2021.csv',
+            # 'cat': {'Y': 2021},
+        # }, {
+            'paths': [
+                'src/2022/map_data_state_2022.csv',
+                'src/2022/map_data_stateschools_2022.csv',
+            ],
+            'join_column': 'State',
+            'cat': {'Y': 2022},
+        }],
         'main_feature_id': 'State',
         'shape': 'src/geo/state/cb_2021_us_state_500k.shp',
         'shape_feature_id': 'STUSPS',
         'shape_feature_name': 'NAME',
     },
     'county': {
-        'main': 'src/map_data_county_2021.csv',
+        'files': [{
+            # 'path': 'src/2021/map_data_county_2021.csv',
+            # 'cat': {'Y': 2021},
+        # }, {
+            'paths': [
+                'src/2022/map_data_county_2022.csv',
+                'src/2022/map_data_countyschools_2022.csv',
+            ],
+            'join_column': 'County',
+            'cat': {'Y': 2022},
+        }],
         'main_feature_id': 'County',
         'shape': 'src/geo/county/cb_2021_us_county_500k.shp',
         'shape_feature_id': 'GEOID',
@@ -58,7 +89,8 @@ INPUTS = INPUTS_BY_LOA[LOA]
 # Maybe should have been called "facets"
 CATEGORIES = {
     'Y': [
-        '2021',
+        # '2021',
+        '2022',
     ],
     'R': [
         'ALL',
@@ -102,7 +134,61 @@ QUERY_FIELDS = {
     'med_bal_sh_obal_rankNat': ['Y'],
     'pct_bal_grt': ['Y'],
     'pct_bal_grt_rankNat': ['Y'],
+    'pct_bal_grt_rankNat': ['Y'],
+
+    # School-level data
+    'n_allschools': ['Y'],
+    'dsug_allschools': ['Y'],
+    'gr_allschools': ['Y'],
+    'avgtf_allschools': ['Y'],
+    'n_public': ['Y'],
+    'dsug_public': ['Y'],
+    'gr_public': ['Y'],
+    'avgtf_public': ['Y'],
+    'n_private': ['Y'],
+    'dsug_private': ['Y'],
+    'gr_private': ['Y'],
+    'avgtf_private': ['Y'],
+    'n_4yr': ['Y'],
+    'dsug_4yr': ['Y'],
+    'gr_4yr': ['Y'],
+    'avgtf_4yr': ['Y'],
+    'n_not4yr': ['Y'],
+    'dsug_not4yr': ['Y'],
+    'gr_not4yr': ['Y'],
+    'avgtf_not4yr': ['Y'],
+    'n_public4yr': ['Y'],
+    'dsug_public4yr': ['Y'],
+    'gr_public4yr': ['Y'],
+    'avgtf_public4yr': ['Y'],
 }
+SCHOOL_FIELDS = [
+    'n_allschools',
+    'dsug_allschools',
+    'gr_allschools',
+    'avgtf_allschools',
+    'n_public',
+    'dsug_public',
+    'gr_public',
+    'avgtf_public',
+    'n_private',
+    'dsug_private',
+    'gr_private',
+    'avgtf_private',
+    'n_4yr',
+    'dsug_4yr',
+    'gr_4yr',
+    'avgtf_4yr',
+    'n_not4yr',
+    'dsug_not4yr',
+    'gr_not4yr',
+    'avgtf_not4yr',
+    'n_public4yr',
+    'dsug_public4yr',
+    'gr_public4yr',
+    'avgtf_public4yr',
+]
+
 # Queries may want to include multiple subcategories
 # even if they aren't facted over all of them.
 # E.g. say `avg_bal` is faceted by Y (by year).
@@ -111,7 +197,13 @@ QUERY_FIELDS = {
 # `avg_bal.2021.BLACK, avg_bal.2021.WHITE, etc`.
 # QUERY_CATEGORIES defines what additional categories,
 # beyond the defined facets in QUERY_FIELDS, should be used.
-QUERY_CATEGORIES = CATEGORIES
+QUERY_CATEGORIES = {
+    'default': CATEGORIES,
+}
+for field in SCHOOL_FIELDS:
+    QUERY_CATEGORIES[field] = {
+        'Y': CATEGORIES['Y']
+    }
 
 # Use these instead of the actual data max
 # To deal with outliers squashing the visual data range
@@ -124,6 +216,8 @@ RANGES = {
 
 # Get a column name given a field name and categories
 def col_for_cat(field, cat):
+    if field in SCHOOL_FIELDS:
+        return field
     if cat.get('R', 'ALL') == 'ALL':
         return field
     else:
@@ -138,10 +232,18 @@ if __name__ == '__main__':
             feat_id_col=INPUTS['main_feature_id'],
             ranges=RANGES)
 
-    processor.extract_data(
-            INPUTS['main'],
-            {'Y': 2021},
-            col_for_cat)
+    for f in INPUTS['files']:
+        path = f.get('path')
+        if 'paths' in f:
+            col = f['join_column']
+            dfs = [pd.read_csv(f).set_index(col) for f in f['paths']]
+            df = pd.concat(dfs, axis=1, join='inner').reset_index()
+            df.to_csv('/tmp/data.csv', index=None)
+            path = '/tmp/data.csv'
+        processor.extract_data(
+                path,
+                f['cat'],
+                col_for_cat)
     processor.update_meta()
 
     mapper = Mapper()

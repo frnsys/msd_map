@@ -100,10 +100,11 @@ class Processor:
                         # Query fields handled slightly differently
                         else:
                             # Create all subcategory combinations
+                            query_cats = self.query_categories.get(field, self.query_categories['default'])
                             sub_cats = [{}]
-                            other_keys = [k for k in self.query_categories.keys() if k not in cat]
+                            other_keys = [k for k in query_cats.keys() if k not in cat]
                             for k in other_keys:
-                                sub_cats = sum(([{**c, k: v} for v in self.query_categories[k]] for c in sub_cats), [])
+                                sub_cats = sum(([{**c, k: v} for v in query_cats[k]] for c in sub_cats), [])
 
                             key = self.labeler.keyForCat(cat)
                             for sc in sub_cats:

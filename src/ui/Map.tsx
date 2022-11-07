@@ -97,9 +97,20 @@ function MapTool({config}: {config: MapConfig}) {
     });
     setMap(map_);
   }, []);
+
+  // Update map props when props change
   React.useEffect(() => {
-    if (map) map.set('main', props);
+    if (map && map.map.loaded()) map.set('main', props);
   }, [props]);
+
+  // Update map props when category changes
+  React.useEffect(() => {
+    let newProps = props.map((prop) => {
+      let [p, ..._] = util.keyParts(prop.key);
+      return config.PROPS[util.propForCat(p, cat)];
+    });
+    setProps(newProps);
+  }, [cat]);
 
   // Resize the map when visibility changes
   const visible = useVisible(mapEl);
@@ -116,6 +127,7 @@ function MapTool({config}: {config: MapConfig}) {
     let newProps = propKeys.map((p) => config.PROPS[util.propForCat(p, cat)]);
     setProps(newProps);
   }, [config]);
+
   const onPlaceSelect = React.useCallback((bbox: Bounds, place: string) => {
     map.fitBounds(bbox);
     map.featsByProp(MAP.SOURCE, 'id', place, (feats) => {
@@ -124,9 +136,11 @@ function MapTool({config}: {config: MapConfig}) {
       setFeats([feat]);
     });
   }, [map]);
+
   const onRegionSelect = React.useCallback((bbox: Bounds) => {
     map.fitBounds(bbox);
   }, [map]);
+
   const hideTooltip = React.useCallback(() => {
     setTipState((cur) => {
       return {...cur, display: 'none'};
@@ -168,7 +182,15 @@ function MapTool({config}: {config: MapConfig}) {
         category={cat}
         features={feats}
         defaultMsg={config.INFO}
-        placeNamePlural={config.PLACE_NAME_PLURAL} />
+        placeNamePlural={config.PLACE_NAME_PLURAL}
+        setYear={(year: string) => {
+          setCat((cat) => {
+            let _cat = {...cat};
+            _cat['Y'] = year;
+            return _cat;
+          });
+        }}
+      />
     </section>
   </div>
 }

@@ -2,6 +2,16 @@ import API from '@/api';
 import util from '@/util';
 import * as React from 'react';
 import TableGroup from './Table';
+import { CATS } from '@/config';
+
+const SCHOOL_TYPES = {
+  'All': 'allschools',
+  'Public': 'public',
+  'Public Bachelors': 'public4yr',
+  'Private': 'private',
+  'Bachelors': '4yr',
+  'Associates & Below': 'not4yr',
+};
 
 const COLS = [
   {key: 'R:BLACK', label: 'Black'},
@@ -63,20 +73,19 @@ function makeMedAvgTables(label: string, key: string, fmt: Fmt, data: Data) {
 }
 
 type Data = {[key:string]: number};
-function describePlace(data: Data) {
-  let label = data['name'];
+function describePlace(data: Data, cat: Category) {
   let body = <>No data for this place.</>;
   if ('med_bal' in data) {
     body = <>
-      <TableGroup title="Student Debt Balance" year={2022}
-        tables={makeMedAvgTables('Student Debt', 'bal', fmtOrNA, data)} />
-      <TableGroup title="Tract-Level Individual Income" year={2022}
-        tables={makeMedAvgTables('Income', 'inc', fmtOrNA, data)} />
-      <TableGroup title="Student-Debt-to-Income Ratio" year={2022}
+      <TableGroup title="Student Debt Balance" year={cat['Y']}
+        tables={makeMedAvgTables('Student Debt', 'bal', curOrNA, data)} />
+      <TableGroup title="Tract-Level Individual Income" year={cat['Y']}
+        tables={makeMedAvgTables('Income', 'inc', curOrNA, data)} />
+      <TableGroup title="Student-Debt-to-Income Ratio" year={cat['Y']}
         tables={makeMedAvgTables('Debt-to-Income Ratio', 'dti', pctOrNA, data)} />
-      <TableGroup title="Debt Balance as a Share of Origination Balance" year={2022}
+      <TableGroup title="Debt Balance as a Share of Origination Balance" year={cat['Y']}
         tables={makeMedAvgTables('Debt-to-Origination Ratio', 'bal_sh_obal', pctOrNA, data)} />
-      <TableGroup title="Percent of student loans where current balance is greater than origination balance" year={2022}
+      <TableGroup title="Percent of student loans where current balance is greater than origination balance" year={cat['Y']}
         tables={[
           makeSummaryTable([{
             label: 'Percent Greater than Origination',
@@ -92,15 +101,7 @@ function describePlace(data: Data) {
         ]} />
     </>;
   }
-  return <>
-    <h2>{label}</h2>
-    <div className="info-body">
-      {body}
-      <ul className="footnotes">
-        <li>Footnote test</li>
-      </ul>
-    </div>
-  </>;
+  return body;
 }
 
 interface Props {
@@ -109,18 +110,27 @@ interface Props {
   features: MapFeature[],
   defaultMsg: string,
   placeNamePlural: string,
+
+  setYear: (year: string) => void,
 }
 
-const Info = ({loa, placeNamePlural, defaultMsg, category, features}: Props) => {
-  const [contents, setContents] = React.useState<JSX.Element | JSX.Element[]>();
+const Info = ({loa, placeNamePlural, defaultMsg, category, features, setYear}: Props) => {
+  const [data, setData] = React.useState([]);
+  const [schoolType, setSchoolType] = React.useState('allschools');
+
+  const yearSelector = <div className="inline-selector">
+    {Object.keys(CATS['Y']).map((k) => {
+      return <span
+        key={k}
+        className={k == category['Y'] ? 'selected' : ''}
+        onClick={() => setYear(k)}>
+        {k}
+      </span>
+    })}
+  </div>
 
   React.useEffect(() => {
-    if (features.length === 0) {
-      setContents(<>
-        <h2>Map Guide</h2>
-        <div className="info-body" dangerouslySetInnerHTML={{__html: defaultMsg}} />
-      </>);
-    } else {
+    if (features.length > 0) {
       const api = new API(loa);
       const key = util.keyForCat(category);
 
@@ -149,19 +159,11 @@ const Info = ({loa, placeNamePlural, defaultMsg, category, features}: Props) => 
             }
           });
 
-          return <div key={feat.id}>
-            {describePlace(d)}
-            {otherPlaces.length > 0 ?
-              <div className="other-places">
-                <span className="variable-name">
-                  Other {placeNamePlural} here</span>: {otherPlaces.slice(0, 5).join(', ')}
-                  {otherPlaces.length > 5 ? `, ... +${otherPlaces.length-5} more (zoom in to see).` : ''}
-              </div> : ''}
-          </div>
+          return {feature: feat, data: d, otherPlaces};
         });
-        setContents(contents);
-      });
 
+        setData(contents);
+      });
     }
   }, [features, category]);
 
@@ -170,7 +172,74 @@ const Info = ({loa, placeNamePlural, defaultMsg, category, features}: Props) => 
   //     return <p className="no-place">This geographic area does not have a resident population and therefore does not have any {placeNamePlural}. Typical examples of this region include national or state parks and large bodies of water.</p>
   // }
 
-  return <div className="info">{contents}</div>
+  let contents: JSX.Element | JSX.Element[] = <>
+    <h2>
+      <div>Map Guide</div>
+      {yearSelector}
+    </h2>
+    <div className="info-body" dangerouslySetInnerHTML={{__html: defaultMsg}} />
+  </>;
+  if (features.length > 0) {
+    contents = data.map(({feature, data, otherPlaces}) => {
+      let d = data;
+      let feat = feature;
+      return <div key={feat.id}>
+        <h2>
+          <div>{d['name']}</div>
+          {yearSelector}
+        </h2>
+        <div className="info-body">
+          {describePlace(d, category)}
+
+          <div className="info-school-summary">
+            <h4>{category['Y']} Higher Education Market</h4>
+            <div className="inline-selector">
+              {Object.entries(SCHOOL_TYPES).map(([k, v]) => {
+                return <span
+                  key={v}
+                  className={v == schoolType ? 'selected' : ''}
+                  onClick={() => setSchoolType(v)}>
+                {k}</span>
+              })}
+            </div>
+            <table>
+              <tr>
+                <td>Number of Higher Ed Institutions</td>
+                <td>{fmtOrNA(d[`n_${schoolType}`])}</td>
+              </tr>
+              <tr>
+                <td>Degree-seeking Undergraduate Students</td>
+                <td>{fmtOrNA(d[`dsug_${schoolType}`])}</td>
+              </tr>
+              <tr>
+                <td>Average Tuition & Fees</td>
+                <td>{curOrNA(d[`avgtf_${schoolType}`])}</td>
+              </tr>
+              <tr>
+                <td>Graduate Students</td>
+                <td>{fmtOrNA(d[`gr_${schoolType}`])}</td>
+              </tr>
+            </table>
+          </div>
+
+          <ul className="footnotes">
+            <li>Footnote test</li>
+          </ul>
+        </div>
+
+        {otherPlaces.length > 0 ?
+          <div className="other-places">
+            <span className="variable-name">
+              Other {placeNamePlural} here</span>: {otherPlaces.slice(0, 5).join(', ')}
+              {otherPlaces.length > 5 ? `, ... +${otherPlaces.length-5} more (zoom in to see).` : ''}
+          </div> : ''}
+      </div>
+    });
+  }
+
+  return <div className="info">
+    {contents}
+  </div>
 }
 
 const formatter = new Intl.NumberFormat('en-US', {
@@ -178,13 +247,19 @@ const formatter = new Intl.NumberFormat('en-US', {
   currency: 'USD',
   minimumFractionDigits: 2
 });
-const fmt = formatter.format;
 
 function fmtOrNA(val: number) {
   if (val === undefined || val === null) {
     return 'N/A';
   } else {
-    return fmt(val);
+    return val.toLocaleString();
+  }
+}
+function curOrNA(val: number) {
+  if (val === undefined || val === null) {
+    return 'N/A';
+  } else {
+    return formatter.format(val);
   }
 }
 function pctOrNA(val: number) {

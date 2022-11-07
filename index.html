@@ -73,49 +73,33 @@
         </section>
         <section class="text">
             <h1>About Our Sources</h1>
-            <p>This analysis uses school-reported Integrated Postsecondary Education Data System (<span class="smallcaps">IPEDS</span>) data from the final releases for the academic years of 2008–09 to 2017–18, and from the provisional release for the academic year 2018–2019. For median income and population estimates, we used data from the American Community Survey. For young-adult student debt balances, we used Experian’s consumer credit archives. School isochrone creation for all driving distances was made using OpenStreetMap. Mapping was done with MapBox and the <span class="smallcaps">US</span> Census Bureau’s 2018 <span class="smallcaps">TIGER</span>/Line Shapefiles. For institutions in the 2008–2009 years as well as all branch campuses, latitudinal and longitudinal coordinates were determined using Geocod.io. Median income, school prices, and debt values were adjusted to 2019 dollars using the Federal Reserve Consumer Price Index (all items) data.</p>
+            <p>This analysis uses school-reported Integrated Postsecondary Education Data System (<span class="smallcaps">IPEDS</span>) data from the final releases for the academic year of 2020–2021 and from the provisional release for the academic year 2021–2022. For median income and population estimates, we used data from the 5-year American Community Survey (2016–2020). For young-adult student debt balances, we used Experian’s consumer credit archives. Median income, school prices, and debt values were adjusted to 2022 dollars using the Federal Reserve Consumer Price Index (all items) data.</p>
         </section>
         <section id="download" class="text">
             <h1>Download the Data</h1>
             <ul>
-                <li><a href="https://drive.google.com/file/d/1flY21AeZXX1atp3ZM3yUNbmsorPefDEK/view?usp=sharing">Data Dictionary</a></li>
-                <li><a href="https://drive.google.com/file/d/199P_5s8FErF3up66hWQ6q5_5YAOTYiDK/view?usp=sharing">Master School List (Academic Year 2008-09 to 2018-19)</a></li>
-                <li><a href="https://drive.google.com/file/d/11AlNjx38m8P4ysf0yaa2r1skIjOqdDRA/view?usp=sharing">Zip-Code Level (30 minute driving distance)</a></li>
-                <li><a href="https://drive.google.com/file/d/17wOw7scUaM4gFxS8Lx8ZX0E7Wx7GYHfY/view?usp=sharing">Zip-Code Level (45 minute driving distance)</a></li>
-                <li><a href="https://drive.google.com/file/d/1lBp3FQ3yo-dSFJoMqvr0fJojOQK8FzWe/view?usp=sharing">Zip-Code Level (60 minute driving distance)</a></li>
+                <li><a href="#">Data Dictionary TODO</a></li>
             </ul>
         </section>
         <section id="methodology" class="text">
             <h1>Methodology</h1>
-            <p>The academic years represented here are from 2008–2009 to 2018–2019. For more information on the implications of the map and our preliminary findings, read our report <a href="#TODO">here</a>. Below, find explanations of all variables.</p>
-            <p>Variables derived for each <span class="smallcaps">ZCTA</span>:</p>
+            <p>Variables derived for each geographical area:</p>
             <ul>
                 <li>
-                    <b>School Concentration Index (<span class="smallcaps">SCI</span>)</b> - We modeled the calculation of the <span class="smallcaps">SCI</span> based on the <a href="https://www.justice.gov/atr/herfindahl-hirschman-index">Herfindahl-Hirschman Index (<span class="smallcaps">HHI</span>)</a>. The <span class="smallcaps">HHI</span> calculates market share for a particular company within a particular market; we calculate enrollment share for a particular school in a particular zip code tabulation area. <span class="smallcaps">SCI</span> ranges from 0 (perfect competition) to 10,000 (complete monopoly). A <span class="smallcaps">SCI</span> of 10,000 indicates one school accounts for all the enrollment for that <span class="smallcaps">ZCTA</span>.
-                    <p>$$ \text{SCI}_{\text{ZCTA}} = s_1^2 + s_2^2 + \dots + s_n^2 $$</p>
-                    <div>Every <span class="smallcaps">ZCTA</span> has a unique School Concentration Index where \(n\) number of schools in each <span class="smallcaps">SCI</span> equals the amount of schools where it is possible to drive to the associated <span class="smallcaps">ZCTA</span> within 30, 45, or 60 minutes, depending on the selected map view. Each \(s_n\) is the undergraduate enrollment share of a school within the geographic area, expressed as a whole number rather than a fraction.</div>
+                    <b>Number of Schools</b> - The number of schools displayed for each state/county/zip is a tally of the schools within the geographical area.
                 </li>
-                <li><b>Number of Schools</b> - The number of schools displayed for each <span class="smallcaps">ZCTA</span> is a tally of the schools considered within a 30, 45, or 60 minute drive from at least a subsection of the <span class="smallcaps">ZCTA</span>. The <em>Number of schools</em> variable takes a whole number.</li>
-                <li>
-                    <b>Enrollment</b> - The enrollment displayed for each <span class="smallcaps">ZCTA</span> is the summation of the enrollment for every school considered within a 30, 45, or 60 minute drive from at least a subsection of the <span class="smallcaps">ZCTA</span>. The <em>Enrollment</em> variable takes a whole number and is sourced from <span class="smallcaps">IPEDS</span> 12-Month Enrollment Table. This number indicates how many unduplicated undergraduate individuals enrolled for credit the institution served over a 12 month period, regardless of when the individual enrolled.
-                    <p>$$ \text{Enrollment}_{\text{ZCTA}} = \text{enrollment}_1 + \text{enrollment}_2 + \dots + \text{enrollment}_n $$</p>
-                </li>
-
-                <li>
-                    <b>25 Mile Zone Population Estimate</b> - In place of population estimates for individual <span class="smallcaps">ZCTA</span>, we list the summation of all the population estimates for the <span class="smallcaps">ZCTA</span>s within 25 miles of the selected area; the purpose being to complement the zone-type scale used for the <span class="smallcaps">SCI</span>. The 25 mile population zone originates from the mathematical centroid of each <span class="smallcaps">ZCTA</span>.
-                    <p>$$ \text{Pop}_{\text{ZCTA-ZONE}} = \text{pop}_1 + \text{pop}_2 + \dots + \text{pop}_n $$</p>
-                    <div>Every <span class="smallcaps">ZCTA</span> has a unique <em>25 Mile Zone Population Estimate</em> where \(n\) number of <span class="smallcaps">ZCTA</span>s in each <span class="smallcaps">ZCTA</span>-zone equals the <span class="smallcaps">ZCTA</span>s accessible to the root <span class="smallcaps">ZCTA</span> within 25 miles. Each \(\text{pop}_n\) is the population estimate for that specific <span class="smallcaps">ZCTA</span>. Both \(\text{pop}_n\) and \(\text{Pop}_{\text{ZCTA-ZONE}}\) take a whole number.</div>
+                <b>Enrollment</b> - The enrollment displayed for each state/county/zip is the summation of the enrollment for every school within the geographical area. The Enrollment variable takes a whole number and is sourced from <span class="smallcaps">IPEDS</span> 12-Month Enrollment Table. This value indicates how many unduplicated undergraduate individuals enrolled for credit the institution served over a 12 month period, regardless of when the individual enrolled.
+                    <p>$$ \text{Enrollment}_{\text{area}} = \text{enrollment}_1 + \text{enrollment}_2 + \dots + \text{enrollment}_n $$</p>
                 </li>
                 <li>
-                    <b>Average Net Price</b> - <em>Average Net Price</em> is the average total cost of attending minus the average amount of federal, state or local government, or institutional grant and scholarship aid. Total cost of attendance is the sum of tuition, required fees, books and supplies, and the weighted average of room and board and other expenses. The value displayed for each <span class="smallcaps">ZCTA</span> is the mean of the average net price of each school considered within a 30, 45, or 60 minute drive from at least a subsection of the <span class="smallcaps">ZCTA</span>, weighted by the enrollment number of each school. The average net price per school is the average of the following variables sourced from <span class="smallcaps">IPEDS</span>: <span class="smallcaps">NPIS412, NPIS422, NPIS432, NPIS442, NPIS452, NPT412, NPT422, NPT432, NPT442, NPT452</span>. These variables from <span class="smallcaps">IPEDS</span> show the average price of attendance for full-time, first-time degree/certificate-seeking undergraduates paying the in-state or in-district tuition rate who were awarded title <span class="smallcaps">IV</span> federal student aid by varying degrees of student income level. All average net price values have been adjusted for inflation using the consumer price index (<span class="smallcaps">CPI</span>) deflator and are in 2019 <span class="smallcaps">US</span> dollars.
+                    <b>Average Net Price</b> - Average Net Price is the average total cost of attending minus the average amount of federal, state or local government, or institutional grant and scholarship aid. Total cost of attendance is the sum of tuition, required fees, books and supplies, and the weighted average of room and board and other expenses. The value displayed for each state/county/zip is the mean of the average net price of all schools within the geographical area, weighted by the enrollment number of each school. The average net price per school is the average of the following variables sourced from <span class="smallcaps">IPEDS</span>: <em>NPIS412, NPIS422, NPIS432, NPIS442, NPIS452, NPT412, NPT422, NPT432, NPT442, NPT452</em>. These variables from <span class="smallcaps">IPEDS</span> show the average price of attendance for full-time, first-time degree/certificate-seeking undergraduates paying the in-state or in-district tuition rate who were awarded title <span class="smallcaps">IV</span> federal student aid by varying degrees of student income level. All average net price values have been adjusted for inflation using the consumer price index (<span class="smallcaps">CPI</span>) deflator and are in 2022 <span class="smallcaps">US</span> dollars.
                 </li>
                 <li>
-                    <b>Average Tuition and Fees</b> - <em>Average Tuition and Fees</em> is the mean published tuition and fees of each school considered within a 30, 45, or 60 minute drive from at least a subsection of the <span class="smallcaps">ZCTA</span>, weighted by the enrollment number of each school. This is derived from each school’s published tuition and fees, for the given academic year, for academic year reporters only. Price of attendance for full-time, first-time undergraduate students for the FULL ACADEMIC YEAR: (Tuition and fees are those amounts used by your financial aid office for determining eligibility for student financial assistance) These data are published at the <span class="smallcaps">IPEDS</span> College Navigator Web site.
+                    <b>Average Tuition and Fees</b> - Average Tuition and Fees is the mean published tuition and fees of all schools within each state/county/zip, weighted by the enrollment number of each school. This is derived from each school’s published tuition and fees, for the given academic year, for academic year reporters only. Price of attendance for full-time, first-time undergraduate students for the <span class="smallcaps">FULL ACADEMIC YEAR</span>: (Tuition and fees are those amounts used by your financial aid office for determining eligibility for student financial assistance) These data are published at the <span class="smallcaps">IPEDS</span> College Navigator Website.
                 </li>
             </ul>
-            <p>Clear-cut variables per <span class="smallcaps">ZCTA</span>:</p>
+            <p>Clear-cut variables per state/county/zip:</p>
             <ul>
-                <li><b>Zip Code Tabulation Area</b> - (Via the <span class="smallcaps">US</span> Census Bureau) <span class="smallcaps">ZCTA</span>s are generalized areal representations of United States Postal Service <span class="smallcaps">ZIP</span> Code service areas.</li>
                 <li><b>Institution Name</b> - These names are sourced from the <span class="smallcaps">IPEDS</span> Institutional Characteristics table. It represents the Institution or Entity Name.</li>
                 <li><b>Map Name</b> - The institution name plus the name of the campus / branch of that institution. The <em>Map Name</em> will equal <em>Institution Name</em> if the institution has only one campus / branch. </li>
                 <li><b>Level of Institution</b> - Level of Institutions are sourced from the <span class="smallcaps">IPEDS</span> Institutional Characteristics table. A classification of whether an institution’s programs are 4-year or higher (4 year aka <em>Bachelors</em>), 2-but-less-than 4-year (2 year aka <em>Associates</em>), or less than 2-years (aka <em>Below Associate</em>).</li>
@@ -126,23 +110,20 @@
                         <li><em>Private for-profit institution</em> - A private institution in which the individual(s) or agency in control receives compensation other than wages, rent, or other expenses for the assumption of risk.</li>
                     </ul>
                 </li>
-                <li><b>Population Estimate</b> -
+                <li><b>Average / Median Total Balance for Student Loan Borrowers aged 18–35</b> - This estimate represents the state/county/zip median balance on total (deferred plus non-deferred) student loan debt in 2022, conditional on an individual being aged 18-35 and having a positive non-zero student loan balance.
                     <ul>
-                        <li><em>For academic years 2010–2011 to 2017–2018</em>: Estimate; American Community Survey 5-year Estimates for the Total Population of the <span class="smallcaps">ZCTA</span> (or Congressional District). Data are based on a sample and are subject to sampling variability. Population Estimates are not available for <span class="smallcaps">US</span> Territories besides Puerto Rico.</li>
-                        <li><em>For academic years 2008-2009 and 2009-2010</em>: Estimate; American Community Survey 5-year Estimates for the Total Population of Census tract (or Congressional District). Utilized the <a href="https://www.huduser.gov/portal/datasets/usps_crosswalk.html"><span class="smallcaps">U.S.</span> Department of Housing and Urban Development (<span class="smallcaps">HUD</span>) United States Postal Service <span class="smallcaps">ZIP</span> Code Crosswalk Files</a> (Tract to <span class="smallcaps">ZIP</span>) to estimate Total Population of <span class="smallcaps">ZCTA</span> by summing the product of the Census tract total population and the residential ratio for each <span class="smallcaps">ZIP</span> code associated with that Census tract.</li>
+                        <li>The estimate is sourced from a cross-sectional credit archive sample by Experian Information Solutions of one million 18–35 year olds with recent student loan activity randomly selected at the end of June. A county or zip with missing data indicates there were not enough sampled individuals to create an estimate.</li>
                     </ul>
                 </li>
-                <li><b>Median Income Estimate</b> -
+                <li><b>Average / Median Income for Student Loan Borrowers aged 18–35</b> - This represents the state/county/zip average/median estimated total income in 2022, conditional on an individual being 18–35 years of age and having a non-zero student debt loan balance.
                     <ul>
-                        <li><em>For academic years 2010–2011 to 2017–2018</em>: Estimate; American Community Survey 5-year Estimates for the Median household income in the past 12 months (2019 inflation-adjusted dollars) of the <span class="smallcaps">ZCTA</span> (or Congressional District). If a <span class="smallcaps">ZCTA</span> does not have a Median Income listed, this indicates that either no sample observations or too few sample observations were available to compute an estimate. Data are based on a sample and are subject to sampling variability. Median Income Estimates are not available for <span class="smallcaps">US</span> Territories besides Puerto Rico.</li>
-                        <li><em>For academic years 2008–2009 and 2009–2010</em>: Estimate; American Community Survey 5-year Estimates for the Median household income in the past 12 months (2019 inflation-adjusted dollars) of the <span class="smallcaps">US</span> Census tract. We then utilized the <a href="https://www.huduser.gov/portal/datasets/usps_crosswalk.html"><span class="smallcaps">U.S.</span> Department of Housing and Urban Development (<span class="smallcaps">HUD</span>) United States Postal Service <span class="smallcaps">ZIP</span> Code Crosswalk Files</a> (Tract to <span class="smallcaps">ZIP</span>) to estimate the Median Income of each <span class="smallcaps">ZCTA</span> by obtaining the weighted average of the product of the Census tract median income and the residential ratio for each <span class="smallcaps">ZIP</span> code associated with that Census tract.</li>
+                        <li>The estimate is sourced from a cross-sectional credit archive sample by Experian Information Solutions of one million 18–35 year olds with recent student loan activity randomly selected at the end of June. A county or zip with missing data indicates there were not enough sampled individuals to create an estimate.</li>
                     </ul>
                 </li>
-                <li><b>Median Total Balance for Student Loan Borrowers aged 18–35</b> - This estimate represents the <span class="smallcaps">ZCTA</span>’s (or Congressional District’s) median per-person balance (2019 inflation-adjusted dollars) on total (deferred plus non-deferred) student loan debt in the particular year, conditional on an individual being aged 18–35 and having a positive non-zero student loan balance.
-                    <ul>
-                        <li>The estimate is sourced from a cross-sectional credit archive sample by Experian Information Solutions of one million 18–35 years old with recent student loan activity; for each year from 2009 to 2019, the million-person sample was randomly selected at the end of June. If a zip has missing data for a particular year it means that there were not enough sampled individuals to create a zip-level estimate.</li>
-                    </ul>
-                </li>
+            </ul>
+            <p>Variables by race:</p>
+            <ul>
+                <li>Because we don’t directly observe race in the credit reporting data, we analyze it at the census tract level by using the individual’s provided census tracts to link the data with the Census Bureau’s American Community Survey 5-year estimates (2016–2020). Individuals are sorted into racial categories based on the racial plurality of the sampled individual’s census tract.</li>
             </ul>
             <p>Exclusion Criteria:</p>
             <ul>
@@ -189,7 +170,7 @@
             </ul>
         </section>
         <footer>
-            © 2019-2020 Jain Family Institute
+            © 2019-2022 Jain Family Institute
         </footer>
     </main>
     <script>
