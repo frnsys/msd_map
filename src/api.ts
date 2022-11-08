@@ -1,26 +1,16 @@
 // API-like interface
 class API {
-  loa: string;
-  prefix: string;
   _cache: {[key:string]: any};
 
-  constructor(loa: string, prefix?: string) {
-    this.loa = loa;
-    this.prefix = prefix || '.';
+  constructor() {
     this._cache = {};
   }
 
-  async dataForKeyPlace(key: string, placeId: string) {
-    let k = `${key}_${placeId}`;
-    if (!(k in this._cache)) {
-      this._cache[k] = await this._getDataForKeyPlace(key, placeId);
+  async get(url: string) {
+    if (!(url in this._cache)) {
+      this._cache[url] = await this._get(url);
     }
-    return Promise.resolve(this._cache[k]);
-  }
-
-  async _getDataForKeyPlace(key: string, placeId: string) {
-    let url = `${this.prefix}/assets/maps/${this.loa}/by_cat/${key}/${placeId}.json`;
-    return this._get(url);
+    return Promise.resolve(this._cache[url]);
   }
 
   async _get(url: string) {
@@ -42,4 +32,25 @@ class API {
   }
 }
 
-export default API;
+export class FeatureAPI extends API {
+  loa: string;
+  prefix: string;
+
+  constructor(loa: string, prefix?: string) {
+    super();
+    this.loa = loa;
+    this.prefix = prefix || '.';
+  }
+
+  async dataForKeyPlace(key: string, placeId: string) {
+    let url = `${this.prefix}/assets/maps/${this.loa}/by_cat/${key}/${placeId}.json`;
+    return this.get(url);
+  }
+}
+
+export class SchoolAPI extends API {
+  async dataForSchool(id: string) {
+    let url = `assets/maps/schools/${id}.json`;
+    return this.get(url);
+  }
+}

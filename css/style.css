@@ -102,15 +102,6 @@ h2 {
   color: #888;
 }
 
-.stage {
-  height: 80vh;
-  display: flex;
-  position: relative;
-  overflow: hidden;
-  border-bottom: 1px solid #333;
-  margin: 0 0 2em 0;
-}
-
 main > section:first-of-type {
   margin-top: 4em !important;
 }

@@ -1,3 +1,11 @@
+.stage {
+  height: 80vh;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid #333;
+}
+
 .map {
   height: 100%;
   width: 100%;
@@ -6,6 +14,7 @@
   flex: 3;
   position: relative;
   font-family: 'Founders Grotesk', sans-serif;
+  margin: 0 0 2em 0:
 }
 .map-tabs {
   display: flex;
@@ -52,6 +61,17 @@
   border: 1px solid #111;
   border-radius: 2px;
   user-select: none;
+}
+.map-tooltip h5 {
+  margin: 0;
+}
+.map-tooltip .tip-school-info {
+  margin: 0.25em 0;
+  font-size: 0.9em;
+}
+.map-tooltip .tip-school-info em {
+  font-style: normal;
+  text-decoration: underline;
 }
 
 .map-notification {
@@ -345,12 +365,13 @@
 .icon-legend {
   color: #fff;
   padding: 0.5em;
-  background: #5d5db6;
+  background: #6945A9;
+  font-family: 'Founders Grotesk', sans-serif;
+  border-radius: 2px;
   position: absolute;
   top: 0.4em;
   right: 0.5em;
   z-index: 1;
-  font-family: 'Founders Grotesk', sans-serif;
 }
 .icon-legend--icons {
   display: flex;
@@ -389,15 +410,6 @@
   cursor: pointer;
   z-index: 1;
 }
-.icon-legend-close {
-  font-weight: bold;
-  position: absolute;
-  right: 0.25em;
-  top: 0.1em;
-  cursor: pointer;
-  display: none;
-  font-size: 1em !important;
-}
 
 .other-places {
   font-size: 0.75em;
@@ -421,7 +433,7 @@
   top: 0.25em;
   left: 0.25em;
   margin-bottom: 0.25em;
-  max-width: 540px;
+  max-width: 420px;
   z-index: 1;
   font-family: 'Founders Grotesk', sans-serif;
 }
@@ -504,15 +516,6 @@ button {
 .inline-selector span.selected,
 .inline-selector span:hover {
   opacity: 1;
-}
-
-@media only screen and (max-width: 1080px) {
-  .icon-legend {
-    display: none;
-  }
-  .icon-legend-close {
-    display: block;
-  }
 }
 
 @media only screen and (max-width: 960px) {

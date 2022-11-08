@@ -8,13 +8,15 @@ interface Props {
   props: Prop[],
   features: MapFeature[],
   noDataLabel: string,
-  children: JSX.Element,
+  children?: JSX.Element,
 }
 
+const stats: string[] = [];
+
 function MapLegend({props, map, features, noDataLabel, children}: Props) {
-  const otherColors: Colors = {
+  const otherColors: Colors = React.useMemo(() => ({
     [noDataLabel]: '#520004'
-  };
+  }), [noDataLabel]);
 
   const onBinEnter = React.useCallback((filter: MapboxExpression) => {
     map.setFilter(MAP.SOURCE, filter, {mute: true}, {mute: false});
@@ -27,11 +29,11 @@ function MapLegend({props, map, features, noDataLabel, children}: Props) {
     props={props}
     features={features}
     special={otherColors}
-    stats={[]}
+    stats={stats}
     onBinEnter={onBinEnter}
     onBinLeave={onBinLeave}>
     {children}
   </Legend>
 }
 
-export default MapLegend;
+export default React.memo(MapLegend);

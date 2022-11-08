@@ -7,7 +7,6 @@ class Map {
   painter: Painter;
   focusedLock: boolean;
   focused: SourceMapping<MapFeature[]>;
-  featuresUnderMouse: SourceMapping<Set<MapFeature>>;
   sources: SourceMapping<MapSource>;
   filters: SourceMapping<MapFilter>;
 
@@ -29,7 +28,6 @@ class Map {
       return acc;
     }, {} as SourceMapping<MapFilter>);
 
-    this.featuresUnderMouse = {};
     this.focused = Object.keys(sources).reduce((acc, s) => {
       acc[s] = [];
       return acc;
@@ -66,18 +64,7 @@ class Map {
       // since it can be a big performance hit
       if (!this.map.isMoving() && !this.map.isZooming()) {
         let features = this.featuresAtPoint(e.point);
-        let haveNew = Object.keys(features).some((k) => {
-          return features[k].filter(x => {
-            return !this.featuresUnderMouse[k] || !this.featuresUnderMouse[k].has(x.id);
-          }).length > 0;
-        });
-        if (haveNew) {
-          this.featuresUnderMouse = Object.keys(features).reduce((acc, s) => {
-            acc[s] = new Set(features[s].map((f) => f.id));
-            return acc;
-          }, {} as SourceMapping<Set<MapFeature>>);
-          onMouseMove(features, e);
-        }
+        onMouseMove(features, e);
       }
     });
 

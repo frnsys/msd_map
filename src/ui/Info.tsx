@@ -1,7 +1,7 @@
-import API from '@/api';
 import util from '@/util';
 import * as React from 'react';
 import TableGroup from './Table';
+import { FeatureAPI } from '@/api';
 import { CATS } from '@/config';
 
 const SCHOOL_TYPES = {
@@ -131,7 +131,7 @@ const Info = ({loa, placeNamePlural, defaultMsg, category, features, setYear}: P
 
   React.useEffect(() => {
     if (features.length > 0) {
-      const api = new API(loa);
+      const api = new FeatureAPI(loa);
       const key = util.keyForCat(category);
 
       // Get place data for the current LOA
@@ -203,22 +203,24 @@ const Info = ({loa, placeNamePlural, defaultMsg, category, features, setYear}: P
               })}
             </div>
             <table>
-              <tr>
-                <td>Number of Higher Ed Institutions</td>
-                <td>{fmtOrNA(d[`n_${schoolType}`])}</td>
-              </tr>
-              <tr>
-                <td>Degree-seeking Undergraduate Students</td>
-                <td>{fmtOrNA(d[`dsug_${schoolType}`])}</td>
-              </tr>
-              <tr>
-                <td>Average Tuition & Fees</td>
-                <td>{curOrNA(d[`avgtf_${schoolType}`])}</td>
-              </tr>
-              <tr>
-                <td>Graduate Students</td>
-                <td>{fmtOrNA(d[`gr_${schoolType}`])}</td>
-              </tr>
+              <tbody>
+                <tr>
+                  <td>Number of Higher Ed Institutions</td>
+                  <td>{fmtOrNA(d[`n_${schoolType}`])}</td>
+                </tr>
+                <tr>
+                  <td>Degree-seeking Undergraduate Students</td>
+                  <td>{fmtOrNA(d[`dsug_${schoolType}`])}</td>
+                </tr>
+                <tr>
+                  <td>Average Tuition & Fees</td>
+                  <td>{curOrNA(d[`avgtf_${schoolType}`])}</td>
+                </tr>
+                <tr>
+                  <td>Graduate Students</td>
+                  <td>{fmtOrNA(d[`gr_${schoolType}`])}</td>
+                </tr>
+              </tbody>
             </table>
           </div>}
 
@@ -277,4 +279,4 @@ function orNA(val: number) {
   }
 }
 
-export default Info;
+export default React.memo(Info);

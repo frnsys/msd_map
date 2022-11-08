@@ -1,7 +1,9 @@
 import Info from './Info';
 import Map from '@/lib/map';
 import { MAP, COLORS } from '@/config';
+import { SchoolAPI } from '@/api';
 import MapLegend from './map/Legend';
+import IconLegend from './map/IconLegend';
 import PlaceSelector from './map/PlaceSelector';
 import RegionSelector from './map/RegionSelector';
 import PropertySelector from './map/PropertySelector';
@@ -9,6 +11,33 @@ import type { MapMouseEvent } from 'mapbox-gl';
 import util from '@/util';
 import Painter from '@/lib/paint';
 import * as React from 'react';
+
+const schoolAPI = new SchoolAPI();
+const formatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  minimumFractionDigits: 2
+});
+
+const schoolIconLegend = [[{
+  label: 'Public',
+  style: {background: '#33C377'}
+}, {
+  label: 'Private not-for-profit',
+  style: {background: '#ffcc00'}
+}, {
+  label: 'Private for-profit',
+  style: {background: '#05a1ff'}
+}], [{
+  label: 'Bachelor Degree',
+  style: {border: '2px solid #000'}
+}, {
+  label: 'Associate Degree',
+  style: {border: '2px solid #888'}
+}, {
+  label: 'Below Associate Degree',
+  style: {border: '2px solid #fff'}
+}]];
 
 function createMap(
   mapId: string,
@@ -23,6 +52,10 @@ function createMap(
       'type': 'vector',
       'url': `mapbox://${mapId}`
     },
+    'schools': {
+      'type': 'geojson',
+      'data': `assets/maps/schools.geojson`
+    }
   };
 
   const painter = new Painter(COLORS);
@@ -52,7 +85,7 @@ function MapTool({config}: {config: MapConfig}) {
     top: `0px`,
     left: `0px`,
     display: 'none',
-    text: '',
+    text: <></>,
   });
 
   const mapEl = React.useRef();
@@ -63,11 +96,39 @@ function MapTool({config}: {config: MapConfig}) {
       mapEl.current,
       props,
       config.MIN_ZOOM,
+
+      // onMouseMove
       (features, ev) => {
         let feats = features['main'] || [];
-        if (feats.length > 0) {
+        let schools = features['schools'] || [];
+        if (schools.length > 0) {
+          setTipState({...tipState, display: 'none'});
+          let promises = schools.map((s) => schoolAPI.dataForSchool(s.properties.id));
+          Promise.all(promises).then((data) => {
+            let schoolInfo = data.map((d) => {
+              return <div className="tip-school-info" key={d['MAPNAME']}>
+                <em>{d['MAPNAME']}</em>
+                <div>Tuition & Fees: {formatter.format(d['Tuition & Fees'])}</div>
+                <div>Undergraduates: {d['Degree-seeking Undergraduates'] || 'N/A'}</div>
+                <div>Graduates: {d['Graduate Students'] || 'N/A'}</div>
+              </div>
+            });
+            setTipState({
+              text: <>
+                {feats.length > 0 && <h5>{feats[0].properties.name}</h5>}
+                {schoolInfo}
+              </>,
+              display: 'block',
+              left: `${ev.originalEvent.offsetX+10}px`,
+              top: `${ev.originalEvent.offsetY+10}px`,
+            });
+
+          });
+        } else if (feats.length > 0) {
           setTipState({
-            text: feats[0].properties.name,
+            text: <>
+              <h5>{feats[0].properties.name}</h5>
+            </>,
             display: 'block',
             left: `${ev.originalEvent.offsetX+10}px`,
             top: `${ev.originalEvent.offsetY+10}px`,
@@ -76,19 +137,25 @@ function MapTool({config}: {config: MapConfig}) {
           setTipState({...tipState, display: 'none'});
         }
       },
+
+      // onFocusFeatures
       (features) => {
         // If features, render
-        let feats = features['main'];
-        if (feats.length > 0) {
-          map_.focusFeatures(MAP.SOURCE, feats);
-          setFeats(feats);
+        let newFeats = features['main'];
+        if (newFeats.length > 0) {
+          map_.focusFeatures(MAP.SOURCE, newFeats);
+          setFeats((feats) => {
+            // Only update if the features have actually changed;
+            let fingerprint = newFeats.map((f) => f.id.toString()).join('-');
+            let existing = feats.map((f) => f.id.toString()).join('-');
+            if (fingerprint === existing) return feats;
+
+            return newFeats;
+          });
 
         // Otherwise, hide
-        } else {
-          // TODO?
-          // if (features['composite']) {
-          //   info.empty();
-          // }
+        // if we don't already have no feats
+        } else if (feats.length > 0){
           setFeats([]);
         }
       });
@@ -133,7 +200,7 @@ function MapTool({config}: {config: MapConfig}) {
     map.featsByProp(MAP.SOURCE, 'id', place, (feats) => {
       let feat = feats[0];
       map.focusFeatures(MAP.SOURCE, [feat]);
-      setFeats([feat]);
+      // setFeats([feat]);
     });
   }, [map]);
 
@@ -146,6 +213,25 @@ function MapTool({config}: {config: MapConfig}) {
       return {...cur, display: 'none'};
     });
   }, []);
+
+  const setYear = React.useCallback((year: string) => {
+    setCat((cat) => {
+      let _cat = {...cat};
+      _cat['Y'] = year;
+      return _cat;
+    });
+  }, []);
+
+  // Necessary to prevent re-renders in MapLegend;
+  // see <https://stackoverflow.com/questions/72409549/why-react-memo-doesnt-work-with-props-children-property>
+  const propertySelector = React.useMemo(() => {
+    return <PropertySelector
+      hideLabel={true}
+      label="Display Variable"
+      props={config.PROPS}
+      selected={props[0].key}
+      onChange={onPropertySelect} />
+  }, [props, onPropertySelect]);
 
   return <div className="map-wrapper">
     <section className="stage">
@@ -164,18 +250,14 @@ function MapTool({config}: {config: MapConfig}) {
           props={props}
           features={feats}
           noDataLabel={`No ${config.PLACE_NAME}`}>
-          <PropertySelector
-            hideLabel={true}
-            label="Display Variable"
-            props={config.PROPS}
-            selected={props[0].key}
-            onChange={onPropertySelect} />
+          {propertySelector}
         </MapLegend>
         {!config.UI.NO_PLACE_SELECTOR && <PlaceSelector
           loa={config.LOA}
           name={config.PLACE_NAME}
           idLength={config.UI.PLACE_ID_LENGTH}
           onSelect={onPlaceSelect} />}
+        <IconLegend iconGroups={schoolIconLegend} />
       </div>
       <Info
         loa={config.LOA}
@@ -183,13 +265,7 @@ function MapTool({config}: {config: MapConfig}) {
         features={feats}
         defaultMsg={config.INFO}
         placeNamePlural={config.PLACE_NAME_PLURAL}
-        setYear={(year: string) => {
-          setCat((cat) => {
-            let _cat = {...cat};
-            _cat['Y'] = year;
-            return _cat;
-          });
-        }}
+        setYear={setYear}
       />
     </section>
   </div>

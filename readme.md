@@ -19,10 +19,8 @@ Run `data/src/download.sh` to download the publicly available source data.
 ### School data
 
 ```
-# data/schools/
-python reverse_geocode.py
-python check_coords.py
-python makeschools.py
+# data/
+python process_schools.py
 ```
 
 ### Generating tiles

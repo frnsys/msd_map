@@ -18,6 +18,11 @@ export const MAP = {
     'source': 'main',
     'source-layer': 'data',
     'paint': styles.defaultPlaces
+  }, {
+    'id': 'schools',
+    'type': 'circle',
+    'source': 'schools',
+    'paint': styles.defaultSchools
   }],
   CONFIG: {
     style: 'mapbox://styles/jfift/ckkfrwny700zc17pdajfucczo',
