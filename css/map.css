@@ -95,6 +95,7 @@
   height: 100%;
   overflow-y: scroll;
   overscroll-behavior: contain;
+  font-family: 'Founders Grotesk', sans-serif;
 }
 .info-body {
   padding: 0 12px 1em;
