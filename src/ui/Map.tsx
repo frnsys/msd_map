@@ -233,7 +233,7 @@ function MapTool({config}: {config: MapConfig}) {
       onChange={onPropertySelect} />
   }, [props, onPropertySelect]);
 
-  return <div className="map-wrapper">
+  return <div>
     <section className="stage">
       <RegionSelector
         onSelect={onRegionSelect}
@@ -257,7 +257,6 @@ function MapTool({config}: {config: MapConfig}) {
           name={config.PLACE_NAME}
           idLength={config.UI.PLACE_ID_LENGTH}
           onSelect={onPlaceSelect} />}
-        <IconLegend iconGroups={schoolIconLegend} />
       </div>
       <Info
         loa={config.LOA}
@@ -268,6 +267,7 @@ function MapTool({config}: {config: MapConfig}) {
         setYear={setYear}
       />
     </section>
+    <IconLegend iconGroups={schoolIconLegend} />
   </div>
 }
 
