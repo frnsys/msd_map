@@ -58,7 +58,7 @@ const defaultSchools = {
   'circle-opacity': [
     'interpolate', ['linear'], ['zoom'], 3, 0.0, 7, [
       'case',
-        ['boolean', ['feature-state', 'mute'], false],
+        ['boolean', ['feature-state', 'mute'], true],
           0.2,
         1.0
     ]
@@ -66,7 +66,7 @@ const defaultSchools = {
   'circle-stroke-opacity': [
     'interpolate', ['linear'], ['zoom'], 3, 0.0, 7, [
       'case',
-        ['boolean', ['feature-state', 'mute'], false],
+        ['boolean', ['feature-state', 'mute'], true],
           0.2,
         1.0
     ]

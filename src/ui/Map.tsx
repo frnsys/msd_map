@@ -1,12 +1,12 @@
 import Info from './Info';
 import Map from '@/lib/map';
 import { MAP, COLORS } from '@/config';
-import { SchoolAPI } from '@/api';
 import MapLegend from './map/Legend';
 import IconLegend from './map/IconLegend';
 import PlaceSelector from './map/PlaceSelector';
 import RegionSelector from './map/RegionSelector';
 import PropertySelector from './map/PropertySelector';
+import { FeatureAPI, SchoolAPI } from '@/api';
 import type { MapMouseEvent } from 'mapbox-gl';
 import util from '@/util';
 import Painter from '@/lib/paint';
@@ -54,7 +54,8 @@ function createMap(
     },
     'schools': {
       'type': 'geojson',
-      'data': `assets/maps/schools.geojson`
+      'data': `assets/maps/schools.geojson`,
+      'promoteId': 'id'
     }
   };
 
@@ -91,6 +92,7 @@ function MapTool({config}: {config: MapConfig}) {
   const mapEl = React.useRef();
   const [map, setMap] = React.useState<Map>();
   React.useEffect(() => {
+    const api = new FeatureAPI(config.LOA);
     const map_ = createMap(
       config.MAP_ID,
       mapEl.current,
@@ -149,6 +151,19 @@ function MapTool({config}: {config: MapConfig}) {
             let fingerprint = newFeats.map((f) => f.id.toString()).join('-');
             let existing = feats.map((f) => f.id.toString()).join('-');
             if (fingerprint === existing) return feats;
+
+            // If only one feature,
+            // highlight its for that ZCTA
+            if (newFeats.length == 1) {
+              let id = newFeats[0].properties['id'].split(',')[0];
+              api.schoolsForPlace(id).then((schoolIds) => {
+                if (!Array.isArray(schoolIds)) schoolIds = [];
+                let filter = ['in', 'id'].concat(schoolIds);
+                map_.setFilter({
+                  id: 'schools'
+                }, filter, {mute: false}, {mute: true});
+              });
+            }
 
             return newFeats;
           });

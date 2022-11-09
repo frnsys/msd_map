@@ -46,6 +46,11 @@ export class FeatureAPI extends API {
     let url = `${this.prefix}/assets/maps/${this.loa}/by_cat/${key}/${placeId}.json`;
     return this.get(url);
   }
+
+  async schoolsForPlace(placeId: string) {
+    let url = `${this.prefix}/assets/maps/${this.loa}/schools/${placeId}.json`;
+    return this.get(url);
+  }
 }
 
 export class SchoolAPI extends API {
