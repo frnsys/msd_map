@@ -7,8 +7,9 @@ import { CATS } from '@/config';
 const SCHOOL_TYPES = {
   'All': 'allschools',
   'Public': 'public',
-  'Public Bachelors': 'public4yr',
   'Private': 'private',
+  'Public Bachelors': 'public4yr',
+  'Private Bachelors': 'private4yr',
   'Bachelors': '4yr',
   'Associates & Below': 'not4yr',
 };
@@ -224,17 +225,17 @@ const Info = ({loa, placeNamePlural, defaultMsg, category, features, setYear}: P
             </table>
           </div>}
 
+          {otherPlaces.length > 0 ?
+            <div className="other-places">
+              <span className="other-places-label">
+                Other {placeNamePlural} here:</span> {otherPlaces.slice(0, 5).join(', ')}
+                {otherPlaces.length > 5 ? `, ... +${otherPlaces.length-5} more (zoom in to see).` : ''}
+            </div> : ''}
+
           <ul className="footnotes">
             <li>Footnote test</li>
           </ul>
         </div>
-
-        {otherPlaces.length > 0 ?
-          <div className="other-places">
-            <span className="variable-name">
-              Other {placeNamePlural} here</span>: {otherPlaces.slice(0, 5).join(', ')}
-              {otherPlaces.length > 5 ? `, ... +${otherPlaces.length-5} more (zoom in to see).` : ''}
-          </div> : ''}
       </div>
     });
   }

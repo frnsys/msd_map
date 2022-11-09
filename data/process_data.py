@@ -15,7 +15,7 @@ import pandas as pd
 from lib import Processor, Mapper
 
 # loa = Level of analysis
-LOA = sys.argv[1] # 'zcta' OR 'cd' OR 'county'
+LOA = sys.argv[1] # 'zcta' OR 'state' OR 'county'
 
 zctaToState = json.load(open('src/zctaToState.json'))
 
@@ -161,6 +161,10 @@ QUERY_FIELDS = {
     'dsug_public4yr': ['Y'],
     'gr_public4yr': ['Y'],
     'avgtf_public4yr': ['Y'],
+    'n_private4yr': ['Y'],
+    'dsug_private4yr': ['Y'],
+    'gr_private4yr': ['Y'],
+    'avgtf_private4yr': ['Y'],
 }
 SCHOOL_FIELDS = [
     'n_allschools',
@@ -187,6 +191,10 @@ SCHOOL_FIELDS = [
     'dsug_public4yr',
     'gr_public4yr',
     'avgtf_public4yr',
+    'n_private4yr',
+    'dsug_private4yr',
+    'gr_private4yr',
+    'avgtf_private4yr',
 ]
 
 # Queries may want to include multiple subcategories
@@ -236,7 +244,7 @@ if __name__ == '__main__':
         path = f.get('path')
         if 'paths' in f:
             col = f['join_column']
-            dfs = [pd.read_csv(f).set_index(col) for f in f['paths']]
+            dfs = [pd.read_csv(f, dtype={col: object}).set_index(col) for f in f['paths']]
             df = pd.concat(dfs, axis=1, join='inner').reset_index()
             df.to_csv('/tmp/data.csv', index=None)
             path = '/tmp/data.csv'

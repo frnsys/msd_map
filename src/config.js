@@ -156,7 +156,7 @@ export default {
   maps: {
     county: {
       LOA: 'county',
-      MAP_ID: 'jfift.msd_county__2022_11-2',
+      MAP_ID: 'jfift.msd_county__2022_11-4',
       INFO: INTRO,
       PLACE_NAME: 'county',
       PLACE_NAME_PLURAL: 'counties',
@@ -177,7 +177,7 @@ export default {
 
     zcta: {
       LOA: 'zcta',
-      MAP_ID: 'jfift.msd_zcta__2022_11-2',
+      MAP_ID: 'jfift.msd_zcta__2022_11-3',
       INFO: INTRO,
       PLACE_NAME: 'zip',
       PLACE_NAME_PLURAL: 'zips',
