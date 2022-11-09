@@ -13,7 +13,7 @@ LOAS = {
     },
     'state': {
         'file': 'src/schools/map_data_stateschoolzones_2022_45min.csv',
-        'feat_id_fields': ['STATEFP']
+        'feat_id_fields': ['State']
     },
     'zcta': {
         'file': 'src/schools/map_data_zctaschoolzones_2022_45min.csv',
