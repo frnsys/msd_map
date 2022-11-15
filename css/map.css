@@ -157,6 +157,9 @@
 .info-table-group {
   margin: 1em 0 2em;
 }
+.info-table-group h4 {
+  cursor: pointer;
+}
 .info table {
   width: 100%;
   border-collapse: collapse;

@@ -118,23 +118,31 @@ FEAT_FIELDS = {
 QUERY_FIELDS = {
     'avg_bal': ['Y'],
     'avg_bal_rankNat': ['Y'],
+    'avg_bal_pctNat': ['Y'],
     'med_bal': ['Y'],
     'med_bal_rankNat': ['Y'],
+    'med_bal_pctNat': ['Y'],
     'avg_dti': ['Y'],
     'avg_dti_rankNat': ['Y'],
+    'avg_dti_pctNat': ['Y'],
     'med_dti': ['Y'],
     'med_dti_rankNat': ['Y'],
+    'med_dti_pctNat': ['Y'],
     'avg_inc': ['Y'],
     'avg_inc_rankNat': ['Y'],
+    'avg_inc_pctNat': ['Y'],
     'med_inc': ['Y'],
     'med_inc_rankNat': ['Y'],
+    'med_inc_pctNat': ['Y'],
     'avg_bal_sh_obal': ['Y'],
     'avg_bal_sh_obal_rankNat': ['Y'],
+    'avg_bal_sh_obal_pctNat': ['Y'],
     'med_bal_sh_obal': ['Y'],
     'med_bal_sh_obal_rankNat': ['Y'],
+    'med_bal_sh_obal_pctNat': ['Y'],
     'pct_bal_grt': ['Y'],
     'pct_bal_grt_rankNat': ['Y'],
-    'pct_bal_grt_rankNat': ['Y'],
+    'pct_bal_grt_pctNat': ['Y'],
 
     # School-level data
     'n_allschools': ['Y'],
@@ -166,6 +174,21 @@ QUERY_FIELDS = {
     'gr_private4yr': ['Y'],
     'avgtf_private4yr': ['Y'],
 }
+
+if LOA != 'state':
+    QUERY_FIELDS.update({
+        'avg_bal_pctState': ['Y'],
+        'med_bal_pctState': ['Y'],
+        'avg_dti_pctState': ['Y'],
+        'med_dti_pctState': ['Y'],
+        'avg_inc_pctState': ['Y'],
+        'med_inc_pctState': ['Y'],
+        'avg_bal_sh_obal_pctState': ['Y'],
+        'med_bal_sh_obal_pctState': ['Y'],
+        'pct_bal_grt_pctState': ['Y'],
+    })
+
+
 SCHOOL_FIELDS = [
     'n_allschools',
     'dsug_allschools',

@@ -1,8 +1,11 @@
 import util from '@/util';
 import * as React from 'react';
-import TableGroup from './Table';
+import TableGroup, { OPEN_STATES } from './Table';
 import { FeatureAPI } from '@/api';
 import { CATS } from '@/config';
+
+// Hack to start this table as open
+OPEN_STATES["Student Debt Balance"] = true;
 
 const SCHOOL_TYPES = {
   'All': 'allschools',
@@ -15,11 +18,11 @@ const SCHOOL_TYPES = {
 };
 
 const COLS = [
-  {key: 'R:BLACK', label: 'Black'},
-  {key: 'R:WHITE', label: 'White'},
-  {key: 'R:NATVAM', label: 'Native'},
   {key: 'R:ASIAN', label: 'Asian'},
+  {key: 'R:BLACK', label: 'Black'},
   {key: 'R:LATINO', label: 'Latino'},
+  {key: 'R:NATVAM', label: 'Native'},
+  {key: 'R:WHITE', label: 'White'},
 ];
 type Fmt = (v: number) => string;
 
@@ -28,21 +31,42 @@ function summaryRowFn(key: string, fmt: Fmt, data: Data) {
     if (c === 'rankNat') {
       let k = `${key}_rankNat`;
       return orNA((data[k] as any)['R:ALL']);
+    } else if (c === 'pctNat') {
+      let k = `${key}_pctNat`;
+      return orNA((data[k] as any)['R:ALL']);
+    } else if (c === 'pctState') {
+      let k = `${key}_pctState`;
+      return orNA((data[k] as any)['R:ALL']);
     } else {
       return fmt((data[key] as any)['R:ALL']);
     }
   }
 }
 
-function makeSummaryTable(rows: {label: string, key: string}[], fmt: Fmt, data: Data) {
-  return {
-    cols: [{
-      key: '',
-      label: ''
-    }, {
+function makeSummaryTable(rows: {label: string, key: string}[], fmt: Fmt, data: Data, loa: string) {
+  let cols = [{
+    key: '',
+    label: ''
+  }];
+
+  if (loa !== 'state') {
+    cols.push({
+      key: 'pctState',
+      label: 'State Percentile',
+    });
+    cols.push({
+      key: 'pctNat',
+      label: 'Nat\'l Percentile',
+    });
+  } else {
+    cols.push({
       key: 'rankNat',
       label: 'Nat\'l Rank',
-    }],
+    });
+  }
+
+  return {
+    cols: cols,
     rows: rows.map(({label, key}) => ({
       label,
       func: summaryRowFn(key, fmt, data)
@@ -50,14 +74,14 @@ function makeSummaryTable(rows: {label: string, key: string}[], fmt: Fmt, data: 
   };
 }
 
-function makeMedAvgTables(label: string, key: string, fmt: Fmt, data: Data) {
+function makeMedAvgTables(label: string, key: string, fmt: Fmt, data: Data, loa: string) {
   const summaryTable = makeSummaryTable([{
     label: `Average ${label}`,
     key: `avg_${key}`,
   }, {
     label: `Median ${label}`,
     key: `med_${key}`,
-  }], fmt, data);
+  }], fmt, data, loa);
 
   const demogTable = {
     cols: COLS,
@@ -74,24 +98,24 @@ function makeMedAvgTables(label: string, key: string, fmt: Fmt, data: Data) {
 }
 
 type Data = {[key:string]: number};
-function describePlace(data: Data, cat: Category) {
+function describePlace(data: Data, cat: Category, loa: string) {
   let body = <>No data for this place.</>;
   if ('med_bal' in data) {
     body = <>
       <TableGroup title="Student Debt Balance" year={cat['Y']}
-        tables={makeMedAvgTables('Student Debt', 'bal', curOrNA, data)} />
-      <TableGroup title="Tract-Level Individual Income" year={cat['Y']}
-        tables={makeMedAvgTables('Income', 'inc', curOrNA, data)} />
+        tables={makeMedAvgTables('Student Debt', 'bal', curOrNA, data, loa)} />
+      <TableGroup title="Individual Income" year={cat['Y']}
+        tables={makeMedAvgTables('Income', 'inc', curOrNA, data, loa)} />
       <TableGroup title="Student-Debt-to-Income Ratio" year={cat['Y']}
-        tables={makeMedAvgTables('Debt-to-Income Ratio', 'dti', pctOrNA, data)} />
+        tables={makeMedAvgTables('Debt-to-Income Ratio', 'dti', pctOrNA, data, loa)} />
       <TableGroup title="Debt Balance as a Share of Origination Balance" year={cat['Y']}
-        tables={makeMedAvgTables('Debt-to-Origination Ratio', 'bal_sh_obal', pctOrNA, data)} />
+        tables={makeMedAvgTables('Debt-to-Origination Ratio', 'bal_sh_obal', pctOrNA, data, loa)} />
       <TableGroup title="Percent of student loans where current balance is greater than origination balance" year={cat['Y']}
         tables={[
           makeSummaryTable([{
             label: 'Percent Greater than Origination',
             key: 'pct_bal_grt'
-          }], pctOrNA, data),
+          }], pctOrNA, data, loa),
           {
             cols: COLS,
             rows: [{
@@ -190,10 +214,10 @@ const Info = ({loa, placeNamePlural, defaultMsg, category, features, setYear}: P
           {yearSelector}
         </h2>
         <div className="info-body">
-          {describePlace(d, category)}
+          {describePlace(d, category, loa)}
 
           {'n_allschools' in d && <div className="info-school-summary">
-            <h4>{category['Y']} Higher Education Market</h4>
+            <h4>Higher Education Market</h4>
             <div className="inline-selector">
               {Object.entries(SCHOOL_TYPES).map(([k, v]) => {
                 return <span
@@ -248,7 +272,7 @@ const Info = ({loa, placeNamePlural, defaultMsg, category, features, setYear}: P
 const formatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
   currency: 'USD',
-  minimumFractionDigits: 2
+  minimumFractionDigits: 0
 });
 
 function fmtOrNA(val: number) {
@@ -262,7 +286,7 @@ function curOrNA(val: number) {
   if (val === undefined || val === null) {
     return 'N/A';
   } else {
-    return formatter.format(val);
+    return formatter.format(Math.round(val));
   }
 }
 function pctOrNA(val: number) {

@@ -21,7 +21,7 @@ interface TableGroupProps {
 }
 
 // Kinda hacky way to preserve table open states
-const OPEN_STATES: {[key:string]: boolean} = {};
+export const OPEN_STATES: {[key:string]: boolean} = {};
 
 function TableGroup({title, year, tables}: TableGroupProps) {
   const [open, setOpen] = React.useState(OPEN_STATES[title] || false);
@@ -31,9 +31,9 @@ function TableGroup({title, year, tables}: TableGroupProps) {
   }, [open]);
 
   return <div className="info-table-group">
-    <h4>
-      <span><span className="info-table-group-year">{year}</span> {title}</span>
-      <span className="info-table-group-toggle-open" onClick={() => setOpen(!open)}>{open ? '–' : '+'}</span>
+    <h4 onClick={() => setOpen(!open)}>
+      <span><span className="info-table-group-year" style={{display: 'none'}}>{year}</span> {title}</span>
+      <span className="info-table-group-toggle-open">{open ? '–' : '+'}</span>
     </h4>
     {open && tables.map((table, i) => {
       return <table key={i}>
