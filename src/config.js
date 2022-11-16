@@ -63,6 +63,23 @@ const PROPS = {
       }
     }
   },
+  'med_bal_post': {
+    desc: 'Median Balance Post-Relief',
+    nick: 'Med. Balance Post-Relief',
+    color: {
+      0.0: '#ffdbdb',
+      1.0: '#fa2525'
+    },
+    loas: ['state'],
+    legend: {
+      flip: false,
+      minClamped: true,
+      maxClamped: true,
+      special: {
+        'Missing Data': COLORS['null'],
+      }
+    }
+  },
   'med_dti': {
     desc: 'Median Debt-to-Income Ratio',
     nick: 'Med. Debt-to-Income',
@@ -152,7 +169,7 @@ export default {
   maps: {
     state: {
       LOA: 'state',
-      MAP_ID: 'jfift.msd_state__2022_11-2',
+      MAP_ID: 'jfift.msd_state__2022_11-3',
       PLACE_NAME: 'state',
       PLACE_NAME_PLURAL: 'states',
       MIN_ZOOM: 2,

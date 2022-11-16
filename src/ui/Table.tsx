@@ -2,8 +2,9 @@ import * as React from 'react';
 
 type RowFn = (col: string) => string;
 type Row = {
-  func: RowFn
+  func: RowFn,
   label: string,
+  className?: string,
 };
 type Col = {
   key: string,
@@ -46,8 +47,8 @@ function TableGroup({title, year, tables}: TableGroupProps) {
           </tr>
         </thead>
         <tbody>
-          {table.rows.map(({label, func}) =>
-            <tr key={label}>
+          {table.rows.map(({label, func, className}) =>
+            <tr key={label} className={className || ''}>
               <td>{label}</td>
               {table.cols.map((c) => {
                 let val = func(c.key);

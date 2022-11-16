@@ -52,11 +52,11 @@ function makeSummaryTable(rows: {label: string, key: string}[], fmt: Fmt, data: 
   if (loa !== 'state' && loa !== 'national') {
     cols.push({
       key: 'pctState',
-      label: 'State Percentile',
+      label: 'State Pctile',
     });
     cols.push({
       key: 'pctNat',
-      label: 'Nat\'l Percentile',
+      label: 'Nat\'l Pctile',
     });
   } else if (loa == 'state') {
     cols.push({
@@ -100,10 +100,62 @@ function makeMedAvgTables(label: string, key: string, fmt: Fmt, data: Data, loa:
 type Data = {[key:string]: number};
 function describePlace(data: Data, cat: Category, loa: string) {
   let body = <>No data for this place.</>;
+
+  const balCols = [{
+    label: '',
+    key: ''
+  }];
+  if (loa == 'state') {
+    balCols.push({
+      key: 'rankNat',
+      label: 'Nat\'l Rank',
+    });
+  }
+
   if ('med_bal' in data) {
     body = <>
-      <TableGroup title="Student Debt Balance" year={cat['Y']}
-        tables={makeMedAvgTables('Student Debt', 'bal', curOrNA, data, loa)} />
+      {loa !== 'state' && loa !== 'national' && <TableGroup title="Student Debt Balance" year={cat['Y']}
+        tables={makeMedAvgTables('Balance', 'bal', curOrNA, data, loa)} />}
+      {(loa == 'state' || loa == 'national') && <TableGroup title="Student Debt Balance" year={cat['Y']}
+        tables={[{
+          cols: balCols,
+          rows: [{
+            label: `Average Balance`,
+            func: summaryRowFn('avg_bal', curOrNA, data),
+          }, {
+            label: `Average Balance Post-Relief`,
+            className: 'highlight',
+            func: (c: string) => {
+              if (c === '') {
+                return `▼${curOrNA(data['avg_bal_post'])}`;
+              } else {
+                return '';
+              }
+            }
+          }, {
+            label: `Median Balance`,
+            func: summaryRowFn('med_bal', curOrNA, data),
+          }, {
+            label: `Median Balance Post-Relief`,
+            className: 'highlight',
+            func: (c: string) => {
+              if (c === '') {
+                return `▼${curOrNA(data['med_bal_post'])}`;
+              } else {
+                return '';
+              }
+            }
+          }]
+        }, {
+          cols: COLS,
+          rows: [{
+            label: `Average Balance`,
+            func: (c: string) => curOrNA((data['avg_bal'] as any)[c])
+          }, {
+            label: `Median Balance`,
+            func: (c: string) => curOrNA((data['med_bal'] as any)[c])
+          }]
+        }]} />}
       <TableGroup title="Individual Income" year={cat['Y']}
         tables={makeMedAvgTables('Income', 'inc', curOrNA, data, loa)} />
       <TableGroup title="Student-Debt-to-Income Ratio" year={cat['Y']}
@@ -124,6 +176,23 @@ function describePlace(data: Data, cat: Category, loa: string) {
             }]
           }
         ]} />
+      {(loa == 'national' || loa == 'state') && <TableGroup title="Relief Eligibility" year={cat['Y']}
+        tables={[{
+          cols: [{
+            label: 'Federal',
+            key: 'Federal_Eligible_Borrowers'
+          }, {
+            label: 'Pell',
+            key: 'Pell_Eligible'
+          }, {
+            label: 'Non-Pell',
+            key: 'NonPell_Eligible'
+          }],
+          rows: [{
+            label: 'Eligible Borrowers',
+            func: (c: string) => fmtOrNA(data[c])
+          }]
+        }]} />}
     </>;
   }
   return body;
@@ -202,11 +271,6 @@ const Info = ({loa, placeNamePlural, category, features, setYear}: Props) => {
       });
     }
   }, [features, category]);
-
-  // TODO
-  // if (empty) {
-  //     return <p className="no-place">This geographic area does not have a resident population and therefore does not have any {placeNamePlural}. Typical examples of this region include national or state parks and large bodies of water.</p>
-  // }
 
   let contents = data.map(({feature, data, otherPlaces}) => {
     let d = data;

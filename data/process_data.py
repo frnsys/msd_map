@@ -55,6 +55,7 @@ INPUTS_BY_LOA = {
             'paths': [
                 'src/2022/map_data_state_2022.csv',
                 'src/2022/map_data_stateschools_2022.csv',
+                'src/2022/map_data_staterelief_2022.csv'
             ],
             'join_column': 'State',
             'cat': {'Y': 2022},
@@ -86,6 +87,7 @@ INPUTS_BY_LOA = {
             'paths': [
                 'src/2022/map_data_national_2022.csv',
                 'src/2022/map_data_nationalschools_2022.csv',
+                'src/2022/map_data_nationalrelief_2022.csv'
             ],
             'join_column': 'State',
             'cat': {'Y': 2022},
@@ -122,6 +124,12 @@ FEAT_FIELDS = {
     'pct_bal_grt': ['Y'],
     'med_bal_sh_obal': ['Y'],
 }
+
+if LOA == 'state':
+    FEAT_FIELDS.update({
+        'med_bal_post': ['Y'],
+    })
+
 
 # These are queried separately via the "api"
 # when a feature is focused on,
@@ -204,6 +212,26 @@ if LOA != 'national':
         })
 
 
+DEBT_RELIEF_FIELDS = [
+    'Federal_Borrowers',
+    'Federal_Eligible_Borrowers',
+    'Pell_Eligible',
+    'NonPell_Eligible',
+    'AvgRelief_Eligible_Borrowers',
+    'Total_Borrowers',
+    'AvgRelief_Across_Borrowers',
+    'avg_bal_pre',
+    'avg_bal_post',
+    'med_bal_pre',
+    'med_bal_post',
+]
+
+if LOA == 'state' or LOA == 'national':
+    fields = {}
+    for f in DEBT_RELIEF_FIELDS:
+        fields[f] = ['Y']
+    QUERY_FIELDS.update(fields)
+
 SCHOOL_FIELDS = [
     'n_allschools',
     'dsug_allschools',
@@ -235,6 +263,18 @@ SCHOOL_FIELDS = [
     'avgtf_private4yr',
 ]
 
+RACE_FIELDS = [
+    'avg_bal',
+    'med_bal',
+    'avg_dti',
+    'med_dti',
+    'avg_inc',
+    'med_inc',
+    'avg_bal_sh_obal',
+    'med_bal_sh_obal',
+    'pct_bal_grt',
+]
+
 # Queries may want to include multiple subcategories
 # even if they aren't facted over all of them.
 # E.g. say `avg_bal` is faceted by Y (by year).
@@ -246,10 +286,17 @@ SCHOOL_FIELDS = [
 QUERY_CATEGORIES = {
     'default': CATEGORIES,
 }
+
+# These fields aren't broken down by race
 for field in SCHOOL_FIELDS:
     QUERY_CATEGORIES[field] = {
         'Y': CATEGORIES['Y']
     }
+for field in DEBT_RELIEF_FIELDS:
+    QUERY_CATEGORIES[field] = {
+        'Y': CATEGORIES['Y']
+    }
+
 
 # Use these instead of the actual data max
 # To deal with outliers squashing the visual data range
@@ -262,12 +309,13 @@ RANGES = {
 
 # Get a column name given a field name and categories
 def col_for_cat(field, cat):
-    if field in SCHOOL_FIELDS:
-        return field
-    if cat.get('R', 'ALL') == 'ALL':
-        return field
+    if field in RACE_FIELDS:
+        if cat.get('R', 'ALL') == 'ALL':
+            return field
+        else:
+            return f'{field}_{cat["R"]}'
     else:
-        return f'{field}_{cat["R"]}'
+        return field
 
 if __name__ == '__main__':
     processor = Processor(

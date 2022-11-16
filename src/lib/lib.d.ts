@@ -9,6 +9,7 @@ interface Prop {
   desc: string,
   range: NumRange,
   color: Gradient,
+  loas?: string[], // Optionally limit this prop to the specified LOAs
   nullColor: string,
   legend: Legend,
   stats: {[key:string]: number},

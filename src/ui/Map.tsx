@@ -249,10 +249,17 @@ function MapTool({config}: {config: MapConfig}) {
   // Necessary to prevent re-renders in MapLegend;
   // see <https://stackoverflow.com/questions/72409549/why-react-memo-doesnt-work-with-props-children-property>
   const propertySelector = React.useMemo(() => {
+    // Filter only to valid props for this loa
+    let configProps: PropMap = {};
+    Object.entries(config.PROPS).forEach(([k, v]) => {
+      if (!('loas' in v) || v['loas'].includes(config.LOA)) {
+        configProps[k] = v;
+      }
+    });
     return <PropertySelector
       hideLabel={true}
       label="Display Variable"
-      props={config.PROPS}
+      props={configProps}
       selected={props[0].key}
       onChange={onPropertySelect} />
   }, [props, onPropertySelect]);

@@ -187,6 +187,9 @@
 .info td {
   text-align: right;
 }
+.info table .highlight {
+  color: #43CC70;
+}
 .info .bad {
   color: #ff3a3a;
 }
