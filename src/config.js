@@ -148,16 +148,31 @@ const SHARED_CONFIG = {
   COLORS,
 };
 
-const INTRO = `
-<p>Welcome to the 2022 Millennial Student Debt map. This map visualizes institutional, demographic, and economic statistics at the State, County, and Zip-level. <i>All dollar amounts are 2022-inflation adjusted.</i></p>
-<p>Zoom in to locate a particular area or use the buttons on the top-left corner to view non-contiguous US states and territories. At the Zip-level, you can also type in your desired zip (try your home zip code!) to locate its area. As you hover over the map, various statistics and rankings for the geographical area will populate on the right hand side of the map. Use the drop down menu in the legend in the bottom left corner to toggle between different display variables. Hover over the legend attribute bar to highlight areas on the map that correspond to a particular statistical measurement.</p>`;
-
 export default {
   maps: {
+    state: {
+      LOA: 'state',
+      MAP_ID: 'jfift.msd_state__2022_11-2',
+      PLACE_NAME: 'state',
+      PLACE_NAME_PLURAL: 'states',
+      MIN_ZOOM: 2,
+      UI: {
+        NO_DATA,
+        PLACE_ID_LENGTH: 2,
+        NO_TERRITORIES: false,
+        NO_PLACE_SELECTOR: true,
+      },
+      PROPS: PROPS_FOR_LOA['state'],
+      INITIAL_STATE: {
+        cat: INITIAL_CAT,
+        props: [PROPS_FOR_LOA['state'][INITIAL_KEY]]
+      },
+      ...SHARED_CONFIG
+    },
+
     county: {
       LOA: 'county',
       MAP_ID: 'jfift.msd_county__2022_11-4',
-      INFO: INTRO,
       PLACE_NAME: 'county',
       PLACE_NAME_PLURAL: 'counties',
       MIN_ZOOM: 4,
@@ -178,7 +193,6 @@ export default {
     zcta: {
       LOA: 'zcta',
       MAP_ID: 'jfift.msd_zcta__2022_11-3',
-      INFO: INTRO,
       PLACE_NAME: 'zip',
       PLACE_NAME_PLURAL: 'zips',
       MIN_ZOOM: 6,
@@ -192,27 +206,6 @@ export default {
       INITIAL_STATE: {
         cat: INITIAL_CAT,
         props: [PROPS_FOR_LOA['zcta'][INITIAL_KEY]]
-      },
-      ...SHARED_CONFIG
-    },
-
-    state: {
-      LOA: 'state',
-      MAP_ID: 'jfift.msd_state__2022_11-2',
-      INFO: INTRO,
-      PLACE_NAME: 'state',
-      PLACE_NAME_PLURAL: 'states',
-      MIN_ZOOM: 2,
-      UI: {
-        NO_DATA,
-        PLACE_ID_LENGTH: 2,
-        NO_TERRITORIES: false,
-        NO_PLACE_SELECTOR: true,
-      },
-      PROPS: PROPS_FOR_LOA['state'],
-      INITIAL_STATE: {
-        cat: INITIAL_CAT,
-        props: [PROPS_FOR_LOA['state'][INITIAL_KEY]]
       },
       ...SHARED_CONFIG
     },

@@ -49,7 +49,7 @@ function makeSummaryTable(rows: {label: string, key: string}[], fmt: Fmt, data: 
     label: ''
   }];
 
-  if (loa !== 'state') {
+  if (loa !== 'state' && loa !== 'national') {
     cols.push({
       key: 'pctState',
       label: 'State Percentile',
@@ -58,7 +58,7 @@ function makeSummaryTable(rows: {label: string, key: string}[], fmt: Fmt, data: 
       key: 'pctNat',
       label: 'Nat\'l Percentile',
     });
-  } else {
+  } else if (loa == 'state') {
     cols.push({
       key: 'rankNat',
       label: 'Nat\'l Rank',
@@ -133,13 +133,12 @@ interface Props {
   loa: string,
   category: Category,
   features: MapFeature[],
-  defaultMsg: string,
   placeNamePlural: string,
 
   setYear: (year: string) => void,
 }
 
-const Info = ({loa, placeNamePlural, defaultMsg, category, features, setYear}: Props) => {
+const Info = ({loa, placeNamePlural, category, features, setYear}: Props) => {
   const [data, setData] = React.useState([]);
   const [schoolType, setSchoolType] = React.useState('allschools');
 
@@ -189,6 +188,18 @@ const Info = ({loa, placeNamePlural, defaultMsg, category, features, setYear}: P
 
         setData(contents);
       });
+    } else {
+      // Default to national data
+      const api = new FeatureAPI('national');
+      const key = util.keyForCat(category);
+      api.dataForKeyPlace(key, 'NATIONAL').then((data) => {
+        data.name = 'National';
+        setData([{
+          feature: {id: 'national'},
+          data,
+          otherPlaces: []
+        }]);
+      });
     }
   }, [features, category]);
 
@@ -197,72 +208,63 @@ const Info = ({loa, placeNamePlural, defaultMsg, category, features, setYear}: P
   //     return <p className="no-place">This geographic area does not have a resident population and therefore does not have any {placeNamePlural}. Typical examples of this region include national or state parks and large bodies of water.</p>
   // }
 
-  let contents: JSX.Element | JSX.Element[] = <>
-    <h2>
-      <div>Map Guide</div>
-      {yearSelector}
-    </h2>
-    <div className="info-body" dangerouslySetInnerHTML={{__html: defaultMsg}} />
-  </>;
-  if (features.length > 0) {
-    contents = data.map(({feature, data, otherPlaces}) => {
-      let d = data;
-      let feat = feature;
-      return <div key={feat.id}>
-        <h2>
-          <div>{d['name']}</div>
-          {yearSelector}
-        </h2>
-        <div className="info-body">
-          {describePlace(d, category, loa)}
+  let contents = data.map(({feature, data, otherPlaces}) => {
+    let d = data;
+    let feat = feature;
+    return <div key={feat.id}>
+      <h2>
+        <div>{d['name']}</div>
+        {yearSelector}
+      </h2>
+      <div className="info-body">
+        {describePlace(d, category, feat.id == 'national' ? 'national' : loa)}
 
-          {'n_allschools' in d && <div className="info-school-summary">
-            <h4>Higher Education Market</h4>
-            <div className="inline-selector">
-              {Object.entries(SCHOOL_TYPES).map(([k, v]) => {
-                return <span
-                  key={v}
-                  className={v == schoolType ? 'selected' : ''}
-                  onClick={() => setSchoolType(v)}>
-                {k}</span>
-              })}
-            </div>
-            <table>
-              <tbody>
-                <tr>
-                  <td>Number of Higher Ed Institutions</td>
-                  <td>{fmtOrNA(d[`n_${schoolType}`])}</td>
-                </tr>
-                <tr>
-                  <td>Degree-seeking Undergraduate Students</td>
-                  <td>{fmtOrNA(d[`dsug_${schoolType}`])}</td>
-                </tr>
-                <tr>
-                  <td>Average Tuition & Fees</td>
-                  <td>{curOrNA(d[`avgtf_${schoolType}`])}</td>
-                </tr>
-                <tr>
-                  <td>Graduate Students</td>
-                  <td>{fmtOrNA(d[`gr_${schoolType}`])}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>}
+        {'n_allschools' in d && <div className="info-school-summary">
+          <h4>Higher Education Market</h4>
+          <div className="inline-selector">
+            {Object.entries(SCHOOL_TYPES).map(([k, v]) => {
+              return <span
+                key={v}
+                className={v == schoolType ? 'selected' : ''}
+                onClick={() => setSchoolType(v)}>
+              {k}</span>
+            })}
+          </div>
+          <table>
+            <tbody>
+              <tr>
+                <td>Number of Higher Ed Institutions</td>
+                <td>{fmtOrNA(d[`n_${schoolType}`])}</td>
+              </tr>
+              <tr>
+                <td>Degree-seeking Undergraduate Students</td>
+                <td>{fmtOrNA(d[`dsug_${schoolType}`])}</td>
+              </tr>
+              <tr>
+                <td>Average Tuition & Fees</td>
+                <td>{curOrNA(d[`avgtf_${schoolType}`])}</td>
+              </tr>
+              <tr>
+                <td>Graduate Students</td>
+                <td>{fmtOrNA(d[`gr_${schoolType}`])}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>}
 
-          {otherPlaces.length > 0 ?
-            <div className="other-places">
-              <span className="other-places-label">
-                Other {placeNamePlural} here:</span> {otherPlaces.slice(0, 5).join(', ')}
-                {otherPlaces.length > 5 ? `, ... +${otherPlaces.length-5} more (zoom in to see).` : ''}
-            </div> : ''}
+        {otherPlaces.length > 0 ?
+          <div className="other-places">
+            <span className="other-places-label">
+              Other {placeNamePlural} here:</span> {otherPlaces.slice(0, 5).join(', ')}
+              {otherPlaces.length > 5 ? `, ... +${otherPlaces.length-5} more (zoom in to see).` : ''}
+          </div> : ''}
 
-          <ul className="footnotes">
-            <li>Footnote test</li>
-          </ul>
-        </div>
+        <ul className="footnotes">
+          <li>Footnote test</li>
+        </ul>
       </div>
-    });
-  }
+    </div>
+  });
 
   return <div className="info">
     {contents}

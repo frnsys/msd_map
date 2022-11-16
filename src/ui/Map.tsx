@@ -153,7 +153,7 @@ function MapTool({config}: {config: MapConfig}) {
             if (fingerprint === existing) return feats;
 
             // If only one feature,
-            // highlight its for that ZCTA
+            // highlight its schools
             if (newFeats.length == 1) {
               let id = newFeats[0].properties['id'].split(',')[0];
               api.schoolsForPlace(id).then((schoolIds) => {
@@ -170,8 +170,17 @@ function MapTool({config}: {config: MapConfig}) {
 
         // Otherwise, hide
         // if we don't already have no feats
-        } else if (feats.length > 0){
-          setFeats([]);
+        } else {
+          setFeats((feats) => {
+            if (feats.length > 0) {
+              map_.focusFeatures(MAP.SOURCE, []);
+              return [];
+            } else {
+              // Prevent redundant update,
+              // return the same existing state
+              return feats;
+            }
+          });
         }
       });
     map_.map.on('dragstart', () => {
@@ -277,7 +286,6 @@ function MapTool({config}: {config: MapConfig}) {
         loa={config.LOA}
         category={cat}
         features={feats}
-        defaultMsg={config.INFO}
         placeNamePlural={config.PLACE_NAME_PLURAL}
         setYear={setYear}
       />

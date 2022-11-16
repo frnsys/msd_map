@@ -80,6 +80,17 @@ INPUTS_BY_LOA = {
         'shape': 'src/geo/county/cb_2021_us_county_500k.shp',
         'shape_feature_id': 'GEOID',
         'shape_feature_name': lambda props: f"{props['NAMELSAD']}, {props['STUSPS']}",
+    },
+    'national': {
+        'files': [{
+            'paths': [
+                'src/2022/map_data_national_2022.csv',
+                'src/2022/map_data_nationalschools_2022.csv',
+            ],
+            'join_column': 'State',
+            'cat': {'Y': 2022},
+        }],
+        'main_feature_id': 'State',
     }
 }
 
@@ -117,32 +128,14 @@ FEAT_FIELDS = {
 # instead of being embedded as part of the feature itself
 QUERY_FIELDS = {
     'avg_bal': ['Y'],
-    'avg_bal_rankNat': ['Y'],
-    'avg_bal_pctNat': ['Y'],
     'med_bal': ['Y'],
-    'med_bal_rankNat': ['Y'],
-    'med_bal_pctNat': ['Y'],
     'avg_dti': ['Y'],
-    'avg_dti_rankNat': ['Y'],
-    'avg_dti_pctNat': ['Y'],
     'med_dti': ['Y'],
-    'med_dti_rankNat': ['Y'],
-    'med_dti_pctNat': ['Y'],
     'avg_inc': ['Y'],
-    'avg_inc_rankNat': ['Y'],
-    'avg_inc_pctNat': ['Y'],
     'med_inc': ['Y'],
-    'med_inc_rankNat': ['Y'],
-    'med_inc_pctNat': ['Y'],
     'avg_bal_sh_obal': ['Y'],
-    'avg_bal_sh_obal_rankNat': ['Y'],
-    'avg_bal_sh_obal_pctNat': ['Y'],
     'med_bal_sh_obal': ['Y'],
-    'med_bal_sh_obal_rankNat': ['Y'],
-    'med_bal_sh_obal_pctNat': ['Y'],
     'pct_bal_grt': ['Y'],
-    'pct_bal_grt_rankNat': ['Y'],
-    'pct_bal_grt_pctNat': ['Y'],
 
     # School-level data
     'n_allschools': ['Y'],
@@ -175,18 +168,40 @@ QUERY_FIELDS = {
     'avgtf_private4yr': ['Y'],
 }
 
-if LOA != 'state':
+if LOA != 'national':
     QUERY_FIELDS.update({
-        'avg_bal_pctState': ['Y'],
-        'med_bal_pctState': ['Y'],
-        'avg_dti_pctState': ['Y'],
-        'med_dti_pctState': ['Y'],
-        'avg_inc_pctState': ['Y'],
-        'med_inc_pctState': ['Y'],
-        'avg_bal_sh_obal_pctState': ['Y'],
-        'med_bal_sh_obal_pctState': ['Y'],
-        'pct_bal_grt_pctState': ['Y'],
+        'avg_bal_rankNat': ['Y'],
+        'avg_bal_pctNat': ['Y'],
+        'med_bal_rankNat': ['Y'],
+        'med_bal_pctNat': ['Y'],
+        'avg_dti_rankNat': ['Y'],
+        'avg_dti_pctNat': ['Y'],
+        'med_dti_rankNat': ['Y'],
+        'med_dti_pctNat': ['Y'],
+        'avg_inc_rankNat': ['Y'],
+        'avg_inc_pctNat': ['Y'],
+        'med_inc_rankNat': ['Y'],
+        'med_inc_pctNat': ['Y'],
+        'avg_bal_sh_obal_rankNat': ['Y'],
+        'avg_bal_sh_obal_pctNat': ['Y'],
+        'med_bal_sh_obal_rankNat': ['Y'],
+        'med_bal_sh_obal_pctNat': ['Y'],
+        'pct_bal_grt_rankNat': ['Y'],
+        'pct_bal_grt_pctNat': ['Y'],
     })
+
+    if LOA != 'state':
+        QUERY_FIELDS.update({
+            'avg_bal_pctState': ['Y'],
+            'med_bal_pctState': ['Y'],
+            'avg_dti_pctState': ['Y'],
+            'med_dti_pctState': ['Y'],
+            'avg_inc_pctState': ['Y'],
+            'med_inc_pctState': ['Y'],
+            'avg_bal_sh_obal_pctState': ['Y'],
+            'med_bal_sh_obal_pctState': ['Y'],
+            'pct_bal_grt_pctState': ['Y'],
+        })
 
 
 SCHOOL_FIELDS = [
@@ -277,21 +292,27 @@ if __name__ == '__main__':
                 col_for_cat)
     processor.update_meta()
 
-    mapper = Mapper()
-    region_bboxes = mapper.calculate_region_bboxes()
-    geojson, bboxes = mapper.gen_geojson(
-            INPUTS['shape'], processor.feat_data,
-            INPUTS['shape_feature_id'], INPUTS['shape_feature_name'])
+    if LOA != 'national':
+        mapper = Mapper()
+        region_bboxes = mapper.calculate_region_bboxes()
+        geojson, bboxes = mapper.gen_geojson(
+                INPUTS['shape'], processor.feat_data,
+                INPUTS['shape_feature_id'], INPUTS['shape_feature_name'])
 
-    print('Saving files...')
+        with open('gen/tile_data/{}.geojson'.format(LOA), 'w') as f:
+            # Write one feature per line, so tippecanoe can process in parallel
+            f.write('\n'.join(json.dumps(feat) for feat in geojson))
 
-    with open('gen/tile_data/{}.geojson'.format(LOA), 'w') as f:
-        # Write one feature per line, so tippecanoe can process in parallel
-        f.write('\n'.join(json.dumps(feat) for feat in geojson))
+        # Common to all LOA
+        with open('gen/regions.json', 'w') as f:
+            json.dump(region_bboxes, f)
 
-    # Common to all LOA
-    with open('gen/regions.json', 'w') as f:
-        json.dump(region_bboxes, f)
+        bboxes_dir = 'gen/{}/bboxes'.format(LOA)
+        if not os.path.exists(bboxes_dir):
+            os.makedirs(bboxes_dir)
+        for zip, bbox in bboxes.items():
+            with open('{}/{}.json'.format(bboxes_dir, zip), 'w') as f:
+                json.dump(bbox, f)
 
     with open('gen/prop_cats.json', 'w') as f:
         prop_cats = {}
@@ -305,13 +326,6 @@ if __name__ == '__main__':
 
     with open('gen/{}/meta.json'.format(LOA), 'w') as f:
         json.dump(processor.meta, f)
-
-    bboxes_dir = 'gen/{}/bboxes'.format(LOA)
-    if not os.path.exists(bboxes_dir):
-        os.makedirs(bboxes_dir)
-    for zip, bbox in bboxes.items():
-        with open('{}/{}.json'.format(bboxes_dir, zip), 'w') as f:
-            json.dump(bbox, f)
 
     for cat_key, feats in processor.query_data.items():
         cat_dir = 'gen/{}/by_cat/{}/'.format(LOA, cat_key)
