@@ -3,9 +3,11 @@ import * as React from 'react';
 import TableGroup, { OPEN_STATES } from './Table';
 import { FeatureAPI } from '@/api';
 import { CATS } from '@/config';
+import { fmtOrNA, curOrNA, pctOrNA, orNA } from '@/format';
 
 // Hack to start this table as open
 OPEN_STATES["Student Debt Balance"] = true;
+OPEN_STATES["Student Debt Relief"] = true;
 
 const SCHOOL_TYPES = {
   'All': 'allschools',
@@ -52,16 +54,16 @@ function makeSummaryTable(rows: {label: string, key: string}[], fmt: Fmt, data: 
   if (loa !== 'state' && loa !== 'national') {
     cols.push({
       key: 'pctState',
-      label: 'State Pctile',
+      label: 'State Pctile*',
     });
     cols.push({
       key: 'pctNat',
-      label: 'Nat\'l Pctile',
+      label: 'Nat\'l Pctile*',
     });
   } else if (loa == 'state') {
     cols.push({
       key: 'rankNat',
-      label: 'Nat\'l Rank',
+      label: 'Nat\'l Rank*',
     });
   }
 
@@ -84,6 +86,7 @@ function makeMedAvgTables(label: string, key: string, fmt: Fmt, data: Data, loa:
   }], fmt, data, loa);
 
   const demogTable = {
+    title: `${label} by Census Tract Demographics**`,
     cols: COLS,
     rows: [{
       label: `Average ${label}`,
@@ -101,91 +104,88 @@ type Data = {[key:string]: number};
 function describePlace(data: Data, cat: Category, loa: string) {
   let body = <>No data for this place.</>;
 
-  const balCols = [{
+  const reliefCols = [{
     label: '',
     key: ''
   }];
   if (loa == 'state') {
-    balCols.push({
-      key: 'rankNat',
-      label: 'Nat\'l Rank',
+    reliefCols.push({
+      key: '_rankNat',
+      label: 'Nat\'l Rank*',
     });
+  }
+
+  let footnotes = [];
+  if (loa == 'state') {
+    footnotes.push('*1st place = highest value. National Rank indicates how the state ranks against all 50 states plus territories, thus varies from 1 to (at most) 56.');
+  } else if (loa == 'county' || loa == 'zcta') {
+    footnotes.push('*1st percentile = highest values. Percentiles indicate how the county or ZIP ranks against all other areas, thus varies from 1st to 100th.');
+    footnotes.push('');
   }
 
   if ('med_bal' in data) {
     body = <>
-      {loa !== 'state' && loa !== 'national' && <TableGroup title="Student Debt Balance" year={cat['Y']}
-        tables={makeMedAvgTables('Balance', 'bal', curOrNA, data, loa)} />}
-      {(loa == 'state' || loa == 'national') && <TableGroup title="Student Debt Balance" year={cat['Y']}
+      {(loa == 'national' || loa == 'state') && <TableGroup title="Student Debt Relief" year={cat['Y']}
+        footnotes={[
+          'Estimates conditional on full participation and maximum utilization.',
+          'Source: Authors calculations using Dept of Education eligibility data.'
+        ].concat(footnotes)}
         tables={[{
-          cols: balCols,
+          cols: reliefCols,
           rows: [{
-            label: `Average Balance`,
-            func: summaryRowFn('avg_bal', curOrNA, data),
-          }, {
-            label: `Average Balance Post-Relief`,
-            className: 'highlight',
+            label: 'Average Relief for Eligible Borrowers',
             func: (c: string) => {
-              if (c === '') {
-                return `▼${curOrNA(data['avg_bal_post'])}`;
+              let k = `AvgRelief_Eligible_Borrowers${c}`;
+              if (c == '_rankNat') {
+                return data[k] as any
               } else {
-                return '';
+                return curOrNA(data[k])
               }
             }
           }, {
-            label: `Median Balance`,
-            func: summaryRowFn('med_bal', curOrNA, data),
-          }, {
-            label: `Median Balance Post-Relief`,
-            className: 'highlight',
+            label: 'Average Relief Across All Borrowers',
             func: (c: string) => {
-              if (c === '') {
-                return `▼${curOrNA(data['med_bal_post'])}`;
+              let k = `AvgRelief_Across_Borrowers${c}`;
+              if (c == '_rankNat') {
+                return data[k] as any
               } else {
-                return '';
+                return curOrNA(data[k])
               }
             }
           }]
         }, {
-          cols: COLS,
+          title: 'Post-Cancellation Student Debt Balance',
+          cols: reliefCols,
           rows: [{
-            label: `Average Balance`,
-            func: (c: string) => curOrNA((data['avg_bal'] as any)[c])
+            label: 'Average Balance Post-Relief',
+            func: (c: string) => {
+              let k = `avg_bal_post${c}`;
+              if (c == '_rankNat') {
+                return data[k] as any
+              } else {
+                return curOrNA(data[k])
+              }
+            }
           }, {
-            label: `Median Balance`,
-            func: (c: string) => curOrNA((data['med_bal'] as any)[c])
+            label: 'Median Balance Post-Relief',
+            func: (c: string) => {
+              let k = `med_bal_post${c}`;
+              if (c == '_rankNat') {
+                return data[k] as any
+              } else {
+                return curOrNA(data[k])
+              }
+            }
           }]
-        }]} />}
-      <TableGroup title="Individual Income" year={cat['Y']}
-        tables={makeMedAvgTables('Income', 'inc', curOrNA, data, loa)} />
-      <TableGroup title="Student-Debt-to-Income Ratio" year={cat['Y']}
-        tables={makeMedAvgTables('Debt-to-Income Ratio', 'dti', pctOrNA, data, loa)} />
-      <TableGroup title="Debt Balance as a Share of Origination Balance" year={cat['Y']}
-        tables={makeMedAvgTables('Debt-to-Origination Ratio', 'bal_sh_obal', pctOrNA, data, loa)} />
-      <TableGroup title="Percent of student loans where current balance is greater than origination balance" year={cat['Y']}
-        tables={[
-          makeSummaryTable([{
-            label: 'Percent Greater than Origination',
-            key: 'pct_bal_grt'
-          }], pctOrNA, data, loa),
-          {
-            cols: COLS,
-            rows: [{
-              label: 'Percent Greater than Origination',
-              func: (c: string) => pctOrNA((data['pct_bal_grt'] as any)[c])
-            }]
-          }
-        ]} />
-      {(loa == 'national' || loa == 'state') && <TableGroup title="Relief Eligibility" year={cat['Y']}
-        tables={[{
+        }, {
           cols: [{
-            label: 'Federal',
+            label: 'Eligible Federal Borrower',
             key: 'Federal_Eligible_Borrowers'
           }, {
-            label: 'Pell',
+            label: 'Eligible for up to $20,000',
             key: 'Pell_Eligible'
           }, {
-            label: 'Non-Pell',
+            label: 'Eligible for up to $10,000',
             key: 'NonPell_Eligible'
           }],
           rows: [{
@@ -193,6 +193,47 @@ function describePlace(data: Data, cat: Category, loa: string) {
             func: (c: string) => fmtOrNA(data[c])
           }]
         }]} />}
+      <TableGroup title="Student Debt Balance" year={cat['Y']}
+        footnotes={[
+          'Median/average of total student debt for 18-35 year olds with non-zero balances.',
+          'Source: Debt reported by financial institutions and pulled from an anonymized Experian sample.'
+        ].concat(footnotes).concat([
+          '**Individuals are sorted into racial categories based on the racial plurality of their census tract. The statistic for each racial category is reported for the geographical area you’ve selected.'
+        ])}
+        tables={makeMedAvgTables('Balance', 'bal', curOrNA, data, loa)} />
+      <TableGroup title="Individual Income" year={cat['Y']}
+        footnotes={[
+          'Median/average of total income debt for 18-35 year olds with non-zero student loan balances.',
+          'Source: Income estimated by credit bureau and pulled from an anonymized Experian sample.'
+        ].concat(footnotes).concat([
+          '**Individuals are sorted into racial categories based on the racial plurality of their census tract. The statistic for each racial category is reported for the geographical area you’ve selected.'
+        ])}
+        tables={makeMedAvgTables('Income', 'inc', curOrNA, data, loa)} />
+      {/* <TableGroup title="Student-Debt-to-Income Ratio" year={cat['Y']}
+        tables={makeMedAvgTables('Debt-to-Income Ratio', 'dti', pctOrNA, data, loa)} />
+      <TableGroup title="Debt Balance as a Share of Origination Balance" year={cat['Y']}
+        tables={makeMedAvgTables('Debt-to-Origination Ratio', 'bal_sh_obal', pctOrNA, data, loa)} /> */}
+      <TableGroup title="Percent of Student Loans Above Balance at Origination" year={cat['Y']}
+        footnotes={[
+          'Reported across all student loans in our sample with non-zero balances.',
+          'Source: Debt reported by financial institutions and pulled from an anonymized Experian sample'
+        ].concat(footnotes).concat([
+          '**Individuals are sorted into racial categories based on the racial plurality of their census tract. The statistic for each racial category is reported for the geographical area you’ve selected.'
+        ])}
+        tables={[
+          makeSummaryTable([{
+            label: 'Percent Greater than Origination',
+            key: 'pct_bal_grt'
+          }], pctOrNA, data, loa),
+          {
+            title: 'Pct Above Balance At Origination by Census Tract Demographics**',
+            cols: COLS,
+            rows: [{
+              label: 'Percent Greater than Origination',
+              func: (c: string) => pctOrNA((data['pct_bal_grt'] as any)[c])
+            }]
+          }
+        ]} />
     </>;
   }
   return body;
@@ -277,7 +318,10 @@ const Info = ({loa, placeNamePlural, category, features, setYear}: Props) => {
     let feat = feature;
     return <div key={feat.id}>
       <h2>
-        <div>{d['name']}</div>
+        <div>
+          <em>You have selected:</em>
+          {d['name']}
+        </div>
         {yearSelector}
       </h2>
       <div className="info-body">
@@ -314,6 +358,12 @@ const Info = ({loa, placeNamePlural, category, features, setYear}: Props) => {
               </tr>
             </tbody>
           </table>
+          <ul className="footnotes">
+            {loa == 'national' ?
+              <li>Data aggregated for higher education institutions across the country.</li> :
+              <li>Data aggregated for higher education institutions within the selected geography and within a 45 minute drive of the geography’s boundary.</li>}
+            <li>Source: IPEDS.</li>
+          </ul>
         </div>}
 
         {otherPlaces.length > 0 ?
@@ -322,10 +372,6 @@ const Info = ({loa, placeNamePlural, category, features, setYear}: Props) => {
               Other {placeNamePlural} here:</span> {otherPlaces.slice(0, 5).join(', ')}
               {otherPlaces.length > 5 ? `, ... +${otherPlaces.length-5} more (zoom in to see).` : ''}
           </div> : ''}
-
-        <ul className="footnotes">
-          <li>Footnote test</li>
-        </ul>
       </div>
     </div>
   });
@@ -333,41 +379,6 @@ const Info = ({loa, placeNamePlural, category, features, setYear}: Props) => {
   return <div className="info">
     {contents}
   </div>
-}
-
-const formatter = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-  minimumFractionDigits: 0
-});
-
-function fmtOrNA(val: number) {
-  if (val === undefined || val === null) {
-    return 'N/A';
-  } else {
-    return val.toLocaleString();
-  }
-}
-function curOrNA(val: number) {
-  if (val === undefined || val === null) {
-    return 'N/A';
-  } else {
-    return formatter.format(Math.round(val));
-  }
-}
-function pctOrNA(val: number) {
-  if (val === undefined || val === null) {
-    return 'N/A';
-  } else {
-    return `${(val*100).toFixed(1)}%`;
-  }
-}
-function orNA(val: number) {
-  if (val === undefined || val === null) {
-    return 'N/A';
-  } else {
-    return val.toString();
-  }
 }
 
 export default React.memo(Info);

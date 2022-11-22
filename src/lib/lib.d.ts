@@ -7,6 +7,7 @@ interface Prop {
   key: string,
   nick: string,
   desc: string,
+  fmt: (v: number) => string,
   range: NumRange,
   color: Gradient,
   loas?: string[], // Optionally limit this prop to the specified LOAs

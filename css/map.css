@@ -109,15 +109,22 @@
   position: sticky;
   top: 0;
   color: #202020;
-  font-size: 1.2em;
+  font-size: 1.6em;
   font-weight: bold;
   border-bottom: 2px solid #6945a9;
 
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 .info h2:first-child {
   margin-top: 0;
+  margin-bottom: 1.25em;
+}
+.info h2 em {
+  display: block;
+  font-weight: normal;
+  font-size: 0.5em;
 }
 .info h3 {
   border-top: 1px solid #F4DA1A;
@@ -136,9 +143,9 @@
 .info h4 {
   margin: 1em 0 0.5em 0;
   font-weight: bold;
-  border-bottom: 1px solid #555;
   line-height: 1;
   display: flex;
+  font-size: 1.15em;
   justify-content: space-between;
 }
 .info h4 .info-table-group-year {
@@ -156,9 +163,15 @@
 }
 .info-table-group {
   margin: 1em 0 2em;
+  border-bottom: 1px solid #F4DA1A;
+  padding-bottom: 0.5em;
 }
 .info-table-group h4 {
   cursor: pointer;
+}
+.info-table-group h5 {
+  margin: 0 0 0.5em 0;
+  border-bottom: 1px solid #464545;
 }
 .info table {
   width: 100%;

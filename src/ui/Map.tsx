@@ -11,6 +11,7 @@ import type { MapMouseEvent } from 'mapbox-gl';
 import util from '@/util';
 import Painter from '@/lib/paint';
 import * as React from 'react';
+import regions from 'data/gen/regions.json';
 
 const schoolAPI = new SchoolAPI();
 const formatter = new Intl.NumberFormat('en-US', {
@@ -75,24 +76,125 @@ function createMap(
       onFocusFeatures(features, ev);
     }
   });
+
+  map.map.on('load', () => {
+    let bbox = regions['Mainland'];
+    map.fitBounds(bbox as Bounds);
+  });
   return map;
+}
+
+function getMaybeRaceVariable(val: any) {
+  if (typeof val == 'number') {
+    return val;
+  } else {
+    return val['R:ALL'];
+  }
+}
+
+async function setTooltip(
+  features: SourceMapping<MapFeature[]>,
+  ev: MapMouseEvent,
+  loa: string,
+  cat: Category,
+  props: Prop[],
+  api: FeatureAPI,
+  setTipState: React.Dispatch<React.SetStateAction<TipState>>) {
+  let feats = features['main'] || [];
+  let schools = features['schools'] || [];
+
+  if (schools.length === 0 && feats.length === 0) {
+    setTipState((tipState) => ({...tipState, display: 'none'}));
+    return
+  }
+
+  let schoolInfo = null;
+  if (schools.length > 0) {
+    let promises = schools.map((s) => schoolAPI.dataForSchool(s.properties.id));
+    let schoolData = await Promise.all(promises);
+    schoolInfo = schoolData.map((d) => {
+      return <div className="tip-school-info" key={d['MAPNAME']}>
+        <em>{d['MAPNAME']}</em>
+        <div>Tuition & Fees: {formatter.format(d['Tuition & Fees'])}</div>
+        <div>Undergraduates: {d['Degree-seeking Undergraduates'] || 'N/A'}</div>
+        <div>Graduates: {d['Graduate Students'] || 'N/A'}</div>
+      </div>
+    });
+  }
+
+  let featInfo = null;
+  if (feats.length > 0) {
+    const key = util.keyForCat(cat);
+    let featData = await api.dataForKeyPlace(key, feats[0].properties.id);
+    if (Object.keys(featData).length > 0) {
+      let [p, ..._] = util.keyParts(props[0].key);
+      featInfo = <table>
+        <tbody>
+          <tr>
+            <td>{props[0].nick}</td>
+            <td>{props[0].fmt(getMaybeRaceVariable(featData[p]))}</td>
+          </tr>
+          {loa == 'state' ? <tr>
+            <td>National Rank</td>
+            <td>{getMaybeRaceVariable(featData[`${p}_rankNat`])}</td>
+          </tr> : <>
+            <tr>
+              <td>National Percentile</td>
+              <td>{getMaybeRaceVariable(featData[`${p}_pctNat`])}</td>
+            </tr>
+            <tr>
+              <td>State Percentile</td>
+              <td>{getMaybeRaceVariable(featData[`${p}_pctState`])}</td>
+            </tr>
+          </>}
+        </tbody>
+      </table>
+    }
+  }
+
+  setTipState({
+    text: <>
+      {feats.length > 0 && <h5>{feats[0].properties.name}</h5>}
+      {featInfo}
+      {schoolInfo}
+    </>,
+    display: 'block',
+    left: `${ev.originalEvent.offsetX+10}px`,
+    top: `${ev.originalEvent.offsetY+10}px`,
+  });
+}
+
+type TipState = {
+  top: string,
+  left: string,
+  display: string,
+  text: JSX.Element
 }
 
 function MapTool({config}: {config: MapConfig}) {
   const [cat, setCat] = React.useState(config.INITIAL_STATE.cat);
   const [props, setProps] = React.useState(config.INITIAL_STATE.props);
   const [feats, setFeats] = React.useState<MapFeature[]>([]);
-  const [tipState, setTipState] = React.useState({
+  const [tipState, setTipState] = React.useState<TipState>({
     top: `0px`,
     left: `0px`,
     display: 'none',
     text: <></>,
   });
 
+  const api = React.useRef(new FeatureAPI(config.LOA));
+  const tooltipFn = React.useRef((features: SourceMapping<MapFeature[]>, ev: MapMouseEvent) => {
+    setTooltip(features, ev, config.LOA, cat, props, api.current, setTipState)
+  });
+  React.useEffect(() => {
+    tooltipFn.current = (features, ev) => {
+      setTooltip(features, ev, config.LOA, cat, props, api.current, setTipState)
+    }
+  }, [cat, props]);
+
   const mapEl = React.useRef();
   const [map, setMap] = React.useState<Map>();
   React.useEffect(() => {
-    const api = new FeatureAPI(config.LOA);
     const map_ = createMap(
       config.MAP_ID,
       mapEl.current,
@@ -101,43 +203,7 @@ function MapTool({config}: {config: MapConfig}) {
 
       // onMouseMove
       (features, ev) => {
-        let feats = features['main'] || [];
-        let schools = features['schools'] || [];
-        if (schools.length > 0) {
-          setTipState({...tipState, display: 'none'});
-          let promises = schools.map((s) => schoolAPI.dataForSchool(s.properties.id));
-          Promise.all(promises).then((data) => {
-            let schoolInfo = data.map((d) => {
-              return <div className="tip-school-info" key={d['MAPNAME']}>
-                <em>{d['MAPNAME']}</em>
-                <div>Tuition & Fees: {formatter.format(d['Tuition & Fees'])}</div>
-                <div>Undergraduates: {d['Degree-seeking Undergraduates'] || 'N/A'}</div>
-                <div>Graduates: {d['Graduate Students'] || 'N/A'}</div>
-              </div>
-            });
-            setTipState({
-              text: <>
-                {feats.length > 0 && <h5>{feats[0].properties.name}</h5>}
-                {schoolInfo}
-              </>,
-              display: 'block',
-              left: `${ev.originalEvent.offsetX+10}px`,
-              top: `${ev.originalEvent.offsetY+10}px`,
-            });
-
-          });
-        } else if (feats.length > 0) {
-          setTipState({
-            text: <>
-              <h5>{feats[0].properties.name}</h5>
-            </>,
-            display: 'block',
-            left: `${ev.originalEvent.offsetX+10}px`,
-            top: `${ev.originalEvent.offsetY+10}px`,
-          });
-        } else {
-          setTipState({...tipState, display: 'none'});
-        }
+        tooltipFn.current(features, ev);
       },
 
       // onFocusFeatures
@@ -156,7 +222,7 @@ function MapTool({config}: {config: MapConfig}) {
             // highlight its schools
             if (newFeats.length == 1) {
               let id = newFeats[0].properties['id'].split(',')[0];
-              api.schoolsForPlace(id).then((schoolIds) => {
+              api.current.schoolsForPlace(id).then((schoolIds) => {
                 if (!Array.isArray(schoolIds)) schoolIds = [];
                 let filter = ['in', 'id'].concat(schoolIds);
                 map_.setFilter({

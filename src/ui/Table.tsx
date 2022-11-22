@@ -12,19 +12,21 @@ type Col = {
 }
 type Table = {
   cols: Col[],
-  rows: Row[]
+  rows: Row[],
+  title?: string,
 };
 
 interface TableGroupProps {
   year: string|number,
   title: string,
   tables: Table[],
+  footnotes?: string[],
 }
 
 // Kinda hacky way to preserve table open states
 export const OPEN_STATES: {[key:string]: boolean} = {};
 
-function TableGroup({title, year, tables}: TableGroupProps) {
+function TableGroup({title, year, tables, footnotes}: TableGroupProps) {
   const [open, setOpen] = React.useState(OPEN_STATES[title] || false);
 
   React.useEffect(() => {
@@ -36,29 +38,36 @@ function TableGroup({title, year, tables}: TableGroupProps) {
       <span><span className="info-table-group-year" style={{display: 'none'}}>{year}</span> {title}</span>
       <span className="info-table-group-toggle-open">{open ? '–' : '+'}</span>
     </h4>
-    {open && tables.map((table, i) => {
-      return <table key={i}>
-        <thead>
-          <tr>
-            <th></th>
-            {table.cols.map((c) =>
-              <th key={c.key}>{c.label}</th>
-            )}
-          </tr>
-        </thead>
-        <tbody>
-          {table.rows.map(({label, func, className}) =>
-            <tr key={label} className={className || ''}>
-              <td>{label}</td>
-              {table.cols.map((c) => {
-                let val = func(c.key);
-                return <td key={c.key} className={val == 'N/A' ? 'na' : ''}>{val}</td>
-              }
-              )}
-            </tr>)}
-        </tbody>
-      </table>
-    })}
+    {open && <>
+      {tables.map((table, i) => {
+        return <div key={i}>
+          {table.title ? <h5>{table.title}</h5> : ''}
+          <table>
+            <thead>
+              <tr>
+                <th></th>
+                {table.cols.map((c) =>
+                  <th key={c.key}>{c.label}</th>
+                )}
+              </tr>
+            </thead>
+            <tbody>
+              {table.rows.map(({label, func, className}) =>
+                <tr key={label} className={className || ''}>
+                  <td>{label}</td>
+                  {table.cols.map((c) => {
+                    let val = func(c.key);
+                    return <td key={c.key} className={val == 'N/A' ? 'na' : ''}>{val}</td>
+                  }
+                  )}
+                </tr>)}
+            </tbody>
+          </table>
+        </div>})}
+        {footnotes && footnotes.length > 0 && <ul className="footnotes">
+          {footnotes.map((fn, i) => <li key={i}>{fn}</li>)}
+        </ul>}
+      </>}
   </div>
 }
 

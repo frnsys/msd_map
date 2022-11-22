@@ -15,7 +15,7 @@ import pandas as pd
 from lib import Processor, Mapper
 
 # loa = Level of analysis
-LOA = sys.argv[1] # 'zcta' OR 'state' OR 'county'
+LOA = sys.argv[1] # 'zcta' OR 'state' OR 'county' OR 'national'
 
 zctaToState = json.load(open('src/zctaToState.json'))
 
@@ -119,17 +119,18 @@ CATEGORIES = {
 # try to include only that will be used to color tiles
 FEAT_FIELDS = {
     'med_bal': ['Y'],
-    'med_dti': ['Y'],
     'med_inc': ['Y'],
     'pct_bal_grt': ['Y'],
-    'med_bal_sh_obal': ['Y'],
 }
 
-if LOA == 'state':
-    FEAT_FIELDS.update({
-        'med_bal_post': ['Y'],
-    })
+# Feat fields for specific LOAs
+LOA_FEAT_FIELDS = {
+    'state': {
+        'AvgRelief_Across_Borrowers': ['Y'],
+    }
+}
 
+FEAT_FIELDS.update(LOA_FEAT_FIELDS.get(LOA, {}))
 
 # These are queried separately via the "api"
 # when a feature is focused on,
@@ -218,18 +219,27 @@ DEBT_RELIEF_FIELDS = [
     'Pell_Eligible',
     'NonPell_Eligible',
     'AvgRelief_Eligible_Borrowers',
-    'Total_Borrowers',
     'AvgRelief_Across_Borrowers',
-    'avg_bal_pre',
     'avg_bal_post',
-    'med_bal_pre',
     'med_bal_post',
+]
+
+DEBT_RELIEF_FIELDS_STATE = [
+    'AvgRelief_Eligible_Borrowers_rankNat',
+    'AvgRelief_Across_Borrowers_rankNat',
+    'avg_bal_post_rankNat',
+    'med_bal_post_rankNat',
 ]
 
 if LOA == 'state' or LOA == 'national':
     fields = {}
     for f in DEBT_RELIEF_FIELDS:
         fields[f] = ['Y']
+
+    if LOA == 'state':
+        for f in DEBT_RELIEF_FIELDS_STATE:
+            fields[f] = ['Y']
+
     QUERY_FIELDS.update(fields)
 
 SCHOOL_FIELDS = [
@@ -292,7 +302,7 @@ for field in SCHOOL_FIELDS:
     QUERY_CATEGORIES[field] = {
         'Y': CATEGORIES['Y']
     }
-for field in DEBT_RELIEF_FIELDS:
+for field in DEBT_RELIEF_FIELDS + DEBT_RELIEF_FIELDS_STATE:
     QUERY_CATEGORIES[field] = {
         'Y': CATEGORIES['Y']
     }
@@ -364,7 +374,11 @@ if __name__ == '__main__':
 
     with open('gen/prop_cats.json', 'w') as f:
         prop_cats = {}
-        prop_cats.update(FEAT_FIELDS)
+        all_feat_fields = dict(**FEAT_FIELDS)
+        for fields in LOA_FEAT_FIELDS.values():
+            for k, v in fields.items():
+                all_feat_fields[k] = v
+        prop_cats.update(all_feat_fields)
         prop_cats.update(QUERY_FIELDS)
         json.dump(prop_cats, f)
 

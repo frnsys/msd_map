@@ -1,6 +1,7 @@
 import util from '@/util';
 import styles from '@/styles';
 import config from '../config';
+import * as fmt from '@/format';
 import zctaMeta from 'data/gen/zcta/meta.json';
 import stateMeta from 'data/gen/state/meta.json';
 import countyMeta from 'data/gen/county/meta.json';
@@ -41,15 +42,18 @@ const INITIAL_CAT = {
 };
 const INITIAL_KEY = util.propForCat('med_bal', INITIAL_CAT);
 
+const INITIAL_STATE_KEY = util.propForCat('AvgRelief_Across_Borrowers', INITIAL_CAT);
+
 export const COLORS = {
   focus: '#f9ca74',
-  null: '#202124'
+  null: '#E2E0E6'
 };
 
 const PROPS = {
   'med_bal': {
-    desc: 'Median Balance',
+    desc: 'Median Student Debt Balance',
     nick: 'Med. Balance',
+    fmt: fmt.curOrNA,
     color: {
       0.0: '#ffdbdb',
       1.0: '#fa2525'
@@ -63,9 +67,10 @@ const PROPS = {
       }
     }
   },
-  'med_bal_post': {
-    desc: 'Median Balance Post-Relief',
-    nick: 'Med. Balance Post-Relief',
+  'AvgRelief_Across_Borrowers': {
+    desc: 'Average Student Debt Relief',
+    nick: 'Avg. Debt Relief',
+    fmt: fmt.curOrNA,
     color: {
       0.0: '#ffdbdb',
       1.0: '#fa2525'
@@ -80,9 +85,10 @@ const PROPS = {
       }
     }
   },
-  'med_dti': {
-    desc: 'Median Debt-to-Income Ratio',
-    nick: 'Med. Debt-to-Income',
+  'med_inc': {
+    desc: 'Median Estimated Income',
+    nick: 'Med. Income',
+    fmt: fmt.curOrNA,
     color: {
       0.0: '#ffdbdb',
       1.0: '#fa2525'
@@ -97,8 +103,9 @@ const PROPS = {
     }
   },
   'pct_bal_grt': {
-    desc: 'Percent Current Balance > Origination Balance',
-    nick: 'Per. Balance > Origination',
+    desc: 'Percent of Student Loans Above Balance at Origination',
+    nick: 'Pct Balance > Origination',
+    fmt: fmt.pctOrNA,
     color: {
       0.0: '#ffdbdb',
       1.0: '#fa2525'
@@ -149,7 +156,7 @@ LOAS.forEach((loa) => {
         stats: {
           // min: META[loa].min[k]
         },
-        ...JSON.parse(JSON.stringify(PROPS[p]))
+        ...PROPS[p]
       };
     });
   });
@@ -169,7 +176,7 @@ export default {
   maps: {
     state: {
       LOA: 'state',
-      MAP_ID: 'jfift.msd_state__2022_11-3',
+      MAP_ID: 'jfift.msd_state__2022_11-4',
       PLACE_NAME: 'state',
       PLACE_NAME_PLURAL: 'states',
       MIN_ZOOM: 2,
@@ -182,14 +189,14 @@ export default {
       PROPS: PROPS_FOR_LOA['state'],
       INITIAL_STATE: {
         cat: INITIAL_CAT,
-        props: [PROPS_FOR_LOA['state'][INITIAL_KEY]]
+        props: [PROPS_FOR_LOA['state'][INITIAL_STATE_KEY]]
       },
       ...SHARED_CONFIG
     },
 
     county: {
       LOA: 'county',
-      MAP_ID: 'jfift.msd_county__2022_11-4',
+      MAP_ID: 'jfift.msd_county__2022_11-5',
       PLACE_NAME: 'county',
       PLACE_NAME_PLURAL: 'counties',
       MIN_ZOOM: 4,
@@ -209,8 +216,8 @@ export default {
 
     zcta: {
       LOA: 'zcta',
-      MAP_ID: 'jfift.msd_zcta__2022_11-3',
-      PLACE_NAME: 'zip',
+      MAP_ID: 'jfift.msd_zcta__2022_11-4',
+      PLACE_NAME: 'ZIP code',
       PLACE_NAME_PLURAL: 'zips',
       MIN_ZOOM: 6,
       UI: {
