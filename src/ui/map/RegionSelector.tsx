@@ -17,7 +17,12 @@ const RegionSelector = (props: Props) => {
         let bbox = REGIONS[name] as Bounds;
         return <div key={name} onClick={() => props.onSelect(bbox)}>{name}</div>
     });
-  return <div className="map-regions">{regions}</div>
+  return <div className="map-regions">
+    <div className="map-regions-toggle">
+      <img src="assets/location.png" />
+    </div>
+    <div className="map-regions-list">{regions}</div>
+  </div>
 }
 
 export default React.memo(RegionSelector);

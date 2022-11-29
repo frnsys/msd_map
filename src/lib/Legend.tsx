@@ -22,6 +22,7 @@ function Legend(props: Props) {
 
   const bivariate = props.props.length > 1;
   return <div className={`legend ${bivariate ? 'legend--bivariate' : 'legend-univariate'}`}>
+    {props.children}
     {bivariate ?
       <Bivariate {...props} />
       : <Univariate {...props} />}
@@ -34,7 +35,6 @@ function Legend(props: Props) {
         </div>
       })}
     </div>
-    {props.children}
   </div>
 }
 

@@ -21,6 +21,7 @@ interface MapConfig {
 }
 interface UIConfig {
   NO_DATA: string[],
+  NO_DATA_LABEL: boolean,
   NO_PLACE_SELECTOR: boolean,
   NO_TERRITORIES: boolean,
   PLACE_ID_LENGTH: number,

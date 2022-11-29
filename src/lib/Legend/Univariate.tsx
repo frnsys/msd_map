@@ -20,9 +20,6 @@ function Univariate({onBinEnter, onBinLeave, props, stats, features}: Props) {
     return <div
       key={i}
       className="legend--bar-bin"
-      style={{
-        top: `${(flip ? n - i - 1 : i)*30}px`
-      }}
       onMouseEnter={() => {
         let u = (n - i)/n * range[1];
         let l = (n - (i+1))/n * range[1];
@@ -43,6 +40,10 @@ function Univariate({onBinEnter, onBinLeave, props, stats, features}: Props) {
       }}
       onMouseLeave={onBinLeave} />
   });
+
+  if (flip) {
+    bins.reverse();
+  }
 
   let legendSpec = prop.legend;
   let labelTexts = [
@@ -70,7 +71,7 @@ function Univariate({onBinEnter, onBinLeave, props, stats, features}: Props) {
     <div className="legend--title">{prop.nick}</div>
     <div className="legend--range">
       <div className="legend--bar" style={{background: barBackground}}>
-        {bins}
+        <div className="legend--bar-bins">{bins}</div>
         {statPoints}
         {featPoints}
       </div>

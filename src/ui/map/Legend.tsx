@@ -14,9 +14,15 @@ interface Props {
 const stats: string[] = [];
 
 function MapLegend({props, map, features, noDataLabel, children}: Props) {
-  const otherColors: Colors = React.useMemo(() => ({
-    [noDataLabel]: '#520004'
-  }), [noDataLabel]);
+  const otherColors: Colors = React.useMemo(() => {
+    if (noDataLabel) {
+      return {
+        [noDataLabel]: '#520004'
+      }
+    } else {
+      return {};
+    }
+  }, [noDataLabel]);
 
   const onBinEnter = React.useCallback((filter: MapboxExpression) => {
     map.setFilter(MAP.SOURCE, filter, {mute: true}, {mute: false});

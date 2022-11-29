@@ -332,10 +332,17 @@ function MapTool({config}: {config: MapConfig}) {
 
   return <div>
     <section className="stage">
-      <RegionSelector
-        onSelect={onRegionSelect}
-        excludeTerritories={config.UI.NO_TERRITORIES} />
+      <Info
+        loa={config.LOA}
+        category={cat}
+        features={feats}
+        placeNamePlural={config.PLACE_NAME_PLURAL}
+        setYear={setYear}
+      />
       <div className="map-wrapper" onMouseLeave={hideTooltip}>
+        <RegionSelector
+          onSelect={onRegionSelect}
+          excludeTerritories={config.UI.NO_TERRITORIES} />
         {mapOverlay}
         <div className="map" ref={mapEl}></div>
         <div className="map-tooltip" style={tipState}>{tipState.text}</div>
@@ -346,7 +353,7 @@ function MapTool({config}: {config: MapConfig}) {
           map={map}
           props={props}
           features={feats}
-          noDataLabel={`No ${config.PLACE_NAME}`}>
+          noDataLabel={config.UI.NO_DATA_LABEL ? `No ${config.PLACE_NAME}` : null}>
           {propertySelector}
         </MapLegend>
         {!config.UI.NO_PLACE_SELECTOR && <PlaceSelector
@@ -354,16 +361,9 @@ function MapTool({config}: {config: MapConfig}) {
           name={config.PLACE_NAME}
           idLength={config.UI.PLACE_ID_LENGTH}
           onSelect={onPlaceSelect} />}
+        <IconLegend iconGroups={schoolIconLegend} />
       </div>
-      <Info
-        loa={config.LOA}
-        category={cat}
-        features={feats}
-        placeNamePlural={config.PLACE_NAME_PLURAL}
-        setYear={setYear}
-      />
     </section>
-    <IconLegend iconGroups={schoolIconLegend} />
   </div>
 }
 
