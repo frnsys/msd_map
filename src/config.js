@@ -73,7 +73,7 @@ const PROPS = {
     fmt: fmt.curOrNA,
     color: {
       0.0: '#ffdbdb',
-      1.0: '#fa2525'
+      1.0: '#139D1C'
     },
     loas: ['state'],
     legend: {
@@ -86,12 +86,12 @@ const PROPS = {
     }
   },
   'med_inc': {
-    desc: 'Median Estimated Income',
+    desc: 'Median Borrower Income',
     nick: 'Med. Income',
     fmt: fmt.curOrNA,
     color: {
-      0.0: '#ffdbdb',
-      1.0: '#fa2525'
+      0.0: '#d4e4fc',
+      1.0: '#2C84FC'
     },
     legend: {
       flip: false,

@@ -19,7 +19,7 @@ const RegionSelector = (props: Props) => {
     });
   return <div className="map-regions">
     <div className="map-regions-toggle">
-      <img src="assets/location.png" />
+      <img src="assets/location.png" /><div>Outlying Areas</div>
     </div>
     <div className="map-regions-list">{regions}</div>
   </div>

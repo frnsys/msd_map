@@ -251,6 +251,10 @@ interface Props {
 const Info = ({loa, placeNamePlural, category, features, setYear}: Props) => {
   const [data, setData] = React.useState([]);
   const [schoolType, setSchoolType] = React.useState('allschools');
+  const [schoolsOpen, setSchoolsOpen] = React.useState(OPEN_STATES['Higher Education Market'] || false);
+  React.useEffect(() => {
+    OPEN_STATES['Higher Education Market'] = schoolsOpen;
+  }, [schoolsOpen]);
 
   const yearSelector = <div className="inline-selector">
     {Object.keys(CATS['Y']).map((k) => {
@@ -328,42 +332,47 @@ const Info = ({loa, placeNamePlural, category, features, setYear}: Props) => {
         {describePlace(d, category, feat.id == 'national' ? 'national' : loa)}
 
         {'n_allschools' in d && <div className="info-school-summary">
-          <h4>Higher Education Market</h4>
-          <div className="inline-selector">
-            {Object.entries(SCHOOL_TYPES).map(([k, v]) => {
-              return <span
-                key={v}
-                className={v == schoolType ? 'selected' : ''}
-                onClick={() => setSchoolType(v)}>
-              {k}</span>
-            })}
-          </div>
-          <table>
-            <tbody>
-              <tr>
-                <td>Number of Higher Ed Institutions</td>
-                <td>{fmtOrNA(d[`n_${schoolType}`])}</td>
-              </tr>
-              <tr>
-                <td>Degree-seeking Undergraduate Students</td>
-                <td>{fmtOrNA(d[`dsug_${schoolType}`])}</td>
-              </tr>
-              <tr>
-                <td>Average Tuition & Fees</td>
-                <td>{curOrNA(d[`avgtf_${schoolType}`])}</td>
-              </tr>
-              <tr>
-                <td>Graduate Students</td>
-                <td>{fmtOrNA(d[`gr_${schoolType}`])}</td>
-              </tr>
-            </tbody>
-          </table>
-          <ul className="footnotes">
-            {loa == 'national' ?
-              <li>Data aggregated for higher education institutions across the country.</li> :
-              <li>Data aggregated for higher education institutions within the selected geography and within a 45 minute drive of the geography’s boundary.</li>}
-            <li>Source: IPEDS.</li>
-          </ul>
+          <h4 onClick={() => setSchoolsOpen(!schoolsOpen)}>
+            <span>Higher Education Market</span>
+            <span className="info-table-group-toggle-open">{schoolsOpen ? '–' : '+'}</span>
+          </h4>
+          {schoolsOpen && <>
+            <div className="inline-selector">
+              {Object.entries(SCHOOL_TYPES).map(([k, v]) => {
+                return <span
+                  key={v}
+                  className={v == schoolType ? 'selected' : ''}
+                  onClick={() => setSchoolType(v)}>
+                {k}</span>
+              })}
+            </div>
+            <table>
+              <tbody>
+                <tr>
+                  <td>Number of Higher Ed Institutions</td>
+                  <td>{fmtOrNA(d[`n_${schoolType}`])}</td>
+                </tr>
+                <tr>
+                  <td>Degree-seeking Undergraduate Students</td>
+                  <td>{fmtOrNA(d[`dsug_${schoolType}`])}</td>
+                </tr>
+                <tr>
+                  <td>Average Tuition & Fees</td>
+                  <td>{curOrNA(d[`avgtf_${schoolType}`])}</td>
+                </tr>
+                <tr>
+                  <td>Graduate Students</td>
+                  <td>{fmtOrNA(d[`gr_${schoolType}`])}</td>
+                </tr>
+              </tbody>
+            </table>
+            <ul className="footnotes">
+              {loa == 'national' ?
+                <li>Data aggregated for higher education institutions across the country.</li> :
+                <li>Data aggregated for higher education institutions within the selected geography and within a 45 minute drive of the geography’s boundary.</li>}
+              <li>Source: IPEDS.</li>
+            </ul>
+          </>}
         </div>}
 
         {otherPlaces.length > 0 ?

@@ -5,11 +5,8 @@ type IconLegend = {
   style: React.CSSProperties,
 }
 
-function IconLegend({iconGroups}: {iconGroups: IconLegend[][]}) {
+function IconLegend({title, iconGroups}: {title: string, iconGroups: IconLegend[][]}) {
   return <div className="icon-legend">
-    <div className="icon-legend--toggle">
-      <img src="assets/help.png" />
-    </div>
     <div className="icon-legend--box">
       <div className="icon-legend--icons">
         {iconGroups.map((group) => {
@@ -22,6 +19,9 @@ function IconLegend({iconGroups}: {iconGroups: IconLegend[][]}) {
         })}
       </div>
       <div className="icon-legend--note">Schools appear at higher zoom levels.</div>
+    </div>
+    <div className="icon-legend--toggle">
+      <img src="assets/help.png" /><div>{title}</div>
     </div>
   </div>
 }

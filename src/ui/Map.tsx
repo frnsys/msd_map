@@ -361,7 +361,7 @@ function MapTool({config}: {config: MapConfig}) {
           name={config.PLACE_NAME}
           idLength={config.UI.PLACE_ID_LENGTH}
           onSelect={onPlaceSelect} />}
-        <IconLegend iconGroups={schoolIconLegend} />
+        <IconLegend title="School Legend" iconGroups={schoolIconLegend} />
       </div>
     </section>
   </div>

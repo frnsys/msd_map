@@ -76,7 +76,8 @@ function PropertySelector({props, selected, onChange, label, hideLabel}: Props) 
         dropdownIndicator: (baseStyles, _state) => ({
           ...baseStyles,
           padding: '0 0 0 2px',
-          width: '10px',
+          width: '20px',
+          color: 'hsl(0deg 79% 66%)'
         }),
         indicatorSeparator: (_baseStyles, _state) => ({
           display: 'none',
