@@ -272,7 +272,13 @@ function MapTool({config}: {config: MapConfig}) {
   // Resize the map when visibility changes
   const visible = useVisible(mapEl);
   React.useEffect(() => {
-    if (visible) map.map.resize();
+    if (visible) {
+      map.map.resize();
+
+      // Zoom to contiguous 48
+      let bbox = regions['Mainland'];
+      map.map.fitBounds(bbox as Bounds);
+    }
   }, [visible]);
 
   let mapOverlay;

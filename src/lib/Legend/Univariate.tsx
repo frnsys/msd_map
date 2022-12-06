@@ -12,7 +12,7 @@ function Univariate({onBinEnter, onBinLeave, props, stats, features}: Props) {
   let gradientCss = stops.map((stop) => {
     return `${gradient[stop]} ${(flip ? 1-stop : stop)*100}%`;
   })
-  const barBackground = `linear-gradient(0, ${gradientCss.join(', ')})`;
+  const barBackground = `linear-gradient(90deg, ${gradientCss.join(', ')})`;
 
   const n = 4;
   const range = prop.range;
@@ -41,7 +41,7 @@ function Univariate({onBinEnter, onBinLeave, props, stats, features}: Props) {
       onMouseLeave={onBinLeave} />
   });
 
-  if (flip) {
+  if (!flip) {
     bins.reverse();
   }
 
@@ -76,8 +76,8 @@ function Univariate({onBinEnter, onBinLeave, props, stats, features}: Props) {
         {featPoints}
       </div>
       <div className="legend--labels">
-        <div>{labelTexts[1]}</div>
         <div>{labelTexts[0]}</div>
+        <div>{labelTexts[1]}</div>
       </div>
     </div>
   </>
@@ -93,7 +93,7 @@ function Point({prop, value, className}: {prop: Prop, value: number, className: 
   return <div
     className={`legend--point ${className}`}
     style={{
-      bottom: `calc(${p*100}% - 1px)`
+      left: `calc(${p*100}% - 1px)`
     }} />
 }
 

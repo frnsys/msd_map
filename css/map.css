@@ -247,6 +247,13 @@
   padding: 0.5em 0.5em 0.2em 0.5em;
   border-radius: 2px;
 }
+.legend--range {
+  width: 160px;
+  margin: 0 auto;
+}
+.legend-univariate {
+  width: 220px;
+}
 .legend--bivariate-wrapper {
   transform: rotate(-45deg);
   bottom: 4em;
@@ -260,9 +267,6 @@
   font-weight: bold;
   /* hiding while using the property dropdown as the title */
   display: none;
-}
-.legend--range {
-  display: flex;
 }
 .legend--bivariate-label {
   position: absolute;
@@ -284,30 +288,35 @@
   display: flex;
 }
 .legend--bar {
-  height: 120px;
-  width: 12px;
+  height: 12px;
+  width: 160px;
   position: relative;
   border: 1px solid black;
 }
 .legend--bar-bins {
   position: absolute;
-  top: 0;
-  bottom: 0;
-  left: -1px;
+  top: -1px;
+  bottom: -1px;
+  left: 0;
   right: -1px;
+  display: flex;
 }
 .legend--bar-bin {
-  width: 100%;
-  height: 30px; /* four bins */
-  border-bottom: 1px solid black;
+  height: 100%;
+  width: 40px; /* four bins */
+  border-right: 1px solid black;
 }
 .legend--labels {
-  margin-left: 0.25em;
   display: flex;
-  flex-direction: column;
   justify-content: space-between;
   font-size: 0.8em;
-  text-align: left;
+  width: 160px;
+}
+.legend--labels > div:first-child {
+  transform: translate(-50%, 0);
+}
+.legend--labels > div:last-child {
+  transform: translate(50%, 0);
 }
 .legend--labels_x {
   text-align: left;
@@ -339,6 +348,14 @@
 .legend--grid-container {
   position: relative;
 }
+.legend-univariate .legend--special {
+  display: flex;
+  justify-content: center;
+}
+.legend-univariate .legend--single {
+  margin-right: 0.5em;
+  margin-bottom: 0.25em;
+}
 .legend--bivariate .legend--special {
   margin-top: 2.5em;
 }
@@ -360,14 +377,11 @@
 }
 .focus-point.legend--point,
 .stat-point.legend--point {
-  height: 2px;
-  width: 24px;
+  height: 18px;
+  width: 2px;
   right: 0;
 }
 
-.legend .property-selector {
-  max-width: 8em;
-}
 .legend .property-selector select {
   font-size: 0.75em;
 }
@@ -544,9 +558,10 @@
   display: flex;
 }
 .legend--single-color {
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   border: 1px solid black;
+  margin-top: -1px;
 }
 .legend--single span {
   line-height: 1;
@@ -641,15 +656,5 @@ button {
   .map-regions,
   .legend {
     font-size: 0.8em;
-  }
-
-  .legend .property-selector {
-    font-size: 0.75em;
-  }
-  .legend--bar-bin {
-    height: 16px;
-  }
-  .legend--bar {
-    height: 64px;
   }
 }

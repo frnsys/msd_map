@@ -50,13 +50,14 @@ function PropertySelector({props, selected, onChange, label, hideLabel}: Props) 
           background: 'none',
           border: 0,
           marginBottom: '2px',
-          fontSize: '1em',
+          fontSize: '0.8em',
         }),
         singleValue: (baseStyles, _state) => ({
           ...baseStyles,
           color: '#fff',
           fontWeight: 'bold',
           overflow: 'visible',
+          textAlign: 'center',
           whiteSpace: 'normal',
         }),
         menu: (baseStyles, _state) => ({
@@ -77,7 +78,8 @@ function PropertySelector({props, selected, onChange, label, hideLabel}: Props) 
           ...baseStyles,
           padding: '0 0 0 2px',
           width: '20px',
-          color: 'hsl(0deg 79% 66%)'
+          color: 'hsl(0deg 79% 66%)',
+          marginTop: '-6px',
         }),
         indicatorSeparator: (_baseStyles, _state) => ({
           display: 'none',
