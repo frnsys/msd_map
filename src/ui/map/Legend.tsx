@@ -17,7 +17,7 @@ function MapLegend({props, map, features, noDataLabel, children}: Props) {
   const otherColors: Colors = React.useMemo(() => {
     if (noDataLabel) {
       return {
-        [noDataLabel]: '#520004'
+        [noDataLabel]: '#614a4d'
       }
     } else {
       return {};

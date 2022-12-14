@@ -127,6 +127,7 @@ FEAT_FIELDS = {
 LOA_FEAT_FIELDS = {
     'state': {
         'AvgRelief_Across_Borrowers': ['Y'],
+        'Max_Cancelled_in_b': ['Y'],
     }
 }
 
@@ -218,6 +219,7 @@ DEBT_RELIEF_FIELDS = [
     'Federal_Eligible_Borrowers',
     'Pell_Eligible',
     'NonPell_Eligible',
+    'Max_Cancelled_in_b',
     'AvgRelief_Eligible_Borrowers',
     'AvgRelief_Across_Borrowers',
     'avg_bal_post',

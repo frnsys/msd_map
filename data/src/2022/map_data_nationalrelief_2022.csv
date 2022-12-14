@@ -1,2 +1,2 @@
-State,Federal_Borrowers,Federal_Eligible_Borrowers,Pell_Eligible,NonPell_Eligible,AvgRelief_Eligible_Borrowers,Total_Borrowers,AvgRelief_Across_Borrowers,avg_bal_pre,avg_bal_post,med_bal_pre,med_bal_post
-NATIONAL,45848400,42359900,26147800,16212100,16172.77,48516825,14120.4,34608.1497902814,20487.7497902814,19076,4955.6
+,State,Federal_Borrowers,Federal_Eligible_Borrowers,Pell_Eligible,NonPell_Eligible,AvgRelief_Eligible_Borrowers,Max_Cancelled_in_k,Total_Borrowers,AvgRelief_Across_Borrowers,avg_bal_pre,avg_bal_post,med_bal_pre,med_bal_post,Max_Cancelled_in_b
+0,NATIONAL,45848400,42359900,26147800,16212100,16172.77,685076920,48516825,14120.4,34135.5528877967,20015.1528877967,19097,4976.6,685.0769

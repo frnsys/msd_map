@@ -11,11 +11,15 @@ export function fmtOrNA(val: number) {
     return val.toLocaleString();
   }
 }
-export function curOrNA(val: number) {
+export function curOrNA(val: number, round=true) {
   if (val === undefined || val === null) {
     return 'N/A';
   } else {
-    return formatter.format(Math.round(val));
+    if (round) {
+      return formatter.format(Math.round(val));
+    } else {
+      return formatter.format(val);
+    }
   }
 }
 export function pctOrNA(val: number) {

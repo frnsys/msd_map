@@ -72,8 +72,26 @@ const PROPS = {
     nick: 'Avg. Debt Relief',
     fmt: fmt.curOrNA,
     color: {
-      0.0: '#ffdbdb',
-      1.0: '#139D1C'
+      0.0: '#ccebd4',
+      1.0: '#0c5219'
+    },
+    loas: ['state'],
+    legend: {
+      flip: false,
+      minClamped: true,
+      maxClamped: true,
+      special: {
+        'Missing Data': COLORS['null'],
+      }
+    }
+  },
+  'Max_Cancelled_in_b': {
+    desc: 'Maximum Debt Cancelled (billions)',
+    nick: 'Maximum Debt Cancelled (billions)',
+    fmt: fmt.curOrNA,
+    color: {
+      0.0: '#f2e6fc',
+      1.0: '#410175'
     },
     loas: ['state'],
     legend: {
@@ -103,8 +121,8 @@ const PROPS = {
     }
   },
   'pct_bal_grt': {
-    desc: 'Percent of Student Loans Above Balance at Origination',
-    nick: 'Pct Balance > Origination',
+    desc: 'Share of Loans where Balance is greater than Origination',
+    nick: 'Loans where Balance > Origination',
     fmt: fmt.pctOrNA,
     color: {
       0.0: '#ffdbdb',
@@ -119,6 +137,13 @@ const PROPS = {
       }
     }
   },
+}
+
+const CUSTOM_RANGES = {
+  'med_bal': [8000, 25000],
+  'AvgRelief_Across_Borrowers': [10000, 15000],
+  'Max_Cancelled_in_b': [0, 50],
+  'med_inc': [45000, 65000],
 }
 
 // Mapping of cat keys to labels
@@ -152,7 +177,7 @@ LOAS.forEach((loa) => {
     keys.forEach((k) => {
       PROPS_FOR_LOA[loa][k] = {
         key: k,
-        range: META[loa].ranges[p],
+        range: p in CUSTOM_RANGES ? CUSTOM_RANGES[p] : META[loa].ranges[p],
         stats: {
           // min: META[loa].min[k]
         },
@@ -176,7 +201,7 @@ export default {
   maps: {
     state: {
       LOA: 'state',
-      MAP_ID: 'jfift.msd_state__2022_11-4',
+      MAP_ID: 'jfift.msd_state__2022_12-13_2',
       PLACE_NAME: 'state',
       PLACE_NAME_PLURAL: 'states',
       MIN_ZOOM: 2,
@@ -197,7 +222,7 @@ export default {
 
     county: {
       LOA: 'county',
-      MAP_ID: 'jfift.msd_county__2022_11-5',
+      MAP_ID: 'jfift.msd_county__2022_12-13',
       PLACE_NAME: 'county',
       PLACE_NAME_PLURAL: 'counties',
       MIN_ZOOM: 4,
@@ -218,7 +243,7 @@ export default {
 
     zcta: {
       LOA: 'zcta',
-      MAP_ID: 'jfift.msd_zcta__2022_11-4',
+      MAP_ID: 'jfift.msd_zcta__2022_12-13',
       PLACE_NAME: 'ZIP code',
       PLACE_NAME_PLURAL: 'zips',
       MIN_ZOOM: 6,

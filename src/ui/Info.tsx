@@ -6,7 +6,6 @@ import { CATS } from '@/config';
 import { fmtOrNA, curOrNA, pctOrNA, orNA } from '@/format';
 
 // Hack to start this table as open
-OPEN_STATES["Student Debt Balance"] = true;
 OPEN_STATES["Student Debt Relief"] = true;
 
 const SCHOOL_TYPES = {
@@ -119,7 +118,7 @@ function describePlace(data: Data, cat: Category, loa: string) {
   if (loa == 'state') {
     footnotes.push('*1st place = highest value. National Rank indicates how the state ranks against all 50 states plus territories, thus varies from 1 to (at most) 56.');
   } else if (loa == 'county' || loa == 'zcta') {
-    footnotes.push('*1st percentile = highest values. Percentiles indicate how the county or ZIP ranks against all other areas, thus varies from 1st to 100th.');
+    footnotes.push('*1st percentile = lowest values. Percentiles indicate how the county or ZIP ranks against all other areas, thus varies from 1st to 100th.');
     footnotes.push('');
   }
 
@@ -152,6 +151,17 @@ function describePlace(data: Data, cat: Category, loa: string) {
                 return curOrNA(data[k])
               }
             }
+          }, {
+            label: 'Maximum Cancelled, in billions',
+            func: (c: string) => {
+              let k = `Max_Cancelled_in_b${c}`;
+              if (c == '_rankNat') {
+                return '';
+              } else {
+                return curOrNA(data[k], false)
+              }
+            }
+
           }]
         }, {
           title: 'Post-Cancellation Student Debt Balance',
@@ -213,7 +223,7 @@ function describePlace(data: Data, cat: Category, loa: string) {
         tables={makeMedAvgTables('Debt-to-Income Ratio', 'dti', pctOrNA, data, loa)} />
       <TableGroup title="Debt Balance as a Share of Origination Balance" year={cat['Y']}
         tables={makeMedAvgTables('Debt-to-Origination Ratio', 'bal_sh_obal', pctOrNA, data, loa)} /> */}
-      <TableGroup title="Percent of Student Loans Above Balance at Origination" year={cat['Y']}
+      <TableGroup title="Share of Loans where Balance is greater than Origination" year={cat['Y']}
         footnotes={[
           'Reported across all student loans in our sample with non-zero balances.',
           'Source: Debt reported by financial institutions and pulled from an anonymized Experian sample'
@@ -250,6 +260,7 @@ interface Props {
 
 const Info = ({loa, placeNamePlural, category, features, setYear}: Props) => {
   const [data, setData] = React.useState([]);
+  const latest = React.useRef(0);
   const [schoolType, setSchoolType] = React.useState('allschools');
   const [schoolsOpen, setSchoolsOpen] = React.useState(OPEN_STATES['Higher Education Market'] || false);
   React.useEffect(() => {
@@ -282,6 +293,9 @@ const Info = ({loa, placeNamePlural, category, features, setYear}: Props) => {
         });
       });
 
+      let now = Date.now();
+      latest.current = now;
+
       Promise.all(promises).then(() => {
         let contents = features.map((feat) => {
           let p = feat.properties;
@@ -300,7 +314,9 @@ const Info = ({loa, placeNamePlural, category, features, setYear}: Props) => {
           return {feature: feat, data: d, otherPlaces};
         });
 
-        setData(contents);
+        if (now === latest.current) {
+          setData(contents);
+        }
       });
     } else {
       // Default to national data

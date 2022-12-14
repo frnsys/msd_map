@@ -47,8 +47,8 @@ function Univariate({onBinEnter, onBinLeave, props, stats, features}: Props) {
 
   let legendSpec = prop.legend;
   let labelTexts = [
-    legendSpec.minClamped ? `≤${Math.floor(range[0])}` : Math.floor(range[0]),
-    legendSpec.maxClamped ? `≥${Math.ceil(range[1])}` : Math.ceil(range[1]),
+    legendSpec.minClamped ? `≤${prop.fmt(Math.floor(range[0]))}` : prop.fmt(Math.floor(range[0])),
+    legendSpec.maxClamped ? `≥${prop.fmt(Math.ceil(range[1]))}` : prop.fmt(Math.ceil(range[1])),
   ];
   if (flip) labelTexts.reverse();
 

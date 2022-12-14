@@ -81,6 +81,9 @@ footer {
   padding-top: 40px;
   margin-top: -40px;
 }
+#intro h1 {
+  font-size: 3.2em;
+}
 
 p {
   font-size: 1.4em;
@@ -88,7 +91,7 @@ p {
 
 h1, h2 {
   font-weight: normal;
-  font-size: 3.2em;
+  font-size: 2em;
   font-family: 'Founders Grotesk', sans-serif;
 }
 h1.title {
@@ -110,6 +113,10 @@ section.text {
   padding: 1em 2em;
   max-width: 960px;
   margin: 0 auto;
+  font-size: 0.8em;
+}
+#intro.text {
+  font-size: 1em;
 }
 section.text h1 {
   margin: 0.5em 0;
@@ -127,9 +134,20 @@ section.text > ul {
 section.endnotes > ul {
   text-align: left;
 }
+section.endnotes {
+  border-top: 1px solid #ddd;
+  font-size: 0.75em;
+  color: #777;
+  margin-top: 3em;
+  padding-top: 3em;
+}
 .smallcaps {
   font-variant: small-caps;
   text-transform: lowercase;
+}
+
+.map-tool {
+  margin-bottom: 2em;
 }
 
 .MathJax {
