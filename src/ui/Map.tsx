@@ -134,10 +134,10 @@ async function setTooltip(
             <td>{props[0].nick}</td>
             <td>{props[0].fmt(getMaybeRaceVariable(featData[p]))}</td>
           </tr>
-          {loa == 'state' ? <tr>
+          {loa == 'state' ? (featData[`${p}_rankNat`] !== undefined ? <tr>
             <td>National Rank</td>
             <td>{getMaybeRaceVariable(featData[`${p}_rankNat`])}</td>
-          </tr> : <>
+          </tr> : '') : <>
             <tr>
               <td>National Percentile</td>
               <td>{getMaybeRaceVariable(featData[`${p}_pctNat`])}</td>

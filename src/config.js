@@ -88,7 +88,7 @@ const PROPS = {
   'Max_Cancelled_in_b': {
     desc: 'Maximum Debt Cancelled (billions)',
     nick: 'Maximum Debt Cancelled (billions)',
-    fmt: fmt.curOrNA,
+    fmt: (val) => fmt.curOrNA(val, false),
     color: {
       0.0: '#f2e6fc',
       1.0: '#410175'
@@ -140,10 +140,20 @@ const PROPS = {
 }
 
 const CUSTOM_RANGES = {
-  'med_bal': [8000, 25000],
-  'AvgRelief_Across_Borrowers': [10000, 15000],
-  'Max_Cancelled_in_b': [0, 50],
-  'med_inc': [45000, 65000],
+  'zcta': {
+    'med_bal': [5000, 25000],
+    'med_inc': [50000, 65000],
+  },
+  'county': {
+    'med_bal': [5000, 25000],
+    'med_inc': [50000, 65000],
+  },
+  'state': {
+    'med_bal': [13000, 25000],
+    'AvgRelief_Across_Borrowers': [12000, 16000],
+    'Max_Cancelled_in_b': [0, 50],
+    'med_inc': [50000, 65000],
+  }
 }
 
 // Mapping of cat keys to labels
@@ -177,7 +187,7 @@ LOAS.forEach((loa) => {
     keys.forEach((k) => {
       PROPS_FOR_LOA[loa][k] = {
         key: k,
-        range: p in CUSTOM_RANGES ? CUSTOM_RANGES[p] : META[loa].ranges[p],
+        range: p in CUSTOM_RANGES[loa] ? CUSTOM_RANGES[loa][p] : META[loa].ranges[p],
         stats: {
           // min: META[loa].min[k]
         },
